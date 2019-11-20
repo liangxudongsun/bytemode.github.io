@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>Go 夜读 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                Go 夜读
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>Go 夜读 </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<p><a href="https://travis-ci.org/developer-learning/reading-go"><img src="https://travis-ci.org/developer-learning/reading-go.svg?branch=master" alt="Build Status" /></a> <a href="https://goreportcard.com/report/github.com/developer-learning/reading-go"><img src="https://goreportcard.com/badge/github.com/developer-learning/reading-go" alt="Go Report Card" /></a> <a href="https://github.com/developer-learning/reading-go"><img src="https://img.shields.io/github/stars/developer-learning/reading-go.svg?label=Stars" alt="GitHub stars" /></a> <a href="https://github.com/developer-learning/reading-go"><img src="https://img.shields.io/github/forks/developer-learning/reading-go.svg?label=Fork" alt="GitHub forks" /></a> <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-27-orange.svg?style=flat-square" alt="All Contributors" /></a> <a href="http://godoc.org/github.com/developer-learning/reading-go"><img src="https://godoc.org/github.com/developer-learning/reading-go?status.svg" alt="Documentation" /></a> <a href="https://coveralls.io/github/developer-learning/reading-go?branch=master"><img src="https://coveralls.io/repos/github/developer-learning/reading-go/badge.svg?branch=master" alt="Coverage Status" /></a> <a href="https://github.com/developer-learning/reading-go/issues"><img src="https://img.shields.io/github/issues/developer-learning/reading-go.svg?label=Issue" alt="GitHub issues" /></a> <a href="https://github.com/developer-learning/reading-go/blob/master/LICENSE"><img src="https://img.shields.io/github/license/developer-learning/reading-go.svg" alt="license" /></a></p>
+
+<h2 id="stargazers-over-time">Stargazers over time</h2>
+
+<p><a href="https://starcharts.herokuapp.com/developer-learning/reading-go"><img src="https://starcharts.herokuapp.com/developer-learning/reading-go.svg" alt="Stargazers over time" /></a></p>
+
+<p><a href="https://seladb.github.io/StarTrack-js/?u=developer-learning&amp;r=reading-go">reading-go Star History and Stats</a></p>
+
+<p>Go 学习与分享：</p>
+
+<ul>
+<li><a href="https://github.com/developer-learning/reading-go/labels/Go%20%E5%A4%9C%E8%AF%BB">Go 夜读</a></li>
+</ul>
+
+<p>*根据<a href="https://github.com/developer-learning/reading-go/issues/348">【草案】Go 夜读重大调整(请每个人都来说说你的看法和意见）</a>，我们将按计划进行 Go 源码阅读或者 Go 项目实践，你如果是 Go 新手可以先去这里看看 <strong><a href="https://github.com/developer-learning/learning-golang">Go 学习之路</a></strong>。*
+&gt;范畴：Go 标准包、开源项目、Go 项目最佳实践等。</p>
+
+<ul>
+<li><p><a href="https://github.com/developer-learning/reading-go/labels/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%97%AE">每日一问</a></p></li>
+
+<li><p><a href="https://github.com/developer-learning/reading-go/labels/Go%20%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5">Go 项目实践</a></p>
+
+<ul>
+<li><a href="https://github.com/developer-learning/reading-go/labels/Gin%20%E5%BC%80%E5%8F%91">Gin 开发</a></li>
+<li>[goim 开发(todo)]()</li>
+</ul></li>
+
+<li><p><strong><a href="https://github.com/developer-learning/reading-go/issues/382">TiDB 源码学习</a>（从6月5日开始，每周三晚上21点 <a href="https://zoom.us/j/6923842137">zoom live</a> ）</strong>：</p>
+
+<ul>
+<li>TiDB 源码概览；</li>
+<li>执行引擎；</li>
+<li>优化器；</li>
+<li>事务；</li>
+<li>其他（工程化，测试等）；</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2 id="阅读清单">阅读清单</h2>
+
+<ul class="task-list">
+<li><label><input type="checkbox" checked disabled class="task-list-item"> strings</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> strconv</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> testing</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> net/http</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> sync</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> flag</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> etcd/raft</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> defer</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> context</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> golang/sync</label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> kubernetes</label></li>
+</ul>
+
+<h2 id="回看地址">回看地址</h2>
+
+<ul>
+<li><a href="https://www.youtube.com/channel/UCZwrjDu5Rf6O_CX2CVx7n8Q?sub_confirmation=1">Go 夜读(YouTuBe)</a></li>
+<li><a href="https://space.bilibili.com/326749661">Go 夜读(B 站)</a></li>
+</ul>
+
+<h2 id="我们的目标">我们的目标</h2>
+
+<p>我们希望可以推进大家深入了解 Go ，快速成长为资深的 Gopher 。我们希望每次来了的人和没来的人都能够有收获，成长。</p>
+
+<h2 id="我们的方式">我们的方式</h2>
+
+<p>由一个主讲人带着大家一起去阅读 Go 源代码，一起去啃那些难啃的算法、学习代码里面的奇淫技巧，遇到问题或者有疑惑了，我们可以一起去检索，解答这些问题。我们可以一起学习，共同成长。</p>
+
+<blockquote>
+<p>阅读规则：选取 package 包，然后从上往下开始读 xxx.go 文件，每个文件从上往下读导出的函数（一步一步跟逻辑，如果逻辑跳出这个 package 则不做深入探究）。</p>
+</blockquote>
+
+<h2 id="我们的精神">我们的精神</h2>
+
+<p>开源！开源！开源！重要的事，一定要说三遍。</p>
+
+<blockquote>
+<p>希望有兴趣的小伙伴们一起加入，让我们一起把 《Go 夜读》建立成一个对大家都有帮助的开源社区。</p>
+</blockquote>
+
+<h2 id="怎么加入">怎么加入</h2>
+
+<p>如果你想加入微信群，请搜索 <code>mai_yang</code> ，然后备注你的姓名、公司、工作岗位和职责，备注来源：Github。</p>
+
+<p>有同学想要用 Slack 交流，我开放了一个：<a href="https://join.slack.com/t/reading-go/shared_invite/enQtMjgwNTU5MTE5NjgxLTA5NDQwYzE4NGNhNDI3N2E0ZmYwOGM2MWNjMDUyNjczY2I0OThiNzA5ZTk0MTc1MGYyYzk0NTA0MjM4OTZhYWE">reading-go Slack</a></p>
+
+<hr />
+
+<h2 id="如何参与贡献">如何参与贡献？</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">├── reading   // Go 源码阅读
+├── discuss   // 日常微信群讨论的总结
+├── articles  // 个人原创的技术文章
+├── interview // Go 面试专区
+└── other     // 其他</code></pre></div>
+<p><a href="other/contributing/">如何参与贡献</a></p>
+
+<h2 id="contributors">Contributors</h2>
+
+<p>我非常重视每一个对这个项目的贡献者，我会将贡献者列表更新到这里，目前只有提交 Pull Request 的小伙伴，但是贡献不仅仅如此，还可以包括提交 Issue 以及在社群中有所贡献的人。</p>
+
+<p>贡献者自己可以提 PR ，方法如下：</p>
+
+<ul>
+<li>安装 <code>npm install -g --save-dev all-contributors-cli</code></li>
+<li><code>sh gen_contributors.sh</code></li>
+</ul>
+
+<p>Thanks goes to these wonderful people (<a href="https://github.com/kentcdodds/all-contributors#emoji-key">emoji key</a>):</p>
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
+<!-- prettier-ignore -->
+
+<table>
+<thead>
+<tr>
+<th align="center"><a href="https://github.com/yangwenmai"><img src="https://avatars3.githubusercontent.com/u/1710912?v=4" width="100px;"/><br /><sub><b>maiyang</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=yangwenmai" title="Code">💻</a> <a href="#ideas-yangwenmai" title="Ideas, Planning, &amp; Feedback">🤔</a> <a href="#review-yangwenmai" title="Reviewed Pull Requests">👀</a> <a href="#talk-yangwenmai" title="Talks">📢</a> <a href="#tutorial-yangwenmai" title="Tutorials">✅</a></th>
+<th align="center"><a href="https://github.com/mougeCM"><img src="https://avatars1.githubusercontent.com/u/16773339?v=4" width="100px;"/><br /><sub><b>Simple Min</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=mougeCM" title="Code">💻</a></th>
+<th align="center"><a href="https://github.com/yuhao5"><img src="https://avatars3.githubusercontent.com/u/35653599?v=4" width="100px;"/><br /><sub><b>kenny</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=yuhao5" title="Code">💻</a></th>
+<th align="center"><a href="https://github.com/charnlsxy"><img src="https://avatars2.githubusercontent.com/u/13843868?v=4" width="100px;"/><br /><sub><b>charnlsxy</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=charnlsxy" title="Code">💻</a></th>
+<th align="center"><a href="https://github.com/AceDarkknight"><img src="https://avatars3.githubusercontent.com/u/11901298?v=4" width="100px;"/><br /><sub><b>AceDarkknight</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=AceDarkknight" title="Code">💻</a></th>
+<th align="center"><a href="https://github.com/gnuos"><img src="https://avatars2.githubusercontent.com/u/3014297?v=4" width="100px;"/><br /><sub><b>Data</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=gnuos" title="Code">💻</a></th>
+<th align="center"><a href="https://github.com/KISSMonX"><img src="https://avatars0.githubusercontent.com/u/2876745?v=4" width="100px;"/><br /><sub><b>侯名</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=KISSMonX" title="Code">💻</a></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center"><a href="https://github.com/dumliu01"><img src="https://avatars0.githubusercontent.com/u/12060175?v=4" width="100px;"/><br /><sub><b>dumliu01</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=dumliu01" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/hlily2005"><img src="https://avatars0.githubusercontent.com/u/1411282?v=4" width="100px;"/><br /><sub><b>hlily2005</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=hlily2005" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/fenggolang"><img src="https://avatars0.githubusercontent.com/u/16982786?v=4" width="100px;"/><br /><sub><b>fenggolang</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=fenggolang" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/henrylee2cn"><img src="https://avatars3.githubusercontent.com/u/10174178?v=4" width="100px;"/><br /><sub><b>henrylee2cn</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=henrylee2cn" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/shaqsnake"><img src="https://avatars0.githubusercontent.com/u/1336914?v=4" width="100px;"/><br /><sub><b>shaqsnake</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=shaqsnake" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/TBWISK"><img src="https://avatars0.githubusercontent.com/u/5728787?v=4" width="100px;"/><br /><sub><b>tbwisk</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=TBWISK" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/toontong"><img src="https://avatars3.githubusercontent.com/u/416141?v=4" width="100px;"/><br /><sub><b>Huang ChuanTong</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=toontong" title="Code">💻</a></td>
+</tr>
+
+<tr>
+<td align="center"><a href="https://github.com/zhongxuan123"><img src="https://avatars3.githubusercontent.com/u/10513552?v=4" width="100px;"/><br /><sub><b>The notes of SQL optimize </b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=zhongxuan123" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/zhouxinxin19920802"><img src="https://avatars2.githubusercontent.com/u/29008269?v=4" width="100px;"/><br /><sub><b>zhouxinxin19920802</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=zhouxinxin19920802" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/macaria"><img src="https://avatars2.githubusercontent.com/u/20811449?v=4" width="100px;"/><br /><sub><b>macaria</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=macaria" title="Code">💻</a></td>
+<td align="center"><a href="http://github.com/DennisMao"><img src="https://avatars3.githubusercontent.com/u/15226239?v=4" width="100px;"/><br /><sub><b>Dennis</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=DennisMao" title="Code">💻</a></td>
+<td align="center"><a href="http://blog.csdn.net/orangleliu"><img src="https://avatars1.githubusercontent.com/u/2696746?v=4" width="100px;"/><br /><sub><b>orangleliu</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=orangle" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/HarbinZhang"><img src="https://avatars1.githubusercontent.com/u/21693162?v=4" width="100px;"/><br /><sub><b>HarbinZhang</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=HarbinZhang" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/SwanSpouse"><img src="https://avatars1.githubusercontent.com/u/7344921?v=4" width="100px;"/><br /><sub><b>LiMingji</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=SwanSpouse" title="Code">💻</a></td>
+</tr>
+
+<tr>
+<td align="center"><a href="https://mickey0524.github.io/"><img src="https://avatars0.githubusercontent.com/u/22164927?v=4" width="100px;"/><br /><sub><b>wintersnow</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=mickey0524" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/zhuzhenfeng-finogeeks"><img src="https://avatars2.githubusercontent.com/u/44076738?v=4" width="100px;"/><br /><sub><b>zhuzhenfeng</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=zhuzhenfeng-finogeeks" title="Code">💻</a></td>
+<td align="center"><a href="https://xujiajun.cn"><img src="https://avatars2.githubusercontent.com/u/6065007?v=4" width="100px;"/><br /><sub><b>徐佳军</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=xujiajun" title="Code">💻</a></td>
+<td align="center"><a href="https://github.com/NichoZhang"><img src="https://avatars0.githubusercontent.com/u/6884499?v=4" width="100px;"/><br /><sub><b>nicho</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=NichoZhang" title="Code">💻</a></td>
+<td align="center"><a href="https://www.btxiaowei.net"><img src="https://avatars1.githubusercontent.com/u/17244565?v=4" width="100px;"/><br /><sub><b>Weifeng Wang</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=qclaogui" title="Code">💻</a></td>
+<td align="center"><a href="https://hiboot.hidevops.io"><img src="https://avatars3.githubusercontent.com/u/6748475?v=4" width="100px;"/><br /><sub><b>John Deng</b></sub></a><br /><a href="https://github.com/developer-learning/reading-go/commits?author=john-deng" title="Code">💻</a></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+<p>This project follows the <a href="https://github.com/kentcdodds/all-contributors">all-contributors</a> specification. Contributions of any kind welcome!</p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/20-2018-11-15-go-test/" title="第 20 期 go test 及测试覆盖率">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 20 期 go test 及测试覆盖率
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/19-2018-11-08-http-router-in-go/" title="第 19 期 如何开发一个简单高性能的http router及gorouter源码分析">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 19 期 如何开发一个简单高性能的http router及gorouter源码分析
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

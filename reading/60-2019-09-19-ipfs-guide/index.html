@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 60 期 IPFS 星际文件系统 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/60-2019-09-19-ipfs-guide/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/60-2019-09-19-ipfs-guide/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 60 期 IPFS 星际文件系统
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 60 期 IPFS 星际文件系统 </h1>
+            <aside >
+                 作者: xcshuan 
+            </aside>
+
+            
+
+<h2 id="go-夜读第-60-期-ipfs-星际文件系统">Go 夜读第 60 期 IPFS 星际文件系统</h2>
+
+<h2 id="背景介绍">背景介绍</h2>
+
+<p>传统的 HTTP 都是通过资源定位符来定位，在服务器关闭后，有些数据可能会永远丢失，而且如果某客户离服务器比较远，则可能延时较高。IPFS 提出使用基于内容寻址，只要拥有 hash 且网络上有人存储此数据，即可获得数据，同时自带 CDN 效果（热数据会自动分散）。</p>
+
+<h2 id="内容简介">内容简介</h2>
+
+<p>主要介绍一下 ipfs 的基本思想与使用，并分析源码结构以及粗略介绍相关兄弟项目（如 multiformats,filecoin 等)</p>
+
+<h2 id="内容大纲">内容大纲</h2>
+
+<ul>
+<li>IPFS 的底层技术原理。</li>
+<li>IPFS 源码概述。</li>
+<li>超越 IPFS - 区块链存储简述。</li>
+<li>Q&amp;A。</li>
+</ul>
+
+<h2 id="分享地址">分享地址</h2>
+
+<p>2019-09-19, 21:00 ~ 22:10, UTC+8</p>
+
+<p><a href="https://zoom.us/j/6923842137">https://zoom.us/j/6923842137</a></p>
+
+<h2 id="进一步阅读的材料">进一步阅读的材料</h2>
+
+<ul>
+<li><a href="https://github.com/ipfs/ipfs/tree/master/papers/ipfs-cap2pfs">IPFS paper</a></li>
+<li><a href="https://github.com/ipfs/go-ipfs">源码</a></li>
+<li><a href="https://docs.google.com/presentation/d/13tYOTVMIT1fwkfZHwoe0qYUZMeYhQX9p_WiY5TOmbEY/edit?usp=sharing">PPT</a></li>
+<li><a href="https://segmentfault.com/a/1190000020392149">预习资料</a></li>
+</ul>
+
+<p>请点击：<a href="https://github.com/developer-learning/reading-go/issues/460">https://github.com/developer-learning/reading-go/issues/460</a></p>
+
+<h2 id="q-a-总结">Q&amp;A 总结</h2>
+
+<ol>
+<li><p>IPFS 是如何组网的？
+答：IPFS 的底层网络库是 Libp2p，Libp2p 的路由算法是 S-KadDHT（分布式哈希表），只要能连接到网络中的几个节点，通过节点发现与交换，很容易就能进入到网络里，所以需要设置 bootstrap 节点作为连接种子。对于个人或公司想用 IPFS 组网，可以用 <code>swarm.key</code> 组建一个私网（需要指定一bootstrap），即可实现内部的 IPFS 网络。</p></li>
+
+<li><p>IPFS 如何实现模糊搜索？
+答：首先 IPFS 的 DAG 节点里面都是有一个 name 项，此外还有一些其他的信息可以解析，这样的话可以爬取这些元数据信息，用一些搜索引擎工具即可模糊搜索，开源实现：<a href="https://github.com/ipfs-search/ipfs-search">https://github.com/ipfs-search/ipfs-search</a>，可以用来当做参考。</p></li>
+
+<li><p>IPFS 其他的相关资料。</p></li>
+</ol>
+
+<p>中文资料，有一本《IPFS 原理与实践》，其次有一个 github 仓库：<a href="https://github.com/xipfs/IPFS-Internals">https://github.com/xipfs/IPFS-Internals</a>，还有 IPFS 的各种命令解释：<a href="http://cw.hubwiz.com/card/c/ipfs/1/1/1/">http://cw.hubwiz.com/card/c/ipfs/1/1/1/</a>
+英文首先有官方文档：<a href="https://github.com/ipfs/specs">https://github.com/ipfs/specs</a>，<a href="https://github.com/filecoin-project/specs">https://github.com/filecoin-project/specs</a>，一个教程：<a href="https://flyingzumwalt.gitbooks.io/decentralized-web-primer">https://flyingzumwalt.gitbooks.io/decentralized-web-primer</a> 。</p>
+
+<hr />
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/7xEWKaTE2TI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/62-2019-10-10-go-micro-part1/" title="第 62 期 Go-Micro 微服务框架 Part 1">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 62 期 Go-Micro 微服务框架 Part 1
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/59-2019-09-12-real-world-go-concurrency-bugs-in-paper-reading/" title="第 59 期 Real-world Go Concurrency Bugs">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 59 期 Real-world Go Concurrency Bugs
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

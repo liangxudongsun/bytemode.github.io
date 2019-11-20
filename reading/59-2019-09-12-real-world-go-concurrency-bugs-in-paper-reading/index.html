@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 59 期 Real-world Go Concurrency Bugs - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/59-2019-09-12-real-world-go-concurrency-bugs-in-paper-reading/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/59-2019-09-12-real-world-go-concurrency-bugs-in-paper-reading/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 59 期 Real-world Go Concurrency Bugs
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 59 期 Real-world Go Concurrency Bugs </h1>
+            <aside >
+                 作者: Go 夜读 SIG 小组 
+            </aside>
+
+            
+
+<h2 id="go-夜读第-59-期-real-world-go-concurrency-bugs">Go 夜读第 59 期 Real-world Go Concurrency Bugs</h2>
+
+<h3 id="内容简介">内容简介</h3>
+
+<p>Go 语言鼓励其用户多使用基于消息传递的同步原语 channel，但也不排斥其用户使用基于内存共享的同步原语，提供了诸如 sync.Mutex 等互斥原语。在过去十年的时间里，Go 的实践者不断思考着这些问题：哪种同步原语更加优秀？究竟什么场景下应该使用何种同步原语？哪类同步原语能够更好的保证数据操纵的正确性？哪类同步原语对程序员的心智负担较大？何种同步原语更容易产生程序 Bug？channel 是一种反模式吗？什么类型的 Bug 能够更好的被 Bug 检测器发现？……</p>
+
+<p>[Tu et al., 2019] 调研了包括 Docker, Kubernetes, gRPC 等六款主流大型 Go 程序在演进过程中出现的 171 个与同步原语相关的 Bug，并给出了一些有趣的见解。本次分享将讨论 [Tu et al. 2019] 的研究论文。</p>
+
+<h3 id="内容大纲">内容大纲</h3>
+
+<ul>
+<li>Go 常见的并发模式与论文的研究背景</li>
+<li>论文的研究方法</li>
+<li>Go 并发 Bug 的分类及部分主要结论
+
+<ul>
+<li>阻塞式 Bug</li>
+<li>非阻塞式 Bug</li>
+</ul></li>
+<li>Go 运行时死锁、数据竞争检测器对 Bug 的检测能力与算法原理（如果时间允许）</li>
+<li>论文的结论、争议与我们的反思</li>
+</ul>
+
+<h2 id="分享地址">分享地址</h2>
+
+<p>2019-09-12, 21:00 ~ 22:10, UTC+8</p>
+
+<p><a href="https://zoom.us/j/6923842137">https://zoom.us/j/6923842137</a></p>
+
+<h2 id="进一步阅读的材料">进一步阅读的材料</h2>
+
+<ul>
+<li>[Ou, 2019a] Real-world Go Concurrency Bugs PPT
+
+<ul>
+<li>本次分享的 PPT: <a href="https://docs.google.com/presentation/d/1clppbBqjxzPrj-26d_zVeJK2fFiXCsNVXYhKPjEZ4Tc/edit?usp=sharing">这里</a></li>
+</ul></li>
+<li>[Pike, 2012] <a href="https://talks.golang.org/2012/concurrency.slide"><em>Go Concurrency Patterns</em></a>
+
+<ul>
+<li>Rob Pike 关于 「Go 并发模式」的 PPT</li>
+</ul></li>
+<li>[Gerrand, 2013] <a href="http://talks.golang.org/2013/advconc.slide"><em>Advanced Go Concurrency Patterns</em></a>
+
+<ul>
+<li>Sameer Ajmani 关于 「Go 并发模式进阶」的 PPT</li>
+</ul></li>
+<li>[Tu et al., 2019] <a href="https://songlh.github.io/paper/go-study.pdf">Understanding Real-World Concurrency Bugs in Go</a>
+
+<ul>
+<li>本次分享讨论的论文</li>
+<li><a href="https://slideplayer.com/slide/17049966/">论文作者的 PPT</a></li>
+<li><a href="https://github.com/developer-learning/reading-go/files/3587505/bug.table.xlsx">Bug Table</a></li>
+<li>论文中对应的 GitHub 仓库：<a href="https://github.com/system-pclub/go-concurrency-bugs">https://github.com/system-pclub/go-concurrency-bugs</a></li>
+<li>与论文作者的一次面谈记录：<a href="https://www.jexia.com/en/blog/golang-error-proneness-message-passing/">https://www.jexia.com/en/blog/golang-error-proneness-message-passing/</a></li>
+<li>Hacker News 对本文的讨论 <a href="https://news.ycombinator.com/item?id=19280927">https://news.ycombinator.com/item?id=19280927</a></li>
+</ul></li>
+<li>[Utahn, 2019] <a href="https://www.jtolio.com/2016/03/go-channels-are-bad-and-you-should-feel-bad/">Go channels are bad and you should feel bad</a>
+
+<ul>
+<li>Reddit 对本文的讨论：<a href="https://www.reddit.com/r/golang/comments/48mnrp/go_channels_are_bad_and_you_should_feel_bad/">https://www.reddit.com/r/golang/comments/48mnrp/go_channels_are_bad_and_you_should_feel_bad/</a></li>
+</ul></li>
+<li>[Ou, 2019b] <a href="https://github.com/developer-learning/reading-go/issues/450">Go 夜读 第 56 期：channel &amp; select 源码分析</a></li>
+</ul>
+
+<p>请点击：<a href="https://github.com/developer-learning/reading-go/issues/464">https://github.com/developer-learning/reading-go/issues/464</a></p>
+
+<hr />
+
+<h2 id="qa">QA</h2>
+
+<p><strong>Q: 可以再详细说一下 lift 指标吗？</strong></p>
+
+<p>A: 可以从两种不同的角度来思考这个指标。</p>
+
+<ol>
+<li>借鉴 person 相关性系数（余弦相似性) |X·Y|/(|X|*|Y|)</li>
+<li>借鉴 Bayes 公式 P(B|A) = P(AB)/P(A)
+
+<ul>
+<li>Lift(cause, fix) = 导致阻塞的 cause 且使用了 fix 进行修复的概率 除以 cause 的概率乘以 fix 的概率 = P(cause, fix) / (P(cause)P(fix)) = P(cause|fix)/P(cause)</li>
+<li>接近 1 时，说明 fix 导致 cause 的概率接近 cause 自己的概率，即 P(cause|fix) 约等于 P(cause) 于是 fix 和 cause 独立</li>
+<li>大于 1 时，说明 fix 导致 cause 的概率比 cause 自己的概率大，即 P(cause|fix) &gt; P(cause) =&gt; P(fix | cause) &gt; P(fix)，即 cause 下 fix 的概率比 fix 本身的概率大，正相关</li>
+<li>小于 1 时，同理，负相关</li>
+</ul></li>
+</ol>
+
+<p><strong>Q: 可以贴一下提到的两篇相关文献吗？</strong></p>
+
+<p>A: 论文引用了两篇很硬核的形式化验证的论文：</p>
+
+<ul>
+<li><p>Julien Lange, Nicholas Ng, Bernardo Toninho, and Nobuko Yoshida. Fencing off go: Liveness and safety for channel-based programming. In Proceedings ofthe 44th ACMSIGPLANSymposium on Principles of Programming Languages (POPL ’17), Paris, France, January 2017.</p></li>
+
+<li><p>Julien Lange, Nicholas Ng, Bernardo Toninho, and Nobuko Yoshida. A static verification framework for message passing in go using be- havioural types. In IEEE/ACM40th International Conference on Software Engineering (ICSE ’18), Gothenburg, Sweden, June 2018.</p></li>
+</ul>
+
+<p><strong>Q: 作者还分享了其他语言的关于并发 Bug 的论文，比如 Rust。</strong></p>
+
+<p>A: 地址在<a href="https://arxiv.org/pdf/1902.01906.pdf">这里</a>，但是思路完全一致，可以直接扫一眼结论。</p>
+
+<p>Q: 能否将 CSP 和 Actor 模型进行一下简单比较？</p>
+
+<p>A: CSP 和 Actor 的本质区别在于如何对消息传递进行建模。Actor 模型强调每个通信双方都有一个“信箱”，传递消息的发送方对将这个消息发给谁是很明确的，这种情况下 Actor 的信箱必须能够容纳不同类型的消息，而且理论上这个信箱的大小必须无穷大，很像你想要送一件礼物给别人，你会直接把礼物递给这个人，如果这个人不在，你就扔到他家的信箱里；CSP 需要有一个信道，因此对发送方而言，其实它并不知道这个消息的接收方是谁，更像是你朝大海扔了一个漂流瓶，大海这个信道根据洋流将这个漂流瓶传递给了其他正在观察监听大海的人。</p>
+
+<p><strong>Q: 读论文的目标是什么？</strong></p>
+
+<p>A: 我读论文主要有两个目标：1. 了解论文的研究方法，因为研究方法可能可以用在我未来的研究中；2. 了解论文的整体思路，因为论文很多，思路远比它们的结果对我未来自己的研究更重要。</p>
+
+<p><strong>Q: 去哪儿找这类论文？</strong></p>
+
+<p>A: 我们这次讨论的论文是我偶然在 Go 语言 GitHub 仓库的 Wiki 上看到的；一般情况下我会订阅 ArXiv，然后定期浏览新发出来的文章。</p>
+
+<hr />
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/WZUii-Czaps" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/60-2019-09-19-ipfs-guide/" title="第 60 期 IPFS 星际文件系统">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 60 期 IPFS 星际文件系统
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/58-2019-09-05-whats-new-in-go1.13/" title="第 58 期 What&#39;s new in Go 1.13？">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 58 期 What&#39;s new in Go 1.13？
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

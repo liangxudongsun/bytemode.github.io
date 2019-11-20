@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 49 期 TiDB 源码阅读之 Transaction - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/49-2019-06-26-tidb-transaction-reading/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/49-2019-06-26-tidb-transaction-reading/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 49 期 TiDB 源码阅读之 Transaction
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 49 期 TiDB 源码阅读之 Transaction </h1>
+            <aside >
+                 作者: zimulala 
+            </aside>
+
+            
+
+<h2 id="tidb-transaction-内容介绍">TiDB Transaction 内容介绍</h2>
+
+<p>本次分享主要讲 TiDB 的事务执行过程和一些异常处理，涉及 TiDB 的 session 和 tikv 部分模块。</p>
+
+<p>PDF: <a href="https://github.com/developer-learning/reading-go/files/3329306/Source.code.reading.of.TiDB.Transaction.pdf">Source code reading of TiDB Transaction .pdf</a></p>
+
+<h2 id="推荐阅读">推荐阅读</h2>
+
+<ul>
+<li><a href="https://pingcap.com/blog-cn/tidb-source-code-reading-19/">TiDB 源码阅读系列文章（十九）tikv-client（下）</a></li>
+<li><a href="https://pingcap.com/blog-cn/tidb-internal-1/">三篇文章了解 TiDB 技术内幕 - 说存储</a></li>
+<li><a href="https://andremouche.github.io/tidb/transaction_in_tidb.html">Transaction in TiDB</a></li>
+<li><a href="https://andremouche.github.io/tidb/coprocessor_in_tikv.html">Coprocessor in TiKV</a></li>
+</ul>
+
+<h2 id="视频回看">视频回看</h2>
+
+<ol>
+<li><a href="https://youtu.be/A46VE3aUTKo">TiDB 源码学习之 Executor - YouTube</a></li>
+<li><a href="https://www.bilibili.com/video/av56945776/">TiDB 源码学习之 Executor - Bilibili</a></li>
+</ol>
+
+<h2 id="问题">问题</h2>
+
+<p>21:17:34     From zq : 分享妹子用的是什么IDE
+21:17:44     From mrj :   goland
+21:17:45     From Pure White : 左上角，goland
+21:17:45     From tangyinpeng : goland
+21:17:46     From Heng Long : goland
+21:17:57     From zq : goland现在做得这么好看啦
+21:18:05     From Heng Long : Meterial theme
+21:18:07     From mrj : 下来主题
+21:18:22     From lk : 有什么比较不错的主题吗？
+21:18:31     From Pure White : darcula
+21:18:35     From mrj : 默认的就挺好的
+21:20:04     From mai yang : 明天晚上将由 GoLand 布道师给我们分享 GoLand 的使用及技巧实践分享。
+21:28:23     From HAITAO的 iPhone : 点查不带timestamp，直接读最新稳定版本么？
+21:28:32     From Wei Yao : 对
+21:28:52     From liber xue : 双击shift 直接search
+21:28:55     From Wei Yao : 最新 commited 版本
+21:35:50     From HAITAO的 iPhone : 点查，实际会默认给一个当前最新的timestamp,根据这个ts，kv返回对应的版本值?还是不带任何ts，发给kv ？
+21:36:29     From Wei Yao : 用 maxTs
+21:50:04     From openinx : A very nice talk.
+22:05:22     From kzl : 获取完成之后，region扩容了，数据迁移走了怎么办？
+22:06:16     From jeff : 是说 region 分裂了吧。
+22:06:33     From kzl : 对的
+22:08:46     From ruiayLin : region信息就会过期
+22:11:05     From jeff : 那提交的时候会重试吧
+22:11:39     From hezhiyong : tidb不断缓存region 的信息会不会占用很大的内存
+22:13:23     From jeff : 唔，这里应该只缓冲曾经用到的 region ，并不是集群中所有 region
+22:13:52     From jeff : s/ 缓冲 / 缓存 /g
+22:14:44     From jeff : 貌似讲到刚才数据 region 分裂后的场景了。
+22:14:56     From Wei Yao : 会重试
+22:26:54     From fj : 大神 tidb的事物隔离级别 能介绍下吗？- ̗̀(๑ᵔ⌔ᵔ๑)
+22:29:35     From Tengjin Xie : snapshot isolation?
+22:31:48     From Wei Yao : 比 mysql 的 rr 稍微高一点
+22:33:41     From fj : 刚才 讲的tidb的隔离级别是？
+22:34:03     From Wei Yao : 你可以认为是 可重复读
+22:34:11     From Wei Yao : 其实这是快照隔离级别</p>
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/A46VE3aUTKo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/50-2019-06-27-goland-practrice/" title="第 50 期 Go 夜读之 GoLand Tips &amp; Tricks">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 50 期 Go 夜读之 GoLand Tips &amp; Tricks
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/48-2019-06-19-tidb-compiler-reading/" title="第 48 期 TiDB 源码阅读之 Compiler">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 48 期 TiDB 源码阅读之 Compiler
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

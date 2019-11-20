@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 63 期 Go 编码风格阅读与讨论 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/63-2019-10-17-go-style-and-go-advices/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/63-2019-10-17-go-style-and-go-advices/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 63 期 Go 编码风格阅读与讨论
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 63 期 Go 编码风格阅读与讨论 </h1>
+            <aside >
+                 作者: mai 
+            </aside>
+
+            
+
+<h2 id="go-夜读第-63-期-go-编码风格阅读与讨论">Go 夜读第 63 期 Go 编码风格阅读与讨论</h2>
+
+<h2 id="内容简介">内容简介</h2>
+
+<p>本期主要是针对近期 uber-go/guide style 和 go-advices 的解读以及开发者讨论。</p>
+
+<h2 id="内容大纲">内容大纲</h2>
+
+<ul>
+<li>Go CodeReview Comments</li>
+<li>Uber-go/style</li>
+<li>Go-advices</li>
+</ul>
+
+<h2 id="分享地址">分享地址</h2>
+
+<p>2019-10-17 21:00:00 ~ 22:10:00, UTC+8</p>
+
+<p><a href="https://zoom.us/j/6923842137">https://zoom.us/j/6923842137</a></p>
+
+<h2 id="分享-slides">分享 Slides</h2>
+
+<p><a href="https://docs.google.com/presentation/d/1MlzZJBK0Zq0VzJVC_AqSWmmlS4Of-8xY6NGZmfhKQXI/edit?usp=sharing">https://docs.google.com/presentation/d/1MlzZJBK0Zq0VzJVC_AqSWmmlS4Of-8xY6NGZmfhKQXI/edit?usp=sharing</a></p>
+
+<h2 id="进一步阅读的材料">进一步阅读的材料</h2>
+
+<ul>
+<li><a href="https://github.com/golang/go/wiki/CodeReviewComments">Go CodeReviewComments</a></li>
+<li><a href="https://github.com/uber-go/guide/blob/master/style.md">uber-go/guide style</a></li>
+<li><a href="https://github.com/cristaloleg/go-advices">go-advices</a></li>
+</ul>
+
+<h2 id="go-codereviewcomments-翻译">Go CodeReviewComments 翻译</h2>
+
+<ul>
+<li><a href="https://www.zybuluo.com/wddpct/note/1264988">Go Code Review Comments 译文（截止 2018 年 7 月 27 日）</a></li>
+</ul>
+
+<p>Go 官方的建议已经涉及到非常方面：</p>
+
+<ul>
+<li>Gofmt</li>
+<li>Comment Sentences</li>
+<li>Contexts</li>
+<li>Copying</li>
+<li>Crypto Rand</li>
+<li>Declaring Empty Slices</li>
+<li>Doc Comments</li>
+<li>Don&rsquo;t Panic</li>
+<li>Error Strings</li>
+<li>Examples</li>
+<li>Goroutine Lifetimes</li>
+<li>Handle Errors</li>
+<li>Imports</li>
+<li>Import Dot</li>
+<li>In-Band Errors</li>
+<li>Indent Error Flow</li>
+<li>Initialisms</li>
+<li>Interfaces</li>
+<li>Line Length</li>
+<li>Mixed Caps</li>
+<li>Named Result Parameters</li>
+<li>Naked Returns</li>
+<li>Package Comments</li>
+<li>Package Names</li>
+<li>Pass Values</li>
+<li>Receiver Names</li>
+<li>Receiver Type</li>
+<li>Synchronous Functions</li>
+<li>Useful Test Failures</li>
+<li>Variable Names</li>
+</ul>
+
+<h3 id="gofmt">gofmt</h3>
+
+<p>不管你是用什么开发工具，都推荐一定要配置 goimports。</p>
+
+<h3 id="context">Context</h3>
+
+<ul>
+<li>Context 应该在函数的第一个参数；</li>
+<li>不要将 Context 加到结构体中，而应该加一个 ctx 参数；</li>
+<li>不要创建自定义的 Context 类型；</li>
+<li>Context 是不可变的，所以可以将相同的 ctx 传递给调用共享相同截止日期，取消信号，凭证，父跟踪等；</li>
+</ul>
+
+<p>虽然官方已经说明了，但是也还是有不少公司或者开源项目有自己的设计和实现。</p>
+
+<h3 id="declaring-empty-slices">Declaring Empty Slices</h3>
+
+<p><code>var t[]string</code> 比 <code>t:= []string{}</code> 更好</p>
+
+<h3 id="imports">Imports</h3>
+
+<p>应该按系统库、内部库、第三方库分层分隔。</p>
+
+<h3 id="indent-error-flow">Indent Error Flow</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// error handling...
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#8f5902;font-style:italic">// or continue, etc.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">//</span> <span style="color:#000">other</span> <span style="color:#000">code</span></code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">x</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// error handling...
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">return</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">//</span> <span style="color:#000">use</span> <span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">...</span></code></pre></div>
+<h3 id="variable-names">Variable Names</h3>
+
+<ul>
+<li>局部变量应该越精简越好；</li>
+<li>不通用的或者全局变量，应该描述更清楚的命名；</li>
+</ul>
+
+<h2 id="uber-go-风格指南翻译">Uber Go 风格指南翻译</h2>
+
+<ul>
+<li><a href="https://note.mogutou.xyz/articles/2019/10/13/1570978862812.html">Uber Go 风格指南 (译) by 徐旭</a></li>
+<li><a href="https://mp.weixin.qq.com/s/SNmq0llxuu8NUkhwenegRg">Uber Go 语言编程规范 by legendtkl</a></li>
+<li><a href="https://mp.weixin.qq.com/s/cu6IZl_BhWokJxMXYmSytg">【重磅】Uber Go 语言代码风格指南 by Go 中国</a></li>
+<li><a href="https://mp.weixin.qq.com/s/LYLLghOjevBDieAM_LKrjA">Uber Go 语言编码规范 by TonyBai</a></li>
+</ul>
+
+<p>上周刚出来，过了2天，就出现大量的翻译文章，也能够看出来 Go 语言虽然官方有 gofmt，以及 go vet 静态代码检测工具，但是也抵挡不住大家对于代码风格的热衷。
+&gt;也说明大家还希望将代码风格更统一，追求更好的代码。</p>
+
+<h2 id="go-advices">Go-advices</h2>
+
+<ul>
+<li>Code</li>
+<li>Concurrency</li>
+<li>Performance</li>
+<li>Modules</li>
+<li>Build</li>
+<li>Testing</li>
+<li>Tools</li>
+<li>Misc</li>
+</ul>
+
+<h3 id="代码方面">代码方面</h3>
+
+<ul>
+<li><code>var foo time.Duration</code> 比 <code>var fooMillis int64</code> 更好</li>
+<li>检查 <code>defer</code> 中的 error</li>
+<li>用 <code>%+v</code> 打印足够详细信息</li>
+<li>小心 range</li>
+<li>map 中读取一个不存在的 key 不会 panic，建议：<code>value, ok := map[“no_key”]</code></li>
+<li>将 defer 移到顶部</li>
+</ul>
+
+<h2 id="dave-cheney">Dave Cheney</h2>
+
+<ul>
+<li><a href="https://dave.cheney.net/practical-go/presentations/qcon-china.html">Practical Go: Real world advice for writing maintainable Go programs</a></li>
+<li>中文翻译版（2018 年）：<a href="https://www.flysnow.org/2018/12/04/golang-the-go-best-presentations.html">https://www.flysnow.org/2018/12/04/golang-the-go-best-presentations.html</a></li>
+</ul>
+
+<hr />
+
+<h2 id="q-a-总结">Q&amp;A 总结</h2>
+
+<ol>
+<li>下划线开头 来声明 全局变量
+&gt;很少见，也不太适用。</li>
+<li>为什么建议channel尽量不加buffer?
+&gt;按需分配。</li>
+<li>go.uber.org/atomic
+&gt;库非常好，原子操作很方便。新增多种数据类型。</li>
+<li>package_test 比 package 好？
+&gt;比较清晰，但是也有局限性，测试不了内部逻辑，类似于外部包调用。</li>
+<li>go test 指定 -count 可以消除偶然因素导致的不稳定结果。
+&gt;-count=1 也可以消除 cache。</li>
+<li>有没有认证或授权库的推荐？
+&gt;github 上搜索即可，一般可以根据 star 数量和活跃情况来评判。
+也可以去 godoc.org 搜索，查看 imports 引入数据来评判。
+<a href="https://github.com/dgrijalva/jwt-go">https://github.com/dgrijalva/jwt-go</a></li>
+</ol>
+
+<hr />
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/91YbbwlKZ2k" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/64-2019-10-24-go-runtime/" title="第 64 期深入浅出 Golang Runtime">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 64 期深入浅出 Golang Runtime
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/62-2019-10-10-go-micro-part1/" title="第 62 期 Go-Micro 微服务框架 Part 1">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 62 期 Go-Micro 微服务框架 Part 1
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

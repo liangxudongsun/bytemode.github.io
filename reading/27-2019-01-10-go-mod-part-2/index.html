@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 27 期 Go 夜读之 go mod 源码阅读 part 2 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.54.0" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/27-2019-01-10-go-mod-part-2/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/27-2019-01-10-go-mod-part-2/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 27 期 Go 夜读之 go mod 源码阅读 part 2
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+        <div class="button button-youtube" role="button" aria-label="Youtube">
+            <a href="" title="Youtube" target="_blank"  class="toggle-button icon icons-youtube"></a>
+        </div>
+        
+         
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 27 期 Go 夜读之 go mod 源码阅读 part 2 </h1>
+            <aside >
+                 作者: mai 
+            </aside>
+
+            
+
+<p><em>Go 标准包阅读</em></p>
+
+<p>Go 版本：go 1.11.5</p>
+
+<h2 id="学到的内容">学到的内容</h2>
+
+<h3 id="1-mf-new-modfile-file">1. mf := new(modfile.File)</h3>
+
+<h3 id="2-lineno-感觉是无用的代码">2. lineno++ 感觉是无用的代码？</h3>
+
+<p>dep.go 中 ParseGopkgLock 方法第48行有用到 lineno ，会打印出 strconv.Unquote 解析错误的文件名和行号</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">val</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">val</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;&#34;&#39;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">val</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">val</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;&#34;&#39;</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">q</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">strconv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unquote</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">val</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// Go unquoting, but close enough for now
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;%s:%d: invalid quoted string: %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">lineno</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">val</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">q</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>其他几个文件可能是为了保持一致，或者为了将来输出错误信息特意保留的。其他文件里面的 lineno 没有地方引用，大家在阅读代码时会产生困惑，建议用空白符_来替代。</p>
+
+<h3 id="3-判断外部网络是否可用">3. 判断外部网络是否可用</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;nacl&#34;</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;js&#34;</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Skipf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;skipping test: no external network on %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>runtime.GOOS返回程序所在的操作系统名</p>
+
+<h4 id="src-runtime-extern-go">src\runtime\extern.go</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#8f5902;font-style:italic">// GOOS is the running program&#39;s operating system target:
+</span><span style="color:#8f5902;font-style:italic">// one of darwin, freebsd, linux, and so on.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">const</span> <span style="color:#000">GOOS</span> <span style="color:#204a87;font-weight:bold">string</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">sys</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span></code></pre></div>
+<p>Native Client(NACL) 是一种允许在浏览器中运行 native compiled code 的技术，允许开发者运用自己熟悉的语言来开发web应用，而不只是JavaScript，目前 NativeClient 技术只能应用于google自己的chrome中。
+js 是指 Webassembly 技术，是在新版本1.11中才支持的,最新版本的浏览器可以支持。 NACL 和 JS 都不是真正的操作系统，不提供外部网络功能。</p>
+
+<h3 id="4-旧版模块管理配置转换为modfile">4.旧版模块管理配置转换为modfile</h3>
+
+<p>读取当前目录下旧版模块管理配置文件，从 Converters 中根据配置文件名去获取转换方法。</p>
+
+<h4 id="src-cmd-go-internal-modconv-convert-go">src\cmd\go\internal\modconv\convert.go</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#8f5902;font-style:italic">// ConvertLegacyConfig converts legacy config to modfile.
+</span><span style="color:#8f5902;font-style:italic">// The file argument is slash-delimited.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">ConvertLegacyConfig</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">f</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">modfile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">File</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LastIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">j</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">2</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">j</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LastIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">[:</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#4e9a06">&#34;/&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">convert</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">Converters</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:]]</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">convert</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">j</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">convert</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Converters</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:]]</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">convert</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;unknown legacy config file %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">mf</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">convert</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;parsing %s: %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h4 id="src-cmd-go-internal-modconv-modconv-go">src\cmd\go\internal\modconv\modconv.go</h4>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">Converters</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">modfile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">File</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">){</span>
+    <span style="color:#4e9a06">&#34;GLOCKFILE&#34;</span><span style="color:#000;font-weight:bold">:</span>          <span style="color:#000">ParseGLOCKFILE</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;Godeps/Godeps.json&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ParseGodepsJSON</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;Gopkg.lock&#34;</span><span style="color:#000;font-weight:bold">:</span>         <span style="color:#000">ParseGopkgLock</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;dependencies.tsv&#34;</span><span style="color:#000;font-weight:bold">:</span>   <span style="color:#000">ParseDependenciesTSV</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;glide.lock&#34;</span><span style="color:#000;font-weight:bold">:</span>         <span style="color:#000">ParseGlideLock</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;vendor.conf&#34;</span><span style="color:#000;font-weight:bold">:</span>        <span style="color:#000">ParseVendorConf</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;vendor.yml&#34;</span><span style="color:#000;font-weight:bold">:</span>         <span style="color:#000">ParseVendorYML</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;vendor/manifest&#34;</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#000">ParseVendorManifest</span><span style="color:#000;font-weight:bold">,</span>
+    <span style="color:#4e9a06">&#34;vendor/vendor.json&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ParseVendorJSON</span><span style="color:#000;font-weight:bold">,</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>目前go语言是使用map对象来存储旧配置文件和方法的映射关系这种设计思路的。@mai提出还有一种设计思路是抽象一个接口，各种配置管理来实现该接口。</p>
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="//www.youtube.com/embed/Isd-FOmM9C8" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+<h2 id="参考">参考</h2>
+
+<p>1.<a href="https://en.wikipedia.org/wiki/Google_Native_Client">Google Native Client</a><br />
+2.<a href="https://groups.google.com/forum/#!topic/native-client-discuss/QrSLLgijdI0">NaCl and networking</a><br />
+3.<a href="https://www.jianshu.com/p/540ab3db556e">Go 1.11 正式发布 支持模块和WebAssembly</a><br />
+4.<a href="https://www.ibm.com/developerworks/cn/web/wa-lo-webassembly-status-and-reality/index.html">WebAssembly 现状与实战</a></p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/" title="第 28 期 Go 夜读之 go mod 源码阅读 part 3">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 28 期 Go 夜读之 go mod 源码阅读 part 3
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/26-2019-01-03-blog-with-github-netlify/" title="第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
