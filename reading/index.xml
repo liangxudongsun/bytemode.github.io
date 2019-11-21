@@ -391,15 +391,6 @@ PPT: TiDB Compiler.pdf
     </item>
     
     <item>
-      <title>第 1 期每日阅读特训营</title>
-      <link>http://bytemode.github.io/reading/1-2019-03-14-daily-reading/</link>
-      <pubDate>Thu, 14 Mar 2019 09:10:00 +0800</pubDate>
-      
-      <guid>http://bytemode.github.io/reading/1-2019-03-14-daily-reading/</guid>
-      <description>阅读清单    标题 阅读者     漫话：如何给女朋友解释为什么有些网站域名不以 www 开头 mai   LeetCode 的刷题利器（伪装到老板都无法 diss 你没有工作） mai   深入 GO 语言文本类型 ch   k8s cpu 资源限制 k8s 内存资源限制 Jason   Golang 之轻松化解 defer 的温柔陷阱 关于 go 语言中的延迟执行函数 Littlesqx    “漫话”的阅读笔记  域名的一个重要功能——为数字化的互联网资源提供易于记忆的名称。 域名具有唯一性。 www，其实是 World Wide Web 的缩写，中文翻译为万维网 互联网并不等同万维网（WWW），万维网只是一个基于超文本相互链接而成的全球性系统，且是互联网所能提供的服务其中之一。 为了区分互联网中的各种应用，就有了不同的子域名，比如互联网就以 www 作为子域名，文件传输以 ftp 作为子域名，电子邮件以 mail 作为子域名。 正是因为万维网是互联网中最重要的一部分，很多域名的最主要用途也是搭建 web 网站，所以，会有很多公司直接忽略 www。 通用顶级域（英语：Generic top-level domain，缩写为 gTLD），是互联网名称与数字地址分配机构（IANA）管理的顶级域（TLD）之一。该机构专门负责互联网的域名系统。 域名支持中文，并且域名中也已经支持颜文字了。“👀.</description>
-    </item>
-    
-    <item>
       <title>第 33 期 Go 夜读之 Go defer 和逃逸分析</title>
       <link>http://bytemode.github.io/reading/33-2019-03-07-defer-in-go/</link>
       <pubDate>Thu, 07 Mar 2019 21:05:00 +0800</pubDate>
@@ -790,32 +781,6 @@ strings  replace.go replace_test.go search.go search_test.go  问题清单 以�
 Go 版本：go 1.10.1
 strings  builder.go builder_test.go compare.go compare_test.go example_test.go export_test.go reader_test.go reader.go  问题清单 以下是我们在阅读过程中的一些问题，希望可以引起大家的关注，也欢迎大家提出自己的理解，最好可以给以文章总结。
  defer runtime.GOMAXPROCS(runtime.GOMAXPROCS(1)) runtime.ReadMemStats(&amp;amp;m1) defer_lock.go  package main import ( &amp;#34;sync&amp;#34; ) func main() { var mu sync.Locker = new(I) defer LockUnlock(mu)() println(&amp;#34;doing&amp;#34;) } func LockUnlock(mu sync.Locker) (unlock func()) { mu.Lock() return mu.Unlock } type I struct{} func (i *I) Lock() { println(&amp;#34;lock&amp;#34;) } func (i *I) Unlock() { println(&amp;#34;unlock&amp;#34;) }  buf := make([]byte, len(b.</description>
-    </item>
-    
-    <item>
-      <title>第 2 期 2018-04-11 线下分享内容</title>
-      <link>http://bytemode.github.io/reading/2-2018-04-11-teleport/</link>
-      <pubDate>Wed, 11 Apr 2018 11:49:10 +0800</pubDate>
-      
-      <guid>http://bytemode.github.io/reading/2-2018-04-11-teleport/</guid>
-      <description>参与人数: 9 人
-微服务相关的开源项目，直接根据 Github 讲解，三个相关的项目链接如下:
-  teleport是socket框架 tp-micro是它的扩展，实现了微服务 ants是该微服务的网关、配置中心、代码生成器、部署工具之类的  语音实录  以下内容是分享活动的实录回顾。
-  参与人数: 9人 参与者的自我介绍 演示 xiaoneai/ants 分析 tp-micro 和 teleport 框架代码 答疑 确定线下分享形式（标准包和开源项目）  语音实录
-语音实录（文字版本 by 录音宝）</description>
-    </item>
-    
-    <item>
-      <title>第 1 期 2018-03-21 线下分享内容</title>
-      <link>http://bytemode.github.io/reading/1-2018-03-21-goutil/</link>
-      <pubDate>Wed, 21 Mar 2018 11:49:10 +0800</pubDate>
-      
-      <guid>http://bytemode.github.io/reading/1-2018-03-21-goutil/</guid>
-      <description>  参与人数: 3 人
- cannot take address of temporary variables 延伸阅读  https://stackoverflow.com/questions/10535743/address-of-a-temporary-in-go https://stackoverflow.com/questions/40926479/take-the-address-of-a-character-in-string https://golang.org/ref/spec#Address_operators  neochain teleport Teleport 是一个通用、高效、灵活的Socket框架。
-可用于 Peer-Peer 对等通信、RPC、长连接网关、微服务、推送服务，游戏服务等领域。
-goutil 通用的 Go 开发工具包
- Calendar CoarseTime &amp;hellip;  </description>
     </item>
     
   </channel>

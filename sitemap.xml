@@ -208,11 +208,6 @@
   </url>
   
   <url>
-    <loc>http://bytemode.github.io/reading/1-2019-03-14-daily-reading/</loc>
-    <lastmod>2019-03-14T09:10:00+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://bytemode.github.io/reading/33-2019-03-07-defer-in-go/</loc>
     <lastmod>2019-03-07T21:05:00+08:00</lastmod>
   </url>
@@ -280,11 +275,6 @@
   <url>
     <loc>http://bytemode.github.io/reading/20-2018-11-15-go-test/</loc>
     <lastmod>2018-11-15T11:19:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://bytemode.github.io/</loc>
-    <lastmod>2018-11-08T21:07:13+01:00</lastmod>
   </url>
   
   <url>
@@ -370,16 +360,6 @@
   <url>
     <loc>http://bytemode.github.io/reading/3-2018-04-18-strings-part1/</loc>
     <lastmod>2018-04-18T11:49:10+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://bytemode.github.io/reading/2-2018-04-11-teleport/</loc>
-    <lastmod>2018-04-11T11:49:10+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://bytemode.github.io/reading/1-2018-03-21-goutil/</loc>
-    <lastmod>2018-03-21T11:49:10+08:00</lastmod>
   </url>
   
   <url>
