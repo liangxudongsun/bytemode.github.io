@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 65 期 Go 原生网络模型 vs 异步 Reactor 模型 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/65-2019-10-31-go-net/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/65-2019-10-31-go-net/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 65 期 Go 原生网络模型 vs 异步 Reactor 模型
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 65 期 Go 原生网络模型 vs 异步 Reactor 模型 </h1>
+            <aside >
+                 作者: 潘建锋@亚马逊 
+            </aside>
+
+            
+
+<h2 id="go-夜读第-65-期-go-原生网络模型-vs-异步-reactor-模型">Go 夜读第 65 期 Go 原生网络模型 vs 异步 Reactor 模型</h2>
+
+<p>本期 Go 夜读是由 Go 夜读 SIG 核心小组邀请到潘建锋给大家分享 Go 原生网络模型 vs 异步 Reactor 模型，以下是本次分享的部分内容和 QA 。
+&gt;潘建锋，曾任职腾讯、现亚马逊在职。Go 语言业余爱好者，开源库 <a href="https://github.com/panjf2000/gnet">gnet</a> 和 <a href="https://github.com/panjf2000/ants">ants</a> 作者。</p>
+
+<h2 id="引子">引子</h2>
+
+<p>我们都知道 Golang 基于 goroutine 构建了一个简洁而优秀的原生网络模型，让开发者能够用同步的模式去编写异步的逻辑：goroutine-per-connection 模式，极大地降低了开发者编写网络应用时的心智负担，而且借助于 Go Scheduler 对 goroutines 的高效调度，这个原生网络模型足以应对绝大部分的应用场景。</p>
+
+<p>然而，在工程性上能做到如此高的普适和兼容，给开发者提供如此简单易用的接口，其背后必然是基于非常复杂的封装，做了很多取舍，放弃了一些『极致』的概念和设计。事实上 Golang 的 netpoll 底层就是基于 epoll/kqueue/iocp 这些系统调用来做封装的，最终暴露出 goroutine-per-connection 这样的网络编程模式给开发者。</p>
+
+<p>在绝大部分应用场景下，我推荐大家还是遵循 Golang 的 best practices，以这种模式来构建自己的网络应用，然而，在某些极度需要提高性能、节省资源以及技术栈必须是原生 Go （不考虑 C/C++ 写中间层供 Go 调用）的场景下，我们可以考虑自己构建 Reactor 网络模型。那么，Reactor 模型相对原生模型有哪些优势和弊端呢？我开发了的一个基于事件驱动机制的实验性质的异步网络框架：gnet，其在性能和资源占用上都远超 Go 原生 net 包（少数特定的应用场景），通过解析这个框架和 Go 原生网络模型，我们来一一分析～～</p>
+
+<p>预备知识：epoll、非阻塞IO、IO多路复用, <a href="https://segmentfault.com/a/1190000003063859">Linux IO模式及 select、poll、epoll详解</a></p>
+
+<h3 id="分享-slides">分享 Slides</h3>
+
+<ul>
+<li><a href="https://taohuawu.club/static_res/html/webslides/gnet/gnet.html">https://taohuawu.club/static_res/html/webslides/gnet/gnet.html</a></li>
+</ul>
+
+<h2 id="q-a-总结">Q&amp;A 总结</h2>
+
+<h3 id="q1-为什么-gnet-会比-go-原生的-net-包更快">Q1: 为什么 gnet 会比 Go 原生的 net 包更快？</h3>
+
+<p>答：
+Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势：
+1. 高频创建新连接：我们从源码里可以知道 Go 模式下所有事件都是在一个 epoll 实例来管理的，接收新连接和 IO 读写；而在 Reactors 模式下，accept 新连接和 IO 读写分离，它们在各自独立的 goroutines 里用自己的 epoll 实例来管理网络事件。
+2. 海量网络连接：Go net 处理网络请求的模式是 goroutine per connection，甚至是 multiple goroutines per connection，而 gnet 一般使用与机器 CPU 核心数相同的 goroutines 来处理网络请求，所以在海量网络连接的场景下 gnet 更节省系统资源，进而提高性能。
+3. 时间窗口内连接总数大而活跃连接数少：这种场景下，Go 原生网络模型因为 goroutine per connection 模式，依然需要维持大量的 goroutines 去等待 IO 事件(保持 1:1 的关系)，Go scheduler 对大量 idle goroutines 的调度势必会损耗系统整体性能；而 gnet 模式下需要维护的仅仅是与 CPU 核心数相同的 goroutines，而且得益于 Reactors 模型和 epoll/kqueue，可以确保每个 goroutine 在大多数时间里都是在处理活跃连接。
+4. 短连接场景：gnet 内部维护了一个内存池，在短连接这种场景下，可以大量复用内存，进一步节省资源和提高性能。</p>
+
+<h3 id="q2-go-netpoll-源码里的-waitread-方法到底是起什么作用">Q2: Go netpoll 源码里的 waitRead 方法到底是起什么作用？</h3>
+
+<p>答：
+看源码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// func (fd *FD) Read(p []byte) (int, error)
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">n</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Read</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">n</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EAGAIN</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pollable</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">waitRead</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">isFile</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#204a87;font-weight:bold">continue</span>
+				<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000;font-weight:bold">}</span>
+
+			<span style="color:#8f5902;font-style:italic">// On MacOS we can see EINTR here if the user
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// pressed ^Z.  See issue #22838.
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;darwin&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EINTR</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">continue</span>
+			<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">...</span>
+
+<span style="color:#8f5902;font-style:italic">// func netpollblock(pd *pollDesc, mode int32, waitio bool) bool
+</span><span style="color:#8f5902;font-style:italic"></span>
+	<span style="color:#8f5902;font-style:italic">// need to recheck error states after setting gpp to WAIT
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// this is necessary because runtime_pollUnblock/runtime_pollSetDeadline/deadlineimpl
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// do the opposite: store to closing/rd/wd, membarrier, load of rg/wg
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">waitio</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">netpollcheckerr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mode</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">gopark</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">netpollblockcommit</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">unsafe</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pointer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">gpp</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">waitReasonIOWait</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">traceEvGoBlockNet</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>通过分析 conn.Read()，我们知道这个方法是同步的，但从源码我们可以看出，Go 使用的是非阻塞 IO，所以调用 syscall.Read 的时候并不会阻塞，所以实际上它是通过 waitRead 这个方法来实现阻塞的：netFD 的 Read 操作在系统调用Read后，当遇到 syscall.EAGAIN 时，waitRead 里面的 netpollblock 会调用 gopark 将当前读这个网络描述符的 goroutine 给 park 住，直到这个网络描述符上的读事件再次发生为止，唤醒 goroutine，waitRead 调用返回，回到外层的 for 循环继续执行。conn.Write 方法和 Read 的实现原理是一样的，都是在发生syscall.EAGAIN 错误的时候将当前 goroutine 给 park 住直到 socket 再次可写为止。</p>
+
+<h3 id="q3-go-的网络模型有-惊群效应-吗">Q3: Go 的网络模型有『惊群效应』吗？</h3>
+
+<p>答：没有。
+我们看下源码里是怎么初始化 listener 的 epoll 示例的：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">serverInit</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Once</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">pd</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">pollDesc</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">FD</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">serverInit</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Do</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">runtime_pollServerInit</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">runtime_pollOpen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">uintptr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">runtime_pollUnblock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">runtime_pollClose</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errno</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">errno</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">runtimeCtx</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">ctx</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>这里用了 sync.Once 来确保初始化一次 epoll 实例，这就表示一个 listener 只持有一个 epoll 实例来管理网络连接，既然只有一个 epoll 实例，当然就不存在『惊群效应』了。</p>
+
+<h3 id="q4-multiple-reactors-goroutine-pool-model-这个模式-把阻塞的任务放入goroutine-pool-但是如果-response-依赖于阻塞任务返回的结果-比如依赖于一个http请求结果-这种情况goroutine-pool-是不是意义不大了">Q4: Multiple Reactors + Goroutine-Pool Model 这个模式，把阻塞的任务放入Goroutine-Pool，但是如果 Response 依赖于阻塞任务返回的结果(比如依赖于一个http请求结果)，这种情况Goroutine-Pool 是不是意义不大了？</h3>
+
+<p>gnet 提供了异步写的 API: AsyncWrite，一般都是在 goroutine pool 里处理完阻塞逻辑之后直接调用这个方法把 response 写回 socket，总之，原则就是不能阻塞 eventloop goroutine，也就是 gnet.React 方法。</p>
+
+<h3 id="q5">Q5:</h3>
+
+<blockquote>
+<ol>
+<li>潘少说go-net原生的网络模型相当于单reactor的模型，每一个连接一个goroutine来处理，由go的调度器实现高并发，这样应该也能利用上多核CPU的吧？为什么性能比multi-reactors的方式差这么多？</li>
+<li>multi-reactors的主reactor万一挂了，怎么办？（类似单点故障问题）</li>
+<li>multi-reactors + goroutine pool的模式下，subreactor负责输入输出，goroutine pool负责计算，若某个任务的数据量比较大，从subreactor到goroutine pool或从goroutine pool到subreactor的数据传输成本会不会很大？</li>
+</ol>
+</blockquote>
+
+<p>答：
+问题 1 参见上面第一个我回答的问题；问题 2 说的 Reactor 单点问题的确是存在的，因为 gnet 使用的是主从 Reactors 模式，main reactor 只有一个，所以的确存在这个潜在的问题，解决办法也有：使用多 acceptors，利用 SO_REUSEPORT 参数让内核帮你做 load balancing 避免惊群；至于问题 3 ：并不存在数据传输成本，从当前 eventloop goroutine 也就是 gnet.React 方法里一般是用 closure 闭包的方式提交任务到 goroutine pool 的，是引用方式。</p>
+
+<h3 id="q6-goroutine-pool如何把数据送回到subreactor">Q6: goroutine pool如何把数据送回到subreactor？</h3>
+
+<p>当你在独立的 goroutine 里完成你的阻塞逻辑之后得到了 response 数据，直接调用 <a href="https://github.com/panjf2000/gnet/blob/master/connection.go#L162">AsyncWrite</a>:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">conn</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">AsyncWrite</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">buf</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">svr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">codec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">buf</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">_</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">poller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Trigger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">opened</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+		<span style="color:#000;font-weight:bold">})</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>通过 closure 的方式，写一个唤醒事件到 epoll，同时传一个 func() error 到任务队列，在 sub reactor 的那个 goroutine 里执行这个函数，把数据写回 client。</p>
+
+<h3 id="q7-在等待传回的这段时间-subreactor是不是还是得阻塞着-无法处理其他请求">Q7: 在等待传回的这段时间，subreactor是不是还是得阻塞着，无法处理其他请求</h3>
+
+<p>不会阻塞啊，此时 React 方法已经返回了，你的阻塞逻辑是提交到 goroutine pool 里处理，处理完直接调用 AsyncWrite 异步写回去了，方式就是我上面说的，写一个唤醒事件到 epoll，在 eventloop goroutine 里执行，所以不会有同步问题。</p>
+
+<h2 id="回看视频">回看视频</h2>
+
+<ul>
+<li><a href="https://www.bilibili.com/video/av74598921">https://www.bilibili.com/video/av74598921</a></li>
+<li><a href="https://youtu.be/4QurJJHuxaQ">https://youtu.be/4QurJJHuxaQ</a></li>
+</ul>
+
+<h2 id="参考资料">参考资料</h2>
+
+<ul>
+<li><a href="https://www.freecodecamp.org/news/million-websockets-and-go-cc58418460bb/">A Million WebSockets and Go</a></li>
+<li><a href="https://speakerdeck.com/eranyanay/going-infinite-handling-1m-websockets-connections-in-go">Going Infinite, handling 1M websockets connections in Go</a></li>
+<li><a href="https://colobu.com/2019/02/23/1m-go-tcp-connection/">百万 Go TCP 连接的思考: epoll方式减少资源占用</a></li>
+<li><a href="https://taohuawu.club/go-event-loop-networking-library-gnet">gnet: 一个轻量级且高性能的 Golang 网络库</a></li>
+</ul>
+
+<hr />
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/4QurJJHuxaQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/64-2019-10-24-go-runtime/" title="第 64 期深入浅出 Golang Runtime">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 64 期深入浅出 Golang Runtime
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/66-2019-11-07-paper-reading-csp/" title="第 66 期 Paper Reading CSP 理解顺序进程间通信">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 66 期 Paper Reading CSP 理解顺序进程间通信
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

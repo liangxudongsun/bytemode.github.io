@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 29 期 Go opentracing jaeger 集成及源码分析 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
+
+    
+    <meta name="description" content="Go Learn.">
+    
+    <link rel="canonical" href="http://bytemode.github.io/reading/29-2019-01-23-opentracing-jaeger-in-go/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="http://bytemode.github.io/reading/29-2019-01-23-opentracing-jaeger-in-go/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://bytemode.github.io/fonts/icon.eot');
+        src: url('http://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('http://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('http://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('http://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="http://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 29 期 Go opentracing jaeger 集成及源码分析
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="http://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="http://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="http://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn </strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go 源码阅读" href="http://bytemode.github.io/reading/">
+	
+	Go 源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="http://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="夜读讨论" href="http://bytemode.github.io/discuss/">
+	
+	夜读讨论
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="http://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="你的收获" href="http://bytemode.github.io/harvest/">
+	
+	你的收获
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="建议" href="http://bytemode.github.io/proposal/">
+	
+	建议
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="http://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                    <li>
+                        <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
+              Contact via email
+            </a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 29 期 Go opentracing jaeger 集成及源码分析 </h1>
+            <aside >
+                 作者: jukylin 
+            </aside>
+
+            
+
+<h1 id="go-opentracing-jaeger-集成及源码分析">Go opentracing jaeger 集成及源码分析</h1>
+
+<h2 id="一-分布式追踪论文">一、分布式追踪论文</h2>
+
+<p>论文地址：<a href="http://bigbully.github.io/Dapper-translation/">http://bigbully.github.io/Dapper-translation/</a></p>
+
+<h3 id="为什么要用分布式追踪">为什么要用分布式追踪</h3>
+
+<blockquote>
+<p>当代的互联网的服务，通常都是用复杂的、大规模分布式集群来实现的。
+互联网应用构建在不同的软件模块集上，这些软件模块，有可能是由不同的团队开发、
+可能使用不同的编程语言来实现、有可能布在了几千台服务器，横跨多个不同的数据中心。
+因此，就需要一些可以帮助理解系统行为、用于分析性能问题的工具。</p>
+</blockquote>
+
+<h3 id="分布式系统调用过程">分布式系统调用过程</h3>
+
+<p><img src="https://bigbully.github.io/Dapper-translation/images/img1.png" alt="image" /></p>
+
+<h3 id="使用分布式追踪要留意哪些问题">使用分布式追踪要留意哪些问题</h3>
+
+<ul>
+<li><p>低损耗</p>
+
+<blockquote>
+<p>跟踪系统对在线服务的影响应该做到足够小。</p>
+</blockquote></li>
+
+<li><p>应用透明</p>
+
+<blockquote>
+<p>对于应用的程序员来说，是不需要知道有跟踪系统这回事的。</p>
+</blockquote></li>
+</ul>
+
+<h2 id="二-opentracing简介">二、Opentracing简介</h2>
+
+<h3 id="opentracing的作用">Opentracing的作用</h3>
+
+<ul>
+<li>OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能够方便的添加（或更换）追踪系统的实现。
+ </li>
+
+<li><p>可以很自由的在不同的分布式追
+ 踪系统中切换</p></li>
+
+<li><p>不负责具体实现</p></li>
+</ul>
+
+<p><img src="https://camo.githubusercontent.com/e5b7d545b447ac93dfdbac415f4180a7c1644369/68747470733a2f2f75706c6f61642e63632f692f6156364e7a432e706e67" alt="image" /></p>
+
+<h3 id="opentracing主要组成">Opentracing主要组成</h3>
+
+<ul>
+<li><p>一个Trace
+&gt; 一个trace代表了一个事务或者流程在（分布式）系统中的执行过程</p></li>
+
+<li><p>Span
+&gt; 记录Trace在执行过程中的信息</p></li>
+
+<li><p>无限极分类
+&gt; 服务与服务之间使用无限极分类的方式，通过HTTP头部或者请求地址传输到最低层，从而把整个调用链串起来。</p></li>
+</ul>
+
+<p><img src="https://camo.githubusercontent.com/57a991f13b85b69442aa728fb92253391c309ea0/68747470733a2f2f75706c6f61642e63632f692f4f68736a41302e6a7067" alt="image" /></p>
+
+<h3 id="jaeger-client的实现">Jaeger-client的实现</h3>
+
+<h4 id="jaeger-client源码">Jaeger-client源码</h4>
+
+<h5 id="提取">提取</h5>
+
+<ul>
+<li><p>为什么要提取
+&gt; 主要作用是为了找到父亲</p></li>
+
+<li><p>从哪里提取
+&gt; 进程内，不同进程之间各自约定
+&gt; 粟子：github.com/opentracing-contrib/go-stdlib/nethttp/server.go  P86</p></li>
+
+<li><p>提取什么
+&gt;   traceid:spanid:parentid:是否采集
+&gt; uber-trace-id=157b74261b51d917:157b74261b51d917:0:1
+&gt; github.com/jaegertracing/jaeger-client-go/propagation.go P124</p></li>
+</ul>
+
+<h5 id="注入">注入</h5>
+
+<ul>
+<li><p>为什么要注入
+&gt; 主要为了让孩子能找到爸爸</p></li>
+
+<li><p>注入到哪里
+&gt; 和提取相对
+&gt; github.com/jaegertracing/jaeger-client-go/propagation_test.go</p></li>
+
+<li><p>注入了什么
+&gt; github.com/jaegertracing/jaeger-client-go/propagation.go P103</p></li>
+</ul>
+
+<h5 id="异步report">异步report</h5>
+
+<ul>
+<li><p>Span.finish
+&gt; github.com/jaegertracing/jaeger-client-go/span.go P177</p></li>
+
+<li><p>把Span放入队列
+&gt; github.com/jaegertracing/jaeger-client-go/reporter.go P219</p></li>
+
+<li><p>从队列取出，生成thrift，放入spanBuffer
+&gt; github.com/jaegertracing/jaeger-client-go/reporter.go P253</p></li>
+
+<li><p>Flush到远程
+&gt; github.com/jaegertracing/jaeger-client-go/transport_udp.go P113</p></li>
+</ul>
+
+<h4 id="低消耗">低消耗</h4>
+
+<ul>
+<li><p>消耗在哪里
+&gt; Jaeger-client作用于应用层，提取、注入、生成span、序列化成Thrift、发送到远程等，一系列操作这些都会带来性能上的损耗。</p></li>
+
+<li><p>如何处理
+&gt; 选择合适采集策略：</p>
+
+<ol>
+<li>Constant</li>
+<li>Probabilistic</li>
+<li>Rate Limiting</li>
+<li>Remote</li>
+</ol></li>
+</ul>
+
+<h4 id="应用透明">应用透明</h4>
+
+<ul>
+<li>如何做到让业务开发人员无感知
+
+<ol>
+<li>Golang：
+约定第一个参数为ctx，把parentSpan放入ctx
+github.com/opentracing/opentracing-go/gocontext.go</li>
+<li>PHP：
+使用全局变量</li>
+</ol></li>
+</ul>
+
+<h2 id="三-jaeger服务端源码阅读">三、Jaeger服务端源码阅读</h2>
+
+<h3 id="服务端组件职责">服务端组件职责</h3>
+
+<blockquote>
+<p>各组件按照微服务架构风格设计，职责单一</p>
+</blockquote>
+
+<p><img src="https://camo.githubusercontent.com/e877b9ef989f6ca60f4cce8bfe39350237a92d6a/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6172636869746563747572652e706e67" alt="image" /></p>
+
+<ul>
+<li><p>Jaeger-agent负责上报数据的整理</p></li>
+
+<li><p>Jaeger-collector负责数据保存</p></li>
+
+<li><p>Jaeger-query负责数据查询</p></li>
+
+<li><p>Jaeger-agent和Jaeger-collector使用基于TCP协议实现的RPC进行通讯</p></li>
+</ul>
+
+<p><img src="https://camo.githubusercontent.com/efed552ff18aa3f8583d0b4af0bd5a35bea67bd9/68747470733a2f2f75706c6f61642e63632f692f324a41516b702e706e67" alt="image" /></p>
+
+<h3 id="jaeger-agent-源码阅读">Jaeger-agent 源码阅读</h3>
+
+<ul>
+<li><p>监听3个UDP端口<br />
+&gt; github.com/jaegertracing/jaeger/cmd/agent/app/flags.go P35
+&gt; github.com/jaegertracing/jaeger/cmd/agent/app/servers/thriftudp/transport.go P73</p></li>
+
+<li><p>接收Jaeger-client的数据，放入队列dataChan
+&gt; github.com/jaegertracing/jaeger/cmd/agent/app/servers/tbuffered_server.go #80 </p></li>
+
+<li><p>从队列dataChan获取数据，进行校验
+&gt; github.com/jaegertracing/jaeger/cmd/agent/app/processors/thrift_processor.go P108</p></li>
+
+<li><p>提交数据
+&gt; github.com/jaegertracing/jaeger/thrift-gen/jaeger/tchan-jaeger.go #39</p></li>
+</ul>
+
+<h3 id="jaeger-collector-源码阅读">Jaeger-collector 源码阅读</h3>
+
+<ul>
+<li><p>协程池
+&gt; github.com/jaegertracing/jaeger/pkg/queue/bounded_queue.go</p></li>
+
+<li><p>接收jaeger-agent数据
+&gt; github.com/jaegertracing/jaeger/cmd/collector/app/span_handler.go P69</p></li>
+
+<li><p>放入队列
+&gt; github.com/jaegertracing/jaeger/cmd/collector/app/span_processor.go P112</p></li>
+
+<li><p>从队列拿出来，写入数据库<br />
+&gt; github.com/jaegertracing/jaeger/cmd/collector/app/span_processor.go p54<br />
+&gt; github.com/jaegertracing/jaeger/plugin/storage/cassandra/spanstore/writer.go P136</p></li>
+</ul>
+
+<h2 id="四-jaeger使用经验">四、Jaeger使用经验</h2>
+
+<h3 id="监听指标">监听指标</h3>
+
+<ul>
+<li><p>Jaeger-client 监听 reporter_spans</p></li>
+
+<li><p>Jaeger-agent 监听 thrift.udp.server.packets.dropped</p></li>
+
+<li><p>Jaeger-collector 监听 spans.dropped</p></li>
+</ul>
+
+<p><a href="http://localhost:16686/metrics">http://localhost:16686/metrics</a></p>
+
+<h3 id="测试环境debug">测试环境debug</h3>
+
+<blockquote>
+<p>测试环境记录执行mysql语句，redis命令，RPC参数、结果
+可以很方便定位问题</p>
+</blockquote>
+
+<h3 id="性能调优">性能调优</h3>
+
+<blockquote>
+<p>观察Jaeger-ui，对线上接口，mysql执行时间进行监控调优</p>
+</blockquote>
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/ub7jtN13KHA" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By bytemode.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/" title="第 28 期 Go 夜读之 go mod 源码阅读 part 3">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 28 期 Go 夜读之 go mod 源码阅读 part 3
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://bytemode.github.io/reading/30-2019-02-16-go-mod-part-4/" title="第 30 期 Go 夜读之 go mod 源码阅读 part 4">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 30 期 Go 夜读之 go mod 源码阅读 part 4
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="http://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
