@@ -1,444 +1,388 @@
 <!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <meta charset="utf-8">
+  <title>Go Learn</title>
+
+  <meta name="generator" content="Hugo 0.60.0-DEV" />
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
+  <!-- ** Plugins Needed for the Project ** -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="http://bytemode.github.io/plugins/bootstrap/bootstrap.min.css">
+  <!-- themefy-icon -->
+  <link rel="stylesheet" href="http://bytemode.github.io/plugins/themify-icons/themify-icons.css">
+  <!-- highlight -->
+  <link rel="stylesheet" href="http://bytemode.github.io/plugins/highlight/hybrid.css">
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+  <style>
+  :root{
+    --primary-color:#02007e;
+    --secondary-color:#f9f9f9;
+    --text-color:#636363;
+    --text-color-dark:#242738;
+    --white-color:#ffffff;
+  }
+  </style>
+
+<!-- Main Stylesheet -->
+
+<link rel="stylesheet" href="http://bytemode.github.io/css/style.min.css" integrity="" media="screen">
+
+<!-- jquiry -->
+<script src="http://bytemode.github.io/plugins/jquery/jquery-1.12.4.js"></script>
+
+<!-- jquary ui -->
+<script src="http://bytemode.github.io/plugins/jquery/jquery-ui.js"></script>
+
+<!--Favicon-->
+<link rel="icon" href="http://bytemode.github.io/images/favicon.png" type="image/x-icon">
+
+</head>
+<body>
   
-  
-  
-   <html class="no-js"> 
-
-  <head lang="en-us">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <title>Go Learn</title>
-    <meta name="generator" content="Hugo 0.60.0-DEV" />
-
-    
-    <meta name="description" content="Go Learn Blog">
-    
-    <link rel="canonical" href="http://bytemode.github.io/">
-    
-    <meta name="author" content="bytemode">
-    
-
-    <meta property="og:url" content="http://bytemode.github.io/">
-    <meta property="og:title" content="Go Learn">
-    <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
-    <meta name="apple-mobile-web-app-title" content="Go Learn">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <link rel="shortcut icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
-    <link rel="icon" type="image/x-icon" href="http://bytemode.github.io/images/favicon.ico">
-
-    <style>
-      @font-face {
-        font-family: 'Icon';
-        src: url('http://bytemode.github.io/fonts/icon.eot');
-        src: url('http://bytemode.github.io/fonts/icon.eot')
-               format('embedded-opentype'),
-             url('http://bytemode.github.io/fonts/icon.woff')
-               format('woff'),
-             url('http://bytemode.github.io/fonts/icon.ttf')
-               format('truetype'),
-             url('http://bytemode.github.io/fonts/icon.svg')
-               format('svg');
-        font-weight: normal;
-        font-style: normal;
-      }
-    </style>
-
-    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/application.css">
-    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/temporary.css">
-    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/palettes.css">
-    <link rel="stylesheet" href="http://bytemode.github.io/stylesheets/highlight/highlight.css">
-
+  <!-- header -->
+  <header class="hero-section overlay bg-cover banner" data-background="http://bytemode.github.io/images/banner.jpg">
+    <div class="container mb-100">
+      <!-- navigation -->
+      <nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" href="/">
     
     
     
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
-    <style>
-      body, input {
-        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
-      }
-      pre, code {
-        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
-      }
-    </style>
-
+    Go Learn
     
-    <script src="http://bytemode.github.io/javascripts/modernizr.js"></script>
-
-    
-
-  </head>
-  <body class="palette-primary-indigo palette-accent-deep-purple">
-
-
-
-	
-	
-
-
-<div class="backdrop">
-	<div class="backdrop-paper"></div>
-</div>
-
-<input class="toggle" type="checkbox" id="toggle-drawer">
-<input class="toggle" type="checkbox" id="toggle-search">
-<label class="toggle-button overlay" for="toggle-drawer"></label>
-
-<header class="header">
-	<nav aria-label="Header">
-  <div class="bar default">
-    <div class="button button-menu" role="button" aria-label="Menu">
-      <label class="toggle-button icon icon-menu" for="toggle-drawer">
-        <span></span>
-      </label>
-    </div>
-    <div class="stretch">
-      <div class="title">
-        Go Learn
-      </div>
-    </div>
-
-    
-
-    
-    <div class="button button-github" role="button" aria-label="GitHub">
-      <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
-    </div>
-    
-    
-        
-  </div>
-  <div class="bar search">
-    <div class="button button-close" role="button" aria-label="Close">
-      <label class="toggle-button icon icon-back" for="toggle-search"></label>
-    </div>
-    <div class="stretch">
-      <div class="field">
-        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
-      </div>
-    </div>
-    <div class="button button-reset" role="button" aria-label="Search">
-      <button class="toggle-button icon icon-close" id="reset-search"></button>
-    </div>
-  </div>
-</nav>
-</header>
-
-<main class="main">
-	<div class="drawer">
-		<nav aria-label="Navigation">
-  <a href="https://github.com/bytemode/bytemodesrc" class="project">
-    <div class="banner">
-      
-        <div class="logo">
-          <img src="http://bytemode.github.io/images/logo.png">
-        </div>
-      
-      <div class="name">
-        <strong>Go Learn <span class="version">1.0.0</span></strong>
-        
-          <br>
-          bytemode/bytemodesrc
-        
-      </div>
-    </div>
   </a>
+  <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation"
+    aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-  <div class="scrollable">
-    <div class="wrapper">
+  <div class="collapse navbar-collapse text-center" id="navigation">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="/">Home</a>
+      </li>
       
-        <ul class="repo">
-          <li class="repo-download">
-            <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
-              <i class="icon icon-download"></i> Download
-            </a>
-          </li>
-          <li class="repo-stars">
-            <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
-              <i class="icon icon-star"></i> Stars
-              <span class="count">&ndash;</span>
-            </a>
-          </li>
-        </ul>
-        <hr>
       
-
-      <div class="toc">
-        
-        <ul>
+      <li class="nav-item">
+          <a class="nav-link text-dark" href="/contact">contact</a>
+      </li>
+      
+      
+      
+      <li class="nav-item">
+          <a class="nav-link text-dark" href="/faq">Faq</a>
+      </li>
+      
+      
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          pages
+        </a>
+        <div class="dropdown-menu" >
           
-
-
-
-
-<li>
-  
+          <a class="dropdown-item" href="/installation">Installation</a>
+          
+          <a class="dropdown-item" href="/billing-pricing">Billing and Pricing</a>
+          
+          <a class="dropdown-item" href="/features">Features</a>
+          
+        </div>
+      </li>
+      
+      
+    </ul>
     
-
-
-
-<a  title="Golang" href="http://bytemode.github.io/golang/">
-	
-	Golang
-</a>
-
-
-
-  
-</li>
-
-
-
-<li>
-  
-    
-
-
-
-<a  title="Getting started" href="http://bytemode.github.io/getting-started/">
-	
-	Getting started
-</a>
-
-
-
-  
-</li>
-
-
-
-<li>
-  
-    
-
-
-
-<a  title="Adding content" href="http://bytemode.github.io/adding-content/">
-	
-	Adding content
-</a>
-
-
-
-  
-</li>
-
-
-
-<li>
-  
-    
-
-
-
-<a  title="Roadmap" href="http://bytemode.github.io/roadmap/">
-	
-	Roadmap
-</a>
-
-
-
-  
-</li>
-
-
-
-<li>
-  
-    
-
-
-
-<a  title="License" href="http://bytemode.github.io/license/">
-	
-	License
-</a>
-
-
-
-  
-</li>
-
-
-
-<li>
-  
-    
-
-
-
-<a class="current" title="Material" href="http://bytemode.github.io/">
-	
-	Material
-</a>
-
-
-<ul id="scrollspy">
-</ul>
-
-
-  
-</li>
-
-
-        </ul>
-        
+  </div>
+</nav>
+      <!-- /navigation -->
+    </div>
+    <!-- banner -->
+<div class="container">
+    <div class="row">
+    <div class="col-lg-8 text-center mx-auto">
+    <h1 class="text-white mb-3">Support Center &amp; Knowledge base</h1>
+    <p class="text-white mb-4">Find advice and answers from our support team fast or get in touch</p>
+        <div class="position-relative">
+        <input id="search" class="form-control" placeholder="Have a question? Just ask here or enter terms">
 
         
-        <hr>
-        <span class="section">The author</span>
         
-        <ul>
-          
+        
+        
+        <script>
+            $(function() {
+            var projects = [
+                
+                {
+                    value: "Requirments",
+                    label: "Requirments",
+                    url:"http:\/\/bytemode.github.io\/installation\/requirments\/"
+                },
+                
+                {
+                    value: "Installation",
+                    label: "Installation",
+                    url:"http:\/\/bytemode.github.io\/installation\/install\/"
+                },
+                
+                {
+                    value: "Configuration",
+                    label: "Configuration",
+                    url:"http:\/\/bytemode.github.io\/installation\/configuration\/"
+                },
+                
+                {
+                    value: "Customization",
+                    label: "Customization",
+                    url:"http:\/\/bytemode.github.io\/installation\/customization\/"
+                },
+                
+                {
+                    value: "Elements",
+                    label: "Elements",
+                    url:"http:\/\/bytemode.github.io\/installation\/elements\/"
+                },
+                
+                {
+                    value: "Customer instructions for change of ownership",
+                    label: "Customer instructions for change of ownership",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/ownership\/"
+                },
+                
+                {
+                    value: "How to pay your bill",
+                    label: "How to pay your bill",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/bill\/"
+                },
+                
+                {
+                    value: "Installation",
+                    label: "Installation",
+                    url:"http:\/\/bytemode.github.io\/installation\/"
+                },
+                
+                {
+                    value: "Linux",
+                    label: "Linux",
+                    url:"http:\/\/bytemode.github.io\/features\/linux\/"
+                },
+                
+                {
+                    value: "Mac OS",
+                    label: "Mac OS",
+                    url:"http:\/\/bytemode.github.io\/features\/mac\/"
+                },
+                
+                {
+                    value: "Manage My Sprint account",
+                    label: "Manage My Sprint account",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/manage\/"
+                },
+                
+                {
+                    value: "Payment arrangements",
+                    label: "Payment arrangements",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/payment\/"
+                },
+                
+                {
+                    value: "Routing",
+                    label: "Routing",
+                    url:"http:\/\/bytemode.github.io\/features\/routing\/"
+                },
+                
+                {
+                    value: "Ubuntu",
+                    label: "Ubuntu",
+                    url:"http:\/\/bytemode.github.io\/features\/ubuntu\/"
+                },
+                
+                {
+                    value: "Understand the different levels of profile",
+                    label: "Understand the different levels of profile",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/profile\/"
+                },
+                
+                {
+                    value: "Windows",
+                    label: "Windows",
+                    url:"http:\/\/bytemode.github.io\/features\/windows\/"
+                },
+                
+                {
+                    value: "Billing \x26 Pricing",
+                    label: "Billing \x26 Pricing",
+                    url:"http:\/\/bytemode.github.io\/billing-pricing\/"
+                },
+                
+                {
+                    value: "Features",
+                    label: "Features",
+                    url:"http:\/\/bytemode.github.io\/features\/"
+                },
+                
+                {
+                    value: "Contact",
+                    label: "Contact",
+                    url:"http:\/\/bytemode.github.io\/contact\/"
+                },
+                
+                {
+                    value: "Frequently Asked Questions",
+                    label: "Frequently Asked Questions",
+                    url:"http:\/\/bytemode.github.io\/faq\/"
+                },
+                
+                {
+                    value: "Categories",
+                    label: "Categories",
+                    url:"http:\/\/bytemode.github.io\/categories\/"
+                },
+                
+                {
+                    value: "Go Learn",
+                    label: "Go Learn",
+                    url:"http:\/\/bytemode.github.io\/"
+                },
+                
+                {
+                    value: "Tags",
+                    label: "Tags",
+                    url:"http:\/\/bytemode.github.io\/tags\/"
+                },
+                
+            ];
+            $( "#search" ).autocomplete({
+                minLength: 0,
+                source: projects,
+                focus: function( event, ui ) {
+                    $( "#search" ).val( ui.item.label );
+                    return false;
+                },
+                select: function( event, ui ) {
+                    $( "#search" ).val( ui.item.label );
+                    $( "#project-id" ).val( ui.item.value );
+                    return false;
+                }
+            })
+            .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                return $( "<li>" )
+                .append( "<a href=" + item.url + " + \" &quot;\" +  >" + item.label + "</a>" )
+                .appendTo( ul );
+            };
+            });
+        </script>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- /banner -->
+  </header>
+  <!-- /header -->
+  
+  <div id="content">
 
-          
-          <li>
-            <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
-              @bytemode on GitHub
-            </a>
-          </li>
-          
-
-          
-          <li>
-            <a href="mailto:sunfeng45@163.com" title="Email of sunfeng45@163.com">
-              Contact via email
-            </a>
-          </li>
-          
-        </ul>
+  <!-- topics -->
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+           <h2 class="section-title">Find your answer by subject</h2> 
+        </div>
+        <!-- topic-item -->
+        
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <a href="http://bytemode.github.io/installation/" class="px-4 py-5 bg-white shadow text-center d-block match-height">
+            <i class="ti-panel icon text-primary d-block mb-4"></i>
+            <h3 class="mb-3 mt-0">Installation</h3>
+            <p class="mb-0">Lorem ipsum dolor sit amet ipsum dolor sit amet ipsum dolor sit amet</p>
+          </a>
+        </div>
+        
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <a href="http://bytemode.github.io/billing-pricing/" class="px-4 py-5 bg-white shadow text-center d-block match-height">
+            <i class="ti-credit-card icon text-primary d-block mb-4"></i>
+            <h3 class="mb-3 mt-0">Billing &amp; Pricing</h3>
+            <p class="mb-0">Lorem ipsum dolor sit amet ipsum dolor sit amet ipsum dolor sit amet</p>
+          </a>
+        </div>
+        
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <a href="http://bytemode.github.io/features/" class="px-4 py-5 bg-white shadow text-center d-block match-height">
+            <i class="ti-package icon text-primary d-block mb-4"></i>
+            <h3 class="mb-3 mt-0">Features</h3>
+            <p class="mb-0">Lorem ipsum dolor sit amet ipsum dolor sit amet ipsum dolor sit amet</p>
+          </a>
+        </div>
         
       </div>
     </div>
-  </div>
-</nav>
-
-	</div>
-
-	<article class="article">
-		<div class="wrapper">
-			
-				<h1>Golang Learn </h1>
-
-				
-
-<h1 id="this-is-test">this is test</h1>
-
-<h2 id="test">test</h2>
-
-			
-
-			<aside class="copyright" role="note">
-				
-				&copy; 2019 Released under the MIT license &ndash;
-				
-				Documentation built with
-				<a href="https://www.gohugo.io" target="_blank">Hugo</a>
-				using the
-				<a href="http://github.com/digitalcraftsman/hugo-material-docs" target="_blank">Material</a> theme.
-			</aside>
-
-			<footer class="footer">
-				
-
-
-
-<nav class="pagination" aria-label="Footer">
-  <div class="previous">
-  </div>
+  </section>
+  <!-- /topics -->
 
   
-  
-  <div class="next">
-      <a href="http://bytemode.github.io/tags/" title="Tags">
-        <span class="direction">
-          Next
-        </span>
-        <div class="page">
-          <div class="stretch">
-            <div class="title">
-              Tags
-            </div>
-          </div>
-          <div class="button button-next" role="button" aria-label="Next">
-            <i class="icon icon-forward"></i>
+  <!-- call to action -->
+  <section class="bg-gray">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section bg-white shadow text-center">
+           <h2 class="mb-4">Didn&#39;t find an answer to your question?</h2> 
+           <p class="mb-4">Musce libero nunc, dignissim quis turpis quis, semper vehicula dolor. Suspendisse tincidunt consequat quam.</p> 
+          <a href="/contact" class="btn btn-primary">contact us</a>
           </div>
         </div>
-      </a>
+      </div>
+    </div>
+  </section>
+  <!-- /call to action -->
+  
+
+
+  </div><!-- footer -->
+<footer class="section bg-gray pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 text-md-left text-center">
+       <p>The Hugo Documents are copyright © <a href="https://github.com/bytemode/">bytemode</a> 2019.</p>
+      </div>
+      <div class="col-md-4 text-md-right text-center">
+        <ul class="list-inline mb-3">
+          
+          <li class="list-inline-item"><a class="text-color d-inline-block p-2" href="#"><i class="ti-facebook"></i></a></li>
+          
+          <li class="list-inline-item"><a class="text-color d-inline-block p-2" href="#"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a class="text-color d-inline-block p-2" href="#"><i class="ti-vimeo-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a class="text-color d-inline-block p-2" href="#"><i class="ti-linkedin"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
   </div>
-</nav>
+</footer>
+<!-- /footer -->
 
+<!-- Bootstrap JS -->
+<script src="http://bytemode.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+<!-- match-height JS -->
+<script src="http://bytemode.github.io/plugins/match-height/jquery.matchHeight-min.js"></script>
+<!-- highlight -->
+<script src="http://bytemode.github.io/plugins/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 
+<!-- Main Script -->
 
-			</footer>
-		</div>
-	</article>
+<script src="http://bytemode.github.io/js/script.min.js"></script></body>
 
-	<div class="results" role="status" aria-live="polite">
-		<div class="scrollable">
-			<div class="wrapper">
-				<div class="meta"></div>
-				<div class="list"></div>
-			</div>
-		</div>
-	</div>
-</main>
-
-    <script>
-    
-      var base_url = 'http:\/\/bytemode.github.io\/';
-      var repo_id  = 'bytemode\/bytemodesrc';
-    
-    </script>
-
-    <script src="http://bytemode.github.io/javascripts/application.js"></script>
-    
-
-    <script>
-      /* Add headers to scrollspy */
-      var headers   = document.getElementsByTagName("h2");
-      var scrollspy = document.getElementById('scrollspy');
-
-      if(scrollspy) {
-        if(headers.length > 0) {
-          for(var i = 0; i < headers.length; i++) {
-            var li = document.createElement("li");
-            li.setAttribute("class", "anchor");
-
-            var a  = document.createElement("a");
-            a.setAttribute("href", "#" + headers[i].id);
-            a.setAttribute("title", headers[i].innerHTML);
-            a.innerHTML = headers[i].innerHTML;
-
-            li.appendChild(a)
-            scrollspy.appendChild(li);
-          }
-        } else {
-          scrollspy.parentElement.removeChild(scrollspy)
-        }
-
-
-        /* Add permanent link next to the headers */
-        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-
-        for(var i = 0; i < headers.length; i++) {
-            var a = document.createElement("a");
-            a.setAttribute("class", "headerlink");
-            a.setAttribute("href", "#" + headers[i].id);
-            a.setAttribute("title", "Permanent link")
-            a.innerHTML = "#";
-            headers[i].appendChild(a);
-        }
-      }
-    </script>
-
-    
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-  </body>
 </html>
-
