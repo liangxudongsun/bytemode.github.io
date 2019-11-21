@@ -9,18 +9,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <title>Go Learn</title>
+    <title>Adding content - Go Learn</title>
     <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn Blog">
     
-    <link rel="canonical" href="http://bytemode.github.io/">
+    <link rel="canonical" href="http://bytemode.github.io/adding-content/">
     
     <meta name="author" content="bytemode">
     
 
-    <meta property="og:url" content="http://bytemode.github.io/">
+    <meta property="og:url" content="http://bytemode.github.io/adding-content/">
     <meta property="og:title" content="Go Learn">
     <meta property="og:image" content="http://bytemode.github.io/images/logo.png">
     <meta name="apple-mobile-web-app-title" content="Go Learn">
@@ -97,7 +97,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        Go Learn
+        Adding content
       </div>
     </div>
 
@@ -216,11 +216,14 @@
 
 
 
-<a  title="Adding content" href="http://bytemode.github.io/adding-content/">
+<a class="current" title="Adding content" href="http://bytemode.github.io/adding-content/">
 	
 	Adding content
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
 
   
@@ -270,14 +273,11 @@
 
 
 
-<a class="current" title="Material" href="http://bytemode.github.io/">
+<a  title="Material" href="http://bytemode.github.io/">
 	
 	Material
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
 
   
@@ -320,16 +320,52 @@
 
 	<article class="article">
 		<div class="wrapper">
-			
-				<h1>Golang Learn </h1>
-
-				
-
-<h1 id="this-is-test">this is test</h1>
-
-<h2 id="test">test</h2>
+			<h1>Adding content </h1>
 
 			
+
+<h2 id="hello-world">Hello world</h2>
+
+<p>Let&rsquo;s create our first content file for your documentation. Open a terminal and add the following command for each new file you want to add. Replace <code>&lt;section-name&gt;</code> with a general term that describes your document in detail.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">hugo new &lt;section-name&gt;/filename.md</code></pre></div>
+<p>Visitors of your website will find the final document under <code>www.example.com/&lt;section-name&gt;/filename/</code>.</p>
+
+<p>Since it&rsquo;s possible to have multiple content files in the same section I recommend to create at least one <code>index.md</code> file per section. This ensures that users will find an index page under <code>www.example.com/&lt;section-name&gt;</code>.</p>
+
+<h2 id="homepage">Homepage</h2>
+
+<p>To add content to the homepage you need to add a small indicator to the frontmatter of the content file:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#000">type</span><span style="color:#a40000">:</span> <span style="color:#000">index</span></code></pre></div>
+<p>Otherwise the theme will not be able to find the corresponding content file.</p>
+
+<h2 id="table-of-contents">Table of contents</h2>
+
+<p>You maybe noticed that the menu on the left contains a small table of contents of the current page. All <code>&lt;h2&gt;</code> tags (<code>## Headline</code> in Markdown) will be added automatically.</p>
+
+<h2 id="admonitions">Admonitions</h2>
+
+<p>Admonition is a handy feature that adds block-styled side content to your documentation, for example hints, notes or warnings. It can be enabled by using the corresponding <a href="http://gohugo.io/extras/shortcodes/">shortcodes</a> inside your content:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">{{&lt;</span> <span style="color:#000">note</span> <span style="color:#000">title</span><span style="color:#000;font-weight:bold">=</span><span style="color:#4e9a06">&#34;Note&#34;</span> <span style="color:#000;font-weight:bold">&gt;}}</span>
+<span style="color:#000">Nothing</span> <span style="color:#000">to</span> <span style="color:#000">see</span> <span style="color:#000">here</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">move</span> <span style="color:#000">along</span><span style="color:#000;font-weight:bold">.</span>
+<span style="color:#000;font-weight:bold">{{&lt;</span> <span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">note</span> <span style="color:#000;font-weight:bold">&gt;}}</span></code></pre></div>
+<p>This will print the following block:</p>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Nothing to see here, move along.</p>
+</div>
+
+<p>The shortcode adds a neutral color for the note class and a red color for the warning class. You can also add a custom title:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">{{&lt;</span> <span style="color:#000">warning</span> <span style="color:#000">title</span><span style="color:#000;font-weight:bold">=</span><span style="color:#4e9a06">&#34;Don&#39;t try this at home&#34;</span> <span style="color:#000;font-weight:bold">&gt;}}</span>
+<span style="color:#000">Nothing</span> <span style="color:#000">to</span> <span style="color:#000">see</span> <span style="color:#000">here</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">move</span> <span style="color:#000">along</span><span style="color:#000;font-weight:bold">.</span>
+<span style="color:#000;font-weight:bold">{{&lt;</span> <span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">warning</span> <span style="color:#000;font-weight:bold">&gt;}}</span></code></pre></div>
+<p>This will print the following block:</p>
+
+<div class="admonition warning">
+<p class="admonition-title">Don&#39;t try this at home</p>
+<p>Nothing to see here, move along.</p>
+</div>
+
 
 			<aside class="copyright" role="note">
 				
@@ -344,23 +380,37 @@
 			<footer class="footer">
 				
 
-
-
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
+  
+      <a href="http://bytemode.github.io/roadmap/" title="Roadmap">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Roadmap
+            </div>
+          </div>
+        </div>
+      </a>
+  
   </div>
 
-  
-  
   <div class="next">
-      <a href="http://bytemode.github.io/tags/" title="Tags">
+  
+      <a href="http://bytemode.github.io/getting-started/" title="Getting started">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Tags
+              Getting started
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
@@ -368,8 +418,11 @@
           </div>
         </div>
       </a>
+  
   </div>
 </nav>
+
+
 
 
 
