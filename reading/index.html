@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>Go 源码阅读 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -682,7 +682,7 @@ PPT: TiDB Compiler.pdf
             <br> 
            
               2019.3.16 晚上 21 点 ~ 23点
-直播过程中的文字讨论 （如有涉及到隐私，请告知） 21:08:32 From xiong hekuan : 几乎没有 21:08:47 From amatist Kurisu : 大佬开下麦&hellip; 21:09:02 From Laily Long : 能听到 21:09:02 From xiong hekuan : 可以 21:09:03 From 何翔宇 : 可以 21:09:06 From xiye : 能听到 21:09:09 From haoc7 : 听到了 21:09:12 From 星星 : 挺清楚的 21:11:01 From am 
+直播过程中的文字讨论 （如有涉及到隐私，请告知） 21:08:32   From xiong hekuan : 几乎没有 21:08:47   From amatist Kurisu : 大佬开下麦&hellip; 21:09:02 From Laily Long : 能听到 21:09:02  From xiong hekuan : 可以 21:09:03 From 何翔宇 : 可以 21:09:06  From xiye : 能听到 21:09:09    From haoc7 : 听到了 21:09:12   From 星星 : 挺清楚的 21:11:01 From am 
               <a href="http://bytemode.github.io/reading/34-2019-03-16-plan9-guide/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -728,7 +728,7 @@ etcd 版本：3.3.10
            
               Go 标准包阅读
 Go 版本：go 1.11.5
-总结  *v.URL = *u flag 下有 package flag_test？？ init 中定义相同的 stringvar ； 当一个文件中出现多个 init 函数时，他们都会被加载，并且以 init 出现在文件中的前后顺序执行。   type Value interface { String() string Set(string) error } type Getter interface { Value Get() interface{} } type boolFlag interface { Value IsBoolFlag( 
+总结  *v.URL = *u flag 下有 package flag_test？？ init 中定义相同的 stringvar ； 当一个文件中出现多个 init 函数时，他们都会被加载，并且以 init 出现在文件中的前后顺序执行。 type Value interface { String() string Set(string) error } type Getter interface { Value Get() interface{} } type boolFlag interface { Value IsBoolFlag() 
               <a href="http://bytemode.github.io/reading/31-2019-02-23-flag/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -809,7 +809,9 @@ if len(val) &gt;= 2 &amp;&amp; val[0] == &#39;&#34;&#39; &amp;&amp; val[len(val)
            
               Go 标准包阅读
 Go 版本：go 1.11.5
-观看视频   阅读重点  os.Stat filepath.SplitList os.Getwd() switch sync.Once os.IsNotExist(errMod) MustQuote AutoQuote modcmd.runGraph  format := func(m module.Version) string { if m.Version == &#34;&#34; { return m.Path } return m.Path + &#34;@&#34; + m.Version }  sort.Slice  什么是 go 
+观看视频   阅读重点  os.Stat filepath.SplitList os.Getwd() switch sync.Once os.IsNotExist(errMod) MustQuote AutoQuote modcmd.runGraph
+format := func(m module.Version) string { if m.Version == &#34;&#34; { return m.Path } return m.Path + &#34;@&#34; + m.Version } sort.Slice
+  什么是 go 
               <a href="http://bytemode.github.io/reading/24-2018-12-23-go-mod-part-1/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -948,7 +950,7 @@ runtime准备好G,P,M，然后M绑定P，M从各种队列中获取G，切换到G
   注意:10.13及其以上是macOS系统   2.URI，URL和URN的区别
   查看详情   3.HTTP CONNECT方法介绍
  会议讨论小结
- 可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独 
+    可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独 
               <a href="http://bytemode.github.io/reading/10-2018-06-28-net-http-part4/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -962,7 +964,7 @@ runtime准备好G,P,M，然后M绑定P，M从各种队列中获取G，切换到G
 Go 版本：go 1.10.2
 net/http  server.go h2_bundle.go  问题  WriteHeader(statusCode int)   要先调用 header.set() 再调用 WriteHeader() 然后调用 Write()  如果在调用 Write() 之后，还有比较多的逻辑要处理，则一定要紧跟着马上调一下 Flush()  然后调用 Flush()   HTTP2 不支持 Hijacker
  使用了 Hijacker 之后不能再使用 Request.Body
-  type Hijacker interface 
+type Hijacker interface { 
               <a href="http://bytemode.github.io/reading/9-2018-06-14-net-http-part3/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -974,10 +976,10 @@ net/http  server.go h2_bundle.go  问题  WriteHeader(statusCode int)   要先�
               参与人数: 10 人
  Go 标准包阅读
 Go 版本：go 1.10.2
-net/http  server.go  问题    func (s *Server) doKeepAlives() bool { return atomic.LoadInt32(&amp;s.disableKeepAlives) == 0 &amp;&amp; !s.shuttingDown() } 为什么要用 atomic.LoadInt32(&amp;s.disableKeepAlives) == 0 ？
+net/http  server.go  问题  func (s *Server) doKeepAlives() bool { return atomic.LoadInt32(&amp;s.disableKeepAlives) == 0 &amp;&amp; !s.shuttingDown() }  为什么要用 atomic.LoadInt32(&amp;s.disableKeepAlives) == 0 ？
 原子操作比用锁更节约一点性能。
  server.go#Shutdown 不保险
- panicChan := m 
+ panicChan := ma 
               <a href="http://bytemode.github.io/reading/8-2018-05-31-net-http-part2/"><br>[阅读全文]</a>  
             
             <hr> 
@@ -991,7 +993,8 @@ net/http  server.go  问题    func (s *Server) doKeepAlives() bool { return ato
 Go 版本：go 1.10.1
 net/http  server.go  问题  Next Protocol Negotiation = NPN Expect 100 Continue support   见参考资料
   header提到了：Expect和host 判断了 header里面的HOST，但是后面又删除，为什么？  server.go#L980
-delete(req.Header, &#34;Host&#34;)  判断是否支持 HTTP2 （isH2Upgrade）  // isH2Upgrade reports whether r re 
+delete(req.Header, &#34;Host&#34;)  判断是否支持 HTTP2 （isH2Upgrade）
+// isH2Upgrade reports whether r rep 
               <a href="http://bytemode.github.io/reading/7-2018-05-24-net-http-part1/"><br>[阅读全文]</a>  
             
             <hr> 

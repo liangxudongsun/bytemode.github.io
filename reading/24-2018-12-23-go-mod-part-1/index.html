@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 24 期 go mod 源码阅读 part 1 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -344,7 +344,7 @@
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/_Kdud_EN-eQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/_Kdud_EN-eQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -359,16 +359,16 @@
 <li>os.IsNotExist(errMod)</li>
 <li>MustQuote</li>
 <li>AutoQuote</li>
-<li>modcmd.runGraph</li>
-</ol>
+
+<li><p>modcmd.runGraph</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#000">format</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span> <span style="color:#000">module</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Version</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">string</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Version</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;&#34;</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;@&#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Version</span>
-    <span style="color:#000;font-weight:bold">}</span></code></pre></div>
-<ol>
-<li>sort.Slice</li>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Version</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;&#34;</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;@&#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Version</span>
+	<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+
+<li><p>sort.Slice</p></li>
 </ol>
 
 <h2 id="什么是-go-mod">什么是 go mod</h2>
@@ -399,18 +399,18 @@ See 'go help modules' for an overview of module functionality.
 
 Usage:
 
-    go mod &lt;command&gt; [arguments]
+	go mod &lt;command&gt; [arguments]
 
 The commands are:
 
-    download    download modules to local cache
-    edit        edit go.mod from tools or scripts
-    graph       print module requirement graph
-    init        initialize new module in current directory
-    tidy        add missing and remove unused modules
-    vendor      make vendored copy of dependencies
-    verify      verify dependencies have expected content
-    why         explain why packages or modules are needed
+	download    download modules to local cache
+	edit        edit go.mod from tools or scripts
+	graph       print module requirement graph
+	init        initialize new module in current directory
+	tidy        add missing and remove unused modules
+	vendor      make vendored copy of dependencies
+	verify      verify dependencies have expected content
+	why         explain why packages or modules are needed
 
 Use &quot;go help mod &lt;command&gt;&quot; for more information about a command.
 </code></pre>
@@ -457,30 +457,30 @@ Use &quot;go help mod &lt;command&gt;&quot; for more information about a command
 <pre><code>package modcmd
 
 import (
-    &quot;cmd/go/internal/base&quot;
-    &quot;cmd/go/internal/modload&quot;
-    &quot;os&quot;
+	&quot;cmd/go/internal/base&quot;
+	&quot;cmd/go/internal/modload&quot;
+	&quot;os&quot;
 )
 
 var cmdInit = &amp;base.Command{
-    UsageLine: &quot;go mod init [module]&quot;,
-    Short:     &quot;initialize new module in current directory&quot;,
-    Long: `Init initializes and writes a new go.mod to the current directory...`,
-    Run: runInit,
+	UsageLine: &quot;go mod init [module]&quot;,
+	Short:     &quot;initialize new module in current directory&quot;,
+	Long: `Init initializes and writes a new go.mod to the current directory...`,
+	Run: runInit,
 }
 
 func runInit(cmd *base.Command, args []string) {
-    modload.CmdModInit = true
-    if len(args) &gt; 1 {
-        base.Fatalf(&quot;go mod init: too many arguments&quot;)
-    }
-    if len(args) == 1 {
-        modload.CmdModModule = args[0]
-    }
-    if _, err := os.Stat(&quot;go.mod&quot;); err == nil {
-        base.Fatalf(&quot;go mod init: go.mod already exists&quot;)
-    }
-    modload.InitMod() // does all the hard work
+	modload.CmdModInit = true
+	if len(args) &gt; 1 {
+		base.Fatalf(&quot;go mod init: too many arguments&quot;)
+	}
+	if len(args) == 1 {
+		modload.CmdModModule = args[0]
+	}
+	if _, err := os.Stat(&quot;go.mod&quot;); err == nil {
+		base.Fatalf(&quot;go mod init: go.mod already exists&quot;)
+	}
+	modload.InitMod() // does all the hard work
 }
 </code></pre>
 
@@ -525,78 +525,78 @@ To override this guess, supply the module path as an argument.
 <p><strong>一、MustInit</strong></p>
 
 <pre><code>func MustInit() {
-    if Init(); ModRoot == &quot;&quot; {
-        die()
-    }
-    if c := cache.Default(); c == nil {
-        base.Fatalf(&quot;go: cannot use modules with build cache disabled&quot;)
-    }
+	if Init(); ModRoot == &quot;&quot; {
+		die()
+	}
+	if c := cache.Default(); c == nil {
+		base.Fatalf(&quot;go: cannot use modules with build cache disabled&quot;)
+	}
 }
 </code></pre>
 
 <p>在该方法中，我们先进行必要的初始化，再读取构建缓存（不是本文重点），接下来详细阅读一下 <code>Init</code> 方法，如下：</p>
 
 <pre><code>func Init() {
-    ...
-    env := os.Getenv(&quot;GO111MODULE&quot;)
-    switch env {
-    default:
-        base.Fatalf(&quot;go: unknown environment setting GO111MODULE=%s&quot;, env)
-    case &quot;&quot;, &quot;auto&quot;:
-        // leave MustUseModules alone
-    case &quot;on&quot;:
-        MustUseModules = true
-    case &quot;off&quot;:
-        if !MustUseModules {
-            return
-        }
-    }
-    
-    if os.Getenv(&quot;GIT_TERMINAL_PROMPT&quot;) == &quot;&quot; {
-        os.Setenv(&quot;GIT_TERMINAL_PROMPT&quot;, &quot;0&quot;)
-    }
+	...
+	env := os.Getenv(&quot;GO111MODULE&quot;)
+	switch env {
+	default:
+		base.Fatalf(&quot;go: unknown environment setting GO111MODULE=%s&quot;, env)
+	case &quot;&quot;, &quot;auto&quot;:
+		// leave MustUseModules alone
+	case &quot;on&quot;:
+		MustUseModules = true
+	case &quot;off&quot;:
+		if !MustUseModules {
+			return
+		}
+	}
+	
+	if os.Getenv(&quot;GIT_TERMINAL_PROMPT&quot;) == &quot;&quot; {
+		os.Setenv(&quot;GIT_TERMINAL_PROMPT&quot;, &quot;0&quot;)
+	}
 
-    if os.Getenv(&quot;GIT_SSH&quot;) == &quot;&quot; &amp;&amp; os.Getenv(&quot;GIT_SSH_COMMAND&quot;) == &quot;&quot; {
-        os.Setenv(&quot;GIT_SSH_COMMAND&quot;, &quot;ssh -o ControlMaster=no&quot;)
-    }
+	if os.Getenv(&quot;GIT_SSH&quot;) == &quot;&quot; &amp;&amp; os.Getenv(&quot;GIT_SSH_COMMAND&quot;) == &quot;&quot; {
+		os.Setenv(&quot;GIT_SSH_COMMAND&quot;, &quot;ssh -o ControlMaster=no&quot;)
+	}
 
-    var err error
-    cwd, err = os.Getwd()
-    if err != nil {
-        base.Fatalf(&quot;go: %v&quot;, err)
-    }
+	var err error
+	cwd, err = os.Getwd()
+	if err != nil {
+		base.Fatalf(&quot;go: %v&quot;, err)
+	}
 
-    inGOPATH = false
-    for _, gopath := range filepath.SplitList(cfg.BuildContext.GOPATH) {
-        if gopath == &quot;&quot; {
-            continue
-        }
-        if search.InDir(cwd, filepath.Join(gopath, &quot;src&quot;)) != &quot;&quot; {
-            inGOPATH = true
-            break
-        }
-    }
+	inGOPATH = false
+	for _, gopath := range filepath.SplitList(cfg.BuildContext.GOPATH) {
+		if gopath == &quot;&quot; {
+			continue
+		}
+		if search.InDir(cwd, filepath.Join(gopath, &quot;src&quot;)) != &quot;&quot; {
+			inGOPATH = true
+			break
+		}
+	}
 
-    if inGOPATH &amp;&amp; !MustUseModules {
-        if root, _ := FindModuleRoot(cwd, &quot;&quot;, false); root != &quot;&quot; {
-            cfg.GoModInGOPATH = filepath.Join(root, &quot;go.mod&quot;)
-        }
-        return
-    }
+	if inGOPATH &amp;&amp; !MustUseModules {
+		if root, _ := FindModuleRoot(cwd, &quot;&quot;, false); root != &quot;&quot; {
+			cfg.GoModInGOPATH = filepath.Join(root, &quot;go.mod&quot;)
+		}
+		return
+	}
 
-    if CmdModInit {
-        ModRoot = cwd
-    } else {
+	if CmdModInit {
+		ModRoot = cwd
+	} else {
         ...
-        if search.InDir(ModRoot, os.TempDir()) == &quot;.&quot; {
-            ModRoot = &quot;&quot;
-            fmt.Fprintf(os.Stderr, &quot;go: warning: ignoring go.mod in system temp root %v\n&quot;, os.TempDir())
-            return
-        }
-    }
+		if search.InDir(ModRoot, os.TempDir()) == &quot;.&quot; {
+			ModRoot = &quot;&quot;
+			fmt.Fprintf(os.Stderr, &quot;go: warning: ignoring go.mod in system temp root %v\n&quot;, os.TempDir())
+			return
+		}
+	}
     ...
 
-    search.SetModRoot(ModRoot)
+	search.SetModRoot(ModRoot)
 }
 </code></pre>
 
@@ -612,93 +612,93 @@ To override this guess, supply the module path as an argument.
 <p>当 <code>modRoot</code> 为空时，则触发异常处理，常见的一些错误提示如下：</p>
 
 <pre><code>func die() {
-    if os.Getenv(&quot;GO111MODULE&quot;) == &quot;off&quot; {
-        base.Fatalf(&quot;go: modules disabled by GO111MODULE=off; see 'go help modules'&quot;)
-    }
-    if inGOPATH &amp;&amp; !MustUseModules {
-        base.Fatalf(&quot;go: modules disabled inside GOPATH/src by GO111MODULE=auto; see 'go help modules'&quot;)
-    }
-    base.Fatalf(&quot;go: cannot find main module; see 'go help modules'&quot;)
+	if os.Getenv(&quot;GO111MODULE&quot;) == &quot;off&quot; {
+		base.Fatalf(&quot;go: modules disabled by GO111MODULE=off; see 'go help modules'&quot;)
+	}
+	if inGOPATH &amp;&amp; !MustUseModules {
+		base.Fatalf(&quot;go: modules disabled inside GOPATH/src by GO111MODULE=auto; see 'go help modules'&quot;)
+	}
+	base.Fatalf(&quot;go: cannot find main module; see 'go help modules'&quot;)
 }
 </code></pre>
 
 <p><strong>二、具体实现逻辑</strong></p>
 
 <pre><code>func InitMod() {
-    ...
-    if modFile != nil {
-        return
-    }
+	...
+	if modFile != nil {
+		return
+	}
 
-    list := filepath.SplitList(cfg.BuildContext.GOPATH)
-    if len(list) == 0 || list[0] == &quot;&quot; {
-        base.Fatalf(&quot;missing $GOPATH&quot;)
-    }
-    gopath = list[0]
-    if _, err := os.Stat(filepath.Join(gopath, &quot;go.mod&quot;)); err == nil {
-        base.Fatalf(&quot;$GOPATH/go.mod exists but should not&quot;)
-    }
+	list := filepath.SplitList(cfg.BuildContext.GOPATH)
+	if len(list) == 0 || list[0] == &quot;&quot; {
+		base.Fatalf(&quot;missing $GOPATH&quot;)
+	}
+	gopath = list[0]
+	if _, err := os.Stat(filepath.Join(gopath, &quot;go.mod&quot;)); err == nil {
+		base.Fatalf(&quot;$GOPATH/go.mod exists but should not&quot;)
+	}
 
-    oldSrcMod := filepath.Join(list[0], &quot;src/mod&quot;)
-    pkgMod := filepath.Join(list[0], &quot;pkg/mod&quot;)
-    infoOld, errOld := os.Stat(oldSrcMod)
-    _, errMod := os.Stat(pkgMod)
-    if errOld == nil &amp;&amp; infoOld.IsDir() &amp;&amp; errMod != nil &amp;&amp; os.IsNotExist(errMod) {
-        os.Rename(oldSrcMod, pkgMod)
-    }
+	oldSrcMod := filepath.Join(list[0], &quot;src/mod&quot;)
+	pkgMod := filepath.Join(list[0], &quot;pkg/mod&quot;)
+	infoOld, errOld := os.Stat(oldSrcMod)
+	_, errMod := os.Stat(pkgMod)
+	if errOld == nil &amp;&amp; infoOld.IsDir() &amp;&amp; errMod != nil &amp;&amp; os.IsNotExist(errMod) {
+		os.Rename(oldSrcMod, pkgMod)
+	}
 
-    modfetch.PkgMod = pkgMod
-    modfetch.GoSumFile = filepath.Join(ModRoot, &quot;go.sum&quot;)
-    codehost.WorkRoot = filepath.Join(pkgMod, &quot;cache/vcs&quot;)
+	modfetch.PkgMod = pkgMod
+	modfetch.GoSumFile = filepath.Join(ModRoot, &quot;go.sum&quot;)
+	codehost.WorkRoot = filepath.Join(pkgMod, &quot;cache/vcs&quot;)
 
-    if CmdModInit {
-        // Running go mod init: do legacy module conversion
-        legacyModInit()
-        modFileToBuildList()
-        WriteGoMod()
-        return
-    }
+	if CmdModInit {
+		// Running go mod init: do legacy module conversion
+		legacyModInit()
+		modFileToBuildList()
+		WriteGoMod()
+		return
+	}
 
-    gomod := filepath.Join(ModRoot, &quot;go.mod&quot;)
-    data, err := ioutil.ReadFile(gomod)
-    if err != nil {
-        if os.IsNotExist(err) {
-            legacyModInit()
-            modFileToBuildList()
-            WriteGoMod()
-            return
-        }
-        base.Fatalf(&quot;go: %v&quot;, err)
-    }
+	gomod := filepath.Join(ModRoot, &quot;go.mod&quot;)
+	data, err := ioutil.ReadFile(gomod)
+	if err != nil {
+		if os.IsNotExist(err) {
+			legacyModInit()
+			modFileToBuildList()
+			WriteGoMod()
+			return
+		}
+		base.Fatalf(&quot;go: %v&quot;, err)
+	}
 
-    f, err := modfile.Parse(gomod, data, fixVersion)
-    if err != nil {
-        // Errors returned by modfile.Parse begin with file:line.
-        base.Fatalf(&quot;go: errors parsing go.mod:\n%s\n&quot;, err)
-    }
-    modFile = f
+	f, err := modfile.Parse(gomod, data, fixVersion)
+	if err != nil {
+		// Errors returned by modfile.Parse begin with file:line.
+		base.Fatalf(&quot;go: errors parsing go.mod:\n%s\n&quot;, err)
+	}
+	modFile = f
 
-    if len(f.Syntax.Stmt) == 0 || f.Module == nil {
-        // Empty mod file. Must add module path.
-        path, err := FindModulePath(ModRoot)
-        if err != nil {
-            base.Fatalf(&quot;go: %v&quot;, err)
-        }
-        f.AddModuleStmt(path)
-    }
+	if len(f.Syntax.Stmt) == 0 || f.Module == nil {
+		// Empty mod file. Must add module path.
+		path, err := FindModulePath(ModRoot)
+		if err != nil {
+			base.Fatalf(&quot;go: %v&quot;, err)
+		}
+		f.AddModuleStmt(path)
+	}
 
-    if len(f.Syntax.Stmt) == 1 &amp;&amp; f.Module != nil {
-        // Entire file is just a module statement.
-        // Populate require if possible.
-        legacyModInit()
-    }
+	if len(f.Syntax.Stmt) == 1 &amp;&amp; f.Module != nil {
+		// Entire file is just a module statement.
+		// Populate require if possible.
+		legacyModInit()
+	}
 
-    excluded = make(map[module.Version]bool)
-    for _, x := range f.Exclude {
-        excluded[x.Mod] = true
-    }
-    modFileToBuildList()
-    WriteGoMod()
+	excluded = make(map[module.Version]bool)
+	for _, x := range f.Exclude {
+		excluded[x.Mod] = true
+	}
+	modFileToBuildList()
+	WriteGoMod()
 }
 </code></pre>
 
@@ -742,23 +742,23 @@ To override this guess, supply the module path as an argument.
 <code>go mod edit</code> 命令的 <code>-module</code> flag 是用于修改当前 module 的 path。也就是 <code>go.mod</code> 文件中，module 那一行。
 在这个命令的源码 <code>src/cmd/go/internal/modcmd/edit.go</code> 文件 177 行开始：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">editModule</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#4e9a06">&#34;&#34;</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000">modFile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddModuleStmt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModModule</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">modFile</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddModuleStmt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModModule</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p><code>AddModuleStmt</code> 这个函数的参数应该是 <code>*editModule</code>，而不是 <code>modload.CmdModule</code>。
 <code>modload.CmdModule</code> 只在 <code>go mod init</code> 命令启动时初始化。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// src/cmd/go/internal/modcmd/init.go
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">runInit</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cmd</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">base</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Command</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">args</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModInit</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">true</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">base</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go mod init: too many arguments&#34;</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModModule</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">args</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#8f5902;font-style:italic">// INITIALIZATION IS HERE!
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Stat</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go.mod&#34;</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">base</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go mod init: go.mod already exists&#34;</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InitMod</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#8f5902;font-style:italic">// does all the hard work
+	<span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModInit</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">true</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">base</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go mod init: too many arguments&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">args</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CmdModModule</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">args</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#8f5902;font-style:italic">// INITIALIZATION IS HERE!
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Stat</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go.mod&#34;</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">base</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;go mod init: go.mod already exists&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">modload</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InitMod</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#8f5902;font-style:italic">// does all the hard work
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>因此，由于 string 类型变量的 empty value 是空字符串，所以每次使运行 <code>go mod edit -module a/new/module/name</code> 并不会把 module path 修改为 <code>a/new/module/name</code>，而是修改为空字符串。</p>
 
@@ -787,7 +787,7 @@ module &quot;&quot;
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/25-2018-12-27-tsdb/" title="第 25 期 TSDB 引擎介绍，对比及存储细节">
+      <a href="http://bytemode.github.io/reading/23-2018-12-13-drone-guide/" title="第 23 期 Drone 简单介绍和部分源码分析">
         <span class="direction">
           Previous
         </span>
@@ -797,7 +797,7 @@ module &quot;&quot;
           </div>
           <div class="stretch">
             <div class="title">
-              第 25 期 TSDB 引擎介绍，对比及存储细节
+              第 23 期 Drone 简单介绍和部分源码分析
             </div>
           </div>
         </div>
@@ -807,14 +807,14 @@ module &quot;&quot;
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/23-2018-12-13-drone-guide/" title="第 23 期 Drone 简单介绍和部分源码分析">
+      <a href="http://bytemode.github.io/reading/25-2018-12-27-tsdb/" title="第 25 期 TSDB 引擎介绍，对比及存储细节">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 23 期 Drone 简单介绍和部分源码分析
+              第 25 期 TSDB 引擎介绍，对比及存储细节
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 7 期 2018-05-24 线下活动 - Go 标准包阅读 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -369,20 +369,21 @@
 <p>server.go#L980</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87">delete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;Host&#34;</span><span style="color:#000;font-weight:bold">)</span></code></pre></div>
 <ol>
-<li>判断是否支持 HTTP2 （isH2Upgrade）</li>
-</ol>
+<li><p>判断是否支持 HTTP2 （isH2Upgrade）</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// isH2Upgrade reports whether r represents the http2 &#34;client preface&#34;
 </span><span style="color:#8f5902;font-style:italic">// magic string.
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">isH2Upgrade</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">bool</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Method</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;PRI&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">URL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;*&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Proto</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;HTTP/2.0&#34;</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Method</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;PRI&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">URL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Path</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;*&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Proto</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;HTTP/2.0&#34;</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">调用</span><span style="color:#a40000">：</span><span style="color:#000">ProtoAtLeast</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#ce5c00;font-weight:bold">...</span>
 <span style="color:#8f5902;font-style:italic">// ProtoAtLeast reports whether the HTTP protocol used
 </span><span style="color:#8f5902;font-style:italic">// in the request is at least major.minor.
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">ProtoAtLeast</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">major</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">minor</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">bool</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMajor</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000">major</span> <span style="color:#ce5c00;font-weight:bold">||</span>
-        <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMajor</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">major</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMinor</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#000">minor</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMajor</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000">major</span> <span style="color:#ce5c00;font-weight:bold">||</span>
+		<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMajor</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">major</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ProtoMinor</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#000">minor</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+</ol>
+
 <h2 id="会议讨论">会议讨论</h2>
 
 <p>20:07:45     From 永京 李 : ok
@@ -569,7 +570,7 @@ func (b *Reader) Buffered() int { return b.w - b.r }
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/H3oXjpiOReQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/H3oXjpiOReQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -587,7 +588,7 @@ func (b *Reader) Buffered() int { return b.w - b.r }
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/8-2018-05-31-net-http-part2/" title="第 8 期 2018-05-31 线下活动 - Go 标准包阅读">
+      <a href="http://bytemode.github.io/reading/6-2018-05-17-strings-part4/" title="第 6 期 2018-05-17 线下活动 - Go 标准包阅读">
         <span class="direction">
           Previous
         </span>
@@ -597,7 +598,7 @@ func (b *Reader) Buffered() int { return b.w - b.r }
           </div>
           <div class="stretch">
             <div class="title">
-              第 8 期 2018-05-31 线下活动 - Go 标准包阅读
+              第 6 期 2018-05-17 线下活动 - Go 标准包阅读
             </div>
           </div>
         </div>
@@ -607,14 +608,14 @@ func (b *Reader) Buffered() int { return b.w - b.r }
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/6-2018-05-17-strings-part4/" title="第 6 期 2018-05-17 线下活动 - Go 标准包阅读">
+      <a href="http://bytemode.github.io/reading/8-2018-05-31-net-http-part2/" title="第 8 期 2018-05-31 线下活动 - Go 标准包阅读">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 6 期 2018-05-17 线下活动 - Go 标准包阅读
+              第 8 期 2018-05-31 线下活动 - Go 标准包阅读
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

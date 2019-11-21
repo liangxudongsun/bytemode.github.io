@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 9 期 2018-06-14 线下活动 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -371,44 +371,44 @@
 <ol>
 <li><p>HTTP2 不支持 Hijacker</p></li>
 
-<li><p>使用了 Hijacker 之后不能再使用 Request.Body</p></li>
-</ol>
+<li><p>使用了 Hijacker 之后不能再使用 Request.Body</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Hijacker</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#8f5902;font-style:italic">// After a call to Hijack, the original Request.Body must not be used.
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">Hijack</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">net</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Conn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">bufio</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadWriter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
-<ol>
+	<span style="color:#8f5902;font-style:italic">// After a call to Hijack, the original Request.Body must not be used.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Hijack</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">net</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Conn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">bufio</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadWriter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+
 <li><p>The returned bufio.Reader may contain unprocessed buffered data from the client.</p></li>
 
 <li><p>CloseNotifier 主要用于 HTTP2</p></li>
 
 <li><p>CloseNotify may wait to notify until Request.Body has been fully read.</p></li>
 
-<li><p>HTTP2 中是如何在 net/http/server.go 中调用 serve() 触发的呢？</p></li>
-</ol>
+<li><p>HTTP2 中是如何在 net/http/server.go 中调用 serve() 触发的呢？</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">proto</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">tlsState</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NegotiatedProtocol</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">validNPN</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">proto</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">fn</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TLSNextProto</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">proto</span><span style="color:#000;font-weight:bold">];</span> <span style="color:#000">fn</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">h</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">initNPNRequest</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">tlsConn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">serverHandler</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">}}</span>
-        <span style="color:#000">fn</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tlsConn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">h</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#204a87;font-weight:bold">return</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">fn</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TLSNextProto</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">proto</span><span style="color:#000;font-weight:bold">];</span> <span style="color:#000">fn</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">h</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">initNPNRequest</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">tlsConn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">serverHandler</span><span style="color:#000;font-weight:bold">{</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">}}</span>
+		<span style="color:#000">fn</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">server</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tlsConn</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">h</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+</ol>
+
 <p>主要是 TLSNextProto ，然后查询得到 onceSetNextProtoDefaults() 调用。</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// onceSetNextProtoDefaults configures HTTP/2, if the user hasn&#39;t
 </span><span style="color:#8f5902;font-style:italic">// configured otherwise. (by setting srv.TLSNextProto non-nil)
 </span><span style="color:#8f5902;font-style:italic">// It must only be called via srv.nextProtoOnce (use srv.setupHTTP2_*).
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">srv</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Server</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">onceSetNextProtoDefaults</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Contains</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Getenv</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GODEBUG&#34;</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#4e9a06">&#34;http2server=0&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">return</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#8f5902;font-style:italic">// Enable HTTP/2 by default if the user hasn&#39;t otherwise
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// configured their TLSNextProto map.
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">srv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TLSNextProto</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">conf</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">http2Server</span><span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000">NewWriteScheduler</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000">http2WriteScheduler</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">http2NewPriorityWriteScheduler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">},</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000">srv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">nextProtoErr</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">http2ConfigureServer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">srv</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">conf</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Contains</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Getenv</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GODEBUG&#34;</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#4e9a06">&#34;http2server=0&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#8f5902;font-style:italic">// Enable HTTP/2 by default if the user hasn&#39;t otherwise
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// configured their TLSNextProto map.
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">srv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TLSNextProto</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">conf</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">http2Server</span><span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">NewWriteScheduler</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000">http2WriteScheduler</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">http2NewPriorityWriteScheduler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000">srv</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">nextProtoErr</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">http2ConfigureServer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">srv</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">conf</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>然后是调用如下代码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a40000">#</span><span style="color:#000">h2_bundle</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">go</span>
@@ -446,7 +446,7 @@
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/10-2018-06-28-net-http-part4/" title="第 10 期 2018-06-28 线下活动">
+      <a href="http://bytemode.github.io/reading/8-2018-05-31-net-http-part2/" title="第 8 期 2018-05-31 线下活动 - Go 标准包阅读">
         <span class="direction">
           Previous
         </span>
@@ -456,7 +456,7 @@
           </div>
           <div class="stretch">
             <div class="title">
-              第 10 期 2018-06-28 线下活动
+              第 8 期 2018-05-31 线下活动 - Go 标准包阅读
             </div>
           </div>
         </div>
@@ -466,14 +466,14 @@
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/8-2018-05-31-net-http-part2/" title="第 8 期 2018-05-31 线下活动 - Go 标准包阅读">
+      <a href="http://bytemode.github.io/reading/10-2018-06-28-net-http-part4/" title="第 10 期 2018-06-28 线下活动">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 8 期 2018-05-31 线下活动 - Go 标准包阅读
+              第 10 期 2018-06-28 线下活动
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

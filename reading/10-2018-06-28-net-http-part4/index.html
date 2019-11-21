@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 10 期 2018-06-28 线下活动 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -386,7 +386,7 @@
 
 <p><strong>会议讨论小结</strong></p>
 
-<pre><code>    可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独享）
+<pre><code>	可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独享）
 </code></pre>
 
 <ul>
@@ -401,11 +401,12 @@
 
 <ul>
 <li>这里先peek获取流数据(注意：<code>这里没有对Peek的错误进行处理，而是根据是否Buffered读取到数据来判断错误</code>)</li>
-<li>为什么没有对Peek的错误进行处理呢？<code>主要是因Peek失败了也有可能不会返回错误</code></li>
-</ul>
 
-<pre><code>    golang读取字节表现形式是阻塞式的，但其实底层是用了非阻塞式的NIO，如果没有读取到数据会定时轮询读取
-</code></pre>
+<li><p>为什么没有对Peek的错误进行处理呢？<code>主要是因Peek失败了也有可能不会返回错误</code></p>
+
+<pre><code>	golang读取字节表现形式是阻塞式的，但其实底层是用了非阻塞式的NIO，如果没有读取到数据会定时轮询读取
+</code></pre></li>
+</ul>
 
 <blockquote>
 <p><strong>5.http header尾部的符号什么情况下会存在\n\n的情况？(<code>待解决，欢迎在下面评论</code>)</strong></p>
@@ -423,7 +424,7 @@
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/xodlVBWxTYM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/xodlVBWxTYM" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -453,7 +454,7 @@
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/11-2018-07-26-golang-jenkins-sonarqube/" title="第 11 期 Golang 代码质量持续检测实践">
+      <a href="http://bytemode.github.io/reading/9-2018-06-14-net-http-part3/" title="第 9 期 2018-06-14 线下活动">
         <span class="direction">
           Previous
         </span>
@@ -463,7 +464,7 @@
           </div>
           <div class="stretch">
             <div class="title">
-              第 11 期 Golang 代码质量持续检测实践
+              第 9 期 2018-06-14 线下活动
             </div>
           </div>
         </div>
@@ -473,14 +474,14 @@
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/9-2018-06-14-net-http-part3/" title="第 9 期 2018-06-14 线下活动">
+      <a href="http://bytemode.github.io/reading/11-2018-07-26-golang-jenkins-sonarqube/" title="第 11 期 Golang 代码质量持续检测实践">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 9 期 2018-06-14 线下活动
+              第 11 期 Golang 代码质量持续检测实践
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

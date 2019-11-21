@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Go 源码阅读 on Go Learn</title>
@@ -387,7 +387,7 @@ PPT: TiDB Compiler.pdf
       
       <guid>http://bytemode.github.io/reading/34-2019-03-16-plan9-guide/</guid>
       <description>2019.3.16 晚上 21 点 ~ 23点
-直播过程中的文字讨论 （如有涉及到隐私，请告知） 21:08:32 From xiong hekuan : 几乎没有 21:08:47 From amatist Kurisu : 大佬开下麦... 21:09:02 From Laily Long : 能听到 21:09:02 From xiong hekuan : 可以 21:09:03 From 何翔宇 : 可以 21:09:06 From xiye : 能听到 21:09:09 From haoc7 : 听到了 21:09:12 From 星星 : 挺清楚的 21:11:01 From amatist Kurisu : ok 21:13:57 From panda : 👍 21:15:40 From albert’s iPhoneSE : 32位都差不多复杂 21:28:15 From 红红火火 : 不太好理解 21:28:24 From dongzerun : rax rbx ….</description>
+直播过程中的文字讨论 （如有涉及到隐私，请告知） 21:08:32	From xiong hekuan : 几乎没有 21:08:47	From amatist Kurisu : 大佬开下麦... 21:09:02	From Laily Long : 能听到 21:09:02	From xiong hekuan : 可以 21:09:03	From 何翔宇 : 可以 21:09:06	From xiye : 能听到 21:09:09	From haoc7 : 听到了 21:09:12	From 星星 : 挺清楚的 21:11:01	From amatist Kurisu : ok 21:13:57	From panda : 👍 21:15:40	From albert’s iPhoneSE : 32位都差不多复杂 21:28:15	From 红红火火 : 不太好理解 21:28:24	From dongzerun : rax rbx ….</description>
     </item>
     
     <item>
@@ -438,7 +438,8 @@ etcd 版本：3.3.10
       <guid>http://bytemode.github.io/reading/31-2019-02-23-flag/</guid>
       <description> Go 标准包阅读
 Go 版本：go 1.11.5
-总结  *v.URL = *u flag 下有 package flag_test？？ init 中定义相同的 stringvar ； 当一个文件中出现多个 init 函数时，他们都会被加载，并且以 init 出现在文件中的前后顺序执行。   type Value interface { String() string Set(string) error } type Getter interface { Value Get() interface{} } type boolFlag interface { Value IsBoolFlag() bool }  strconv.ParseBool 的返回值可以被利用  v, err := strconv.ParseBool(s) *b = boolValue(v) return err 参考资料  Go 语言中值 receiver 和指针 receiver 的对比（收集的一些资料）  观看视频   </description>
+总结  *v.URL = *u flag 下有 package flag_test？？ init 中定义相同的 stringvar ； 当一个文件中出现多个 init 函数时，他们都会被加载，并且以 init 出现在文件中的前后顺序执行。 type Value interface { String() string Set(string) error } type Getter interface { Value Get() interface{} } type boolFlag interface { Value IsBoolFlag() bool } strconv.ParseBool 的返回值可以被利用
+v, err := strconv.ParseBool(s) *b = boolValue(v) return err  参考资料  Go 语言中值 receiver 和指针 receiver 的对比（收集的一些资料）  观看视频   </description>
     </item>
     
     <item>
@@ -489,7 +490,7 @@ strings.HasSuffix(path, &amp;#34;/&amp;#34;) benchmark
    方法一：
 strings.TrimSuffix(pathMajor, &amp;#34;-unstable&amp;#34;) 方法二：
 i := len(path) if strings.HasSuffix(path, &amp;#34;-unstable&amp;#34;) { i -= len(&amp;#34;-unstable&amp;#34;) } benchmark
-   if i := strings.Index(arg, &amp;#34;@&amp;#34;); i &amp;gt;= 0 { path, vers = arg[:i], arg[i+1:] } 也可以用 split(arg, &amp;quot;@&amp;quot;) 来实现。
+ if i := strings.Index(arg, &amp;#34;@&amp;#34;); i &amp;gt;= 0 { path, vers = arg[:i], arg[i+1:] }  也可以用 split(arg, &amp;quot;@&amp;quot;) 来实现。
 观看视频   </description>
     </item>
     
@@ -531,7 +532,9 @@ if len(val) &amp;gt;= 2 &amp;amp;&amp;amp; val[0] == &amp;#39;&amp;#34;&amp;#39;
       <guid>http://bytemode.github.io/reading/24-2018-12-23-go-mod-part-1/</guid>
       <description>Go 标准包阅读
 Go 版本：go 1.11.5
-观看视频   阅读重点  os.Stat filepath.SplitList os.Getwd() switch sync.Once os.IsNotExist(errMod) MustQuote AutoQuote modcmd.runGraph  format := func(m module.Version) string { if m.Version == &amp;#34;&amp;#34; { return m.Path } return m.Path + &amp;#34;@&amp;#34; + m.Version }  sort.Slice  什么是 go mod module 是相关 Go 依赖包的集合。module 是源代码交换和版本控制的单元。go 工具链会直接支持使用 go module，其功能包含记录和解析对其他第三方包的依赖项。模块将会替换旧的基于 $GOPATH 的模式
+观看视频   阅读重点  os.Stat filepath.SplitList os.Getwd() switch sync.Once os.IsNotExist(errMod) MustQuote AutoQuote modcmd.runGraph
+format := func(m module.Version) string { if m.Version == &amp;#34;&amp;#34; { return m.Path } return m.Path + &amp;#34;@&amp;#34; + m.Version } sort.Slice
+  什么是 go mod module 是相关 Go 依赖包的集合。module 是源代码交换和版本控制的单元。go 工具链会直接支持使用 go module，其功能包含记录和解析对其他第三方包的依赖项。模块将会替换旧的基于 $GOPATH 的模式
 目前 Go1.11 是初步支持，后续建议持续观望一下。详见 godoc
 开关 由于当前还在试验阶段，需要设置环境变量 GO111MODULE=on，才能够使用 go mod。支持一下选项：
  off：禁用 go module，按原有 $GOPATH、vendor 的寻址逻辑 on：启用 go module auto：若当前不在 $GOPATH 下，且当前目录的根目录下含有 go.</description>
@@ -682,8 +685,9 @@ runtime准备好G,P,M，然后M绑定P，M从各种队列中获取G，切换到G
   注意:10.13及其以上是macOS系统   2.URI，URL和URN的区别
   查看详情   3.HTTP CONNECT方法介绍
  会议讨论小结
- 可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独享）   HTTP代理协议 HTTP/1.1的CONNECT方法   4.peek读取字节内部实现
-  这里先peek获取流数据(注意：这里没有对Peek的错误进行处理，而是根据是否Buffered读取到数据来判断错误) 为什么没有对Peek的错误进行处理呢？主要是因Peek失败了也有可能不会返回错误   golang读取字节表现形式是阻塞式的，但其实底层是用了非阻塞式的NIO，如果没有读取到数据会定时轮询读取   5.http header尾部的符号什么情况下会存在\n\n的情况？(待解决，欢迎在下面评论)
+	可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独享）   HTTP代理协议 HTTP/1.1的CONNECT方法   4.peek读取字节内部实现
+  这里先peek获取流数据(注意：这里没有对Peek的错误进行处理，而是根据是否Buffered读取到数据来判断错误) 为什么没有对Peek的错误进行处理呢？主要是因Peek失败了也有可能不会返回错误
+	golang读取字节表现形式是阻塞式的，但其实底层是用了非阻塞式的NIO，如果没有读取到数据会定时轮询读取    5.http header尾部的符号什么情况下会存在\n\n的情况？(待解决，欢迎在下面评论)
  看源码发现hearder结尾会存在\r\n\r\n和\n\n两种字符情况
 网络上查资料发现只会存在\r\n\r\n
 观看视频    TODO
@@ -701,7 +705,7 @@ runtime准备好G,P,M，然后M绑定P，M从各种队列中获取G，切换到G
 Go 版本：go 1.10.2
 net/http  server.go h2_bundle.go  问题  WriteHeader(statusCode int)   要先调用 header.set() 再调用 WriteHeader() 然后调用 Write()  如果在调用 Write() 之后，还有比较多的逻辑要处理，则一定要紧跟着马上调一下 Flush()  然后调用 Flush()   HTTP2 不支持 Hijacker
  使用了 Hijacker 之后不能再使用 Request.Body
-  type Hijacker interface { // After a call to Hijack, the original Request.Body must not be used.  Hijack() (net.Conn, *bufio.ReadWriter, error) }  The returned bufio.</description>
+type Hijacker interface { // After a call to Hijack, the original Request.Body must not be used. 	Hijack() (net.Conn, *bufio.ReadWriter, error) } The returned bufio.</description>
     </item>
     
     <item>
@@ -713,11 +717,11 @@ net/http  server.go h2_bundle.go  问题  WriteHeader(statusCode int)   要先�
       <description>参与人数: 10 人
  Go 标准包阅读
 Go 版本：go 1.10.2
-net/http  server.go  问题    func (s *Server) doKeepAlives() bool { return atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 &amp;amp;&amp;amp; !s.shuttingDown() } 为什么要用 atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 ？
+net/http  server.go  问题  func (s *Server) doKeepAlives() bool { return atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 &amp;amp;&amp;amp; !s.shuttingDown() }  为什么要用 atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 ？
 原子操作比用锁更节约一点性能。
  server.go#Shutdown 不保险
  panicChan := make(chan interface{}, 1)
-  panicChan := make(chan interface{}, 1) go func() { defer func() { if p := recover(); p != nil { panicChan &amp;lt;- p } }() h.</description>
+panicChan := make(chan interface{}, 1) go func() { defer func() { if p := recover(); p != nil { panicChan &amp;lt;- p } }() h.</description>
     </item>
     
     <item>
@@ -731,7 +735,8 @@ net/http  server.go  问题    func (s *Server) doKeepAlives() bool { return ato
 Go 版本：go 1.10.1
 net/http  server.go  问题  Next Protocol Negotiation = NPN Expect 100 Continue support   见参考资料
   header提到了：Expect和host 判断了 header里面的HOST，但是后面又删除，为什么？  server.go#L980
-delete(req.Header, &amp;#34;Host&amp;#34;)  判断是否支持 HTTP2 （isH2Upgrade）  // isH2Upgrade reports whether r represents the http2 &amp;#34;client preface&amp;#34; // magic string. func (r *Request) isH2Upgrade() bool { return r.Method == &amp;#34;PRI&amp;#34; &amp;amp;&amp;amp; len(r.Header) == 0 &amp;amp;&amp;amp; r.</description>
+delete(req.Header, &amp;#34;Host&amp;#34;)  判断是否支持 HTTP2 （isH2Upgrade）
+// isH2Upgrade reports whether r represents the http2 &amp;#34;client preface&amp;#34; // magic string. func (r *Request) isH2Upgrade() bool { return r.Method == &amp;#34;PRI&amp;#34; &amp;amp;&amp;amp; len(r.Header) == 0 &amp;amp;&amp;amp; r.</description>
     </item>
     
     <item>
@@ -789,7 +794,8 @@ strings  replace.go replace_test.go search.go search_test.go  问题清单 以�
  Go 标准包阅读
 Go 版本：go 1.10.1
 strings  builder.go builder_test.go compare.go compare_test.go example_test.go export_test.go reader_test.go reader.go  问题清单 以下是我们在阅读过程中的一些问题，希望可以引起大家的关注，也欢迎大家提出自己的理解，最好可以给以文章总结。
- defer runtime.GOMAXPROCS(runtime.GOMAXPROCS(1)) runtime.ReadMemStats(&amp;amp;m1) defer_lock.go  package main import ( &amp;#34;sync&amp;#34; ) func main() { var mu sync.Locker = new(I) defer LockUnlock(mu)() println(&amp;#34;doing&amp;#34;) } func LockUnlock(mu sync.Locker) (unlock func()) { mu.Lock() return mu.Unlock } type I struct{} func (i *I) Lock() { println(&amp;#34;lock&amp;#34;) } func (i *I) Unlock() { println(&amp;#34;unlock&amp;#34;) }  buf := make([]byte, len(b.</description>
+ defer runtime.GOMAXPROCS(runtime.GOMAXPROCS(1)) runtime.ReadMemStats(&amp;amp;m1) defer_lock.go
+package main import ( &amp;#34;sync&amp;#34; ) func main() { var mu sync.Locker = new(I) defer LockUnlock(mu)() println(&amp;#34;doing&amp;#34;) } func LockUnlock(mu sync.Locker) (unlock func()) { mu.Lock() return mu.Unlock } type I struct{} func (i *I) Lock() { println(&amp;#34;lock&amp;#34;) } func (i *I) Unlock() { println(&amp;#34;unlock&amp;#34;) } buf := make([]byte, len(b.</description>
     </item>
     
     <item>

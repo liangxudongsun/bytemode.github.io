@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 3 期 2018-04-18 线下活动 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -364,36 +364,36 @@
 <ol>
 <li>defer runtime.GOMAXPROCS(runtime.GOMAXPROCS(1))</li>
 <li>runtime.ReadMemStats(&amp;m1)</li>
-<li>defer_lock.go</li>
-</ol>
+
+<li><p>defer_lock.go</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
 
 <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
-    <span style="color:#4e9a06">&#34;sync&#34;</span>
+	<span style="color:#4e9a06">&#34;sync&#34;</span>
 <span style="color:#000;font-weight:bold">)</span>
 
 <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">mu</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Locker</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">new</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">I</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">LockUnlock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mu</span><span style="color:#000;font-weight:bold">)()</span>
-    <span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;doing&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">mu</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Locker</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">new</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">I</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">LockUnlock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mu</span><span style="color:#000;font-weight:bold">)()</span>
+	<span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;doing&#34;</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">}</span>
 
 <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">LockUnlock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mu</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Locker</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">unlock</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">())</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span>
+	<span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span>
 <span style="color:#000;font-weight:bold">}</span>
 
 <span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">I</span> <span style="color:#204a87;font-weight:bold">struct</span><span style="color:#000;font-weight:bold">{}</span>
 
 <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">I</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;lock&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;lock&#34;</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">}</span>
 
 <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">I</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;unlock&#34;</span><span style="color:#000;font-weight:bold">)</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
-<ol>
-<li>buf := make([]byte, len(b.buf), 2*cap(b.buf)+n)  为什么是2倍呢？</li>
+	<span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;unlock&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+
+<li><p>buf := make([]byte, len(b.buf), 2*cap(b.buf)+n)  为什么是2倍呢？</p></li>
 
 <li><p>// NOTE(rsc): This function does NOT call the runtime cmpstring function,
 // because we do not want to provide any performance justification for
@@ -456,7 +456,7 @@ A new type Builder is a replacement for bytes.Buffer for the use case of accumul
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/4-2018-04-25-strings-part2/" title="第 4 期 2018-04-25 线下活动">
+      <a href="http://bytemode.github.io/reading/2-2018-04-11-teleport/" title="第 2 期 2018-04-11 线下分享内容">
         <span class="direction">
           Previous
         </span>
@@ -466,7 +466,7 @@ A new type Builder is a replacement for bytes.Buffer for the use case of accumul
           </div>
           <div class="stretch">
             <div class="title">
-              第 4 期 2018-04-25 线下活动
+              第 2 期 2018-04-11 线下分享内容
             </div>
           </div>
         </div>
@@ -476,14 +476,14 @@ A new type Builder is a replacement for bytes.Buffer for the use case of accumul
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/2-2018-04-11-teleport/" title="第 2 期 2018-04-11 线下分享内容">
+      <a href="http://bytemode.github.io/reading/4-2018-04-25-strings-part2/" title="第 4 期 2018-04-25 线下活动">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 2 期 2018-04-11 线下分享内容
+              第 4 期 2018-04-25 线下活动
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

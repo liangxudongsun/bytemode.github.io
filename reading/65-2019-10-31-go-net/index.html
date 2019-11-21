@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 65 期 Go 原生网络模型 vs 异步 Reactor 模型 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -373,32 +373,32 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 <p>答：
 看源码：</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// func (fd *FD) Read(p []byte) (int, error)
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">n</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Read</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span>
-        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000">n</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
-            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EAGAIN</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pollable</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">waitRead</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">isFile</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-                    <span style="color:#204a87;font-weight:bold">continue</span>
-                <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#000;font-weight:bold">}</span>
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">n</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Read</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">n</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EAGAIN</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pollable</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">waitRead</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">isFile</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#204a87;font-weight:bold">continue</span>
+				<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000;font-weight:bold">}</span>
 
-            <span style="color:#8f5902;font-style:italic">// On MacOS we can see EINTR here if the user
-</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#8f5902;font-style:italic">// pressed ^Z.  See issue #22838.
-</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;darwin&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EINTR</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#204a87;font-weight:bold">continue</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#8f5902;font-style:italic">// On MacOS we can see EINTR here if the user
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// pressed ^Z.  See issue #22838.
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;darwin&#34;</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EINTR</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">continue</span>
+			<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000;font-weight:bold">}</span>
 <span style="color:#ce5c00;font-weight:bold">...</span>
 
 <span style="color:#8f5902;font-style:italic">// func netpollblock(pd *pollDesc, mode int32, waitio bool) bool
 </span><span style="color:#8f5902;font-style:italic"></span>
-    <span style="color:#8f5902;font-style:italic">// need to recheck error states after setting gpp to WAIT
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// this is necessary because runtime_pollUnblock/runtime_pollSetDeadline/deadlineimpl
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#8f5902;font-style:italic">// do the opposite: store to closing/rd/wd, membarrier, load of rg/wg
-</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">waitio</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">netpollcheckerr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mode</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">gopark</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">netpollblockcommit</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">unsafe</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pointer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">gpp</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">waitReasonIOWait</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">traceEvGoBlockNet</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span></code></pre></div>
+	<span style="color:#8f5902;font-style:italic">// need to recheck error states after setting gpp to WAIT
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// this is necessary because runtime_pollUnblock/runtime_pollSetDeadline/deadlineimpl
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#8f5902;font-style:italic">// do the opposite: store to closing/rd/wd, membarrier, load of rg/wg
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">waitio</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">netpollcheckerr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mode</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">gopark</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">netpollblockcommit</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">unsafe</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Pointer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">gpp</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">waitReasonIOWait</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">traceEvGoBlockNet</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>通过分析 conn.Read()，我们知道这个方法是同步的，但从源码我们可以看出，Go 使用的是非阻塞 IO，所以调用 syscall.Read 的时候并不会阻塞，所以实际上它是通过 waitRead 这个方法来实现阻塞的：netFD 的 Read 操作在系统调用Read后，当遇到 syscall.EAGAIN 时，waitRead 里面的 netpollblock 会调用 gopark 将当前读这个网络描述符的 goroutine 给 park 住，直到这个网络描述符上的读事件再次发生为止，唤醒 goroutine，waitRead 调用返回，回到外层的 for 循环继续执行。conn.Write 方法和 Read 的实现原理是一样的，都是在发生syscall.EAGAIN 错误的时候将当前 goroutine 给 park 住直到 socket 再次可写为止。</p>
 
 <h3 id="q3-go-的网络模型有-惊群效应-吗">Q3: Go 的网络模型有『惊群效应』吗？</h3>
@@ -408,17 +408,17 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">serverInit</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Once</span>
 
 <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">pd</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">pollDesc</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">FD</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000">serverInit</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Do</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">runtime_pollServerInit</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">runtime_pollOpen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">uintptr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">))</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#000">runtime_pollUnblock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
-            <span style="color:#000">runtime_pollClose</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
-        <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errno</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">errno</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}</span>
-    <span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">runtimeCtx</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">ctx</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+	<span style="color:#000">serverInit</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Do</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">runtime_pollServerInit</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">runtime_pollOpen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">uintptr</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sysfd</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">errno</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ctx</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">runtime_pollUnblock</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">runtime_pollClose</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">syscall</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errno</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">errno</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">pd</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">runtimeCtx</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">ctx</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>这里用了 sync.Once 来确保初始化一次 epoll 实例，这就表示一个 listener 只持有一个 epoll 实例来管理网络连接，既然只有一个 epoll 实例，当然就不存在『惊群效应』了。</p>
 
@@ -443,14 +443,14 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 
 <p>当你在独立的 goroutine 里完成你的阻塞逻辑之后得到了 response 数据，直接调用 <a href="https://github.com/panjf2000/gnet/blob/master/connection.go#L162">AsyncWrite</a>:</p>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">c</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">conn</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">AsyncWrite</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">buf</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">svr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">codec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">buf</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#000">_</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">poller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Trigger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">opened</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">)</span>
-            <span style="color:#000;font-weight:bold">}</span>
-            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
-        <span style="color:#000;font-weight:bold">})</span>
-    <span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">svr</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">codec</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">buf</span><span style="color:#000;font-weight:bold">);</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">_</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">loop</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">poller</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Trigger</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">opened</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">c</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">encodedBuf</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span>
+		<span style="color:#000;font-weight:bold">})</span>
+	<span style="color:#000;font-weight:bold">}</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>通过 closure 的方式，写一个唤醒事件到 epoll，同时传一个 func() error 到任务队列，在 sub reactor 的那个 goroutine 里执行这个函数，把数据写回 client。</p>
 
@@ -480,7 +480,7 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/4QurJJHuxaQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/4QurJJHuxaQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -498,7 +498,7 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/66-2019-11-07-paper-reading-csp/" title="第 66 期 Paper Reading CSP 理解顺序进程间通信">
+      <a href="http://bytemode.github.io/reading/64-2019-10-24-go-runtime/" title="第 64 期深入浅出 Golang Runtime">
         <span class="direction">
           Previous
         </span>
@@ -508,7 +508,7 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
           </div>
           <div class="stretch">
             <div class="title">
-              第 66 期 Paper Reading CSP 理解顺序进程间通信
+              第 64 期深入浅出 Golang Runtime
             </div>
           </div>
         </div>
@@ -518,14 +518,14 @@ Multi-Reactors 模型相较于 Go 原生模型在以下场景具有性能优势�
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/64-2019-10-24-go-runtime/" title="第 64 期深入浅出 Golang Runtime">
+      <a href="http://bytemode.github.io/reading/66-2019-11-07-paper-reading-csp/" title="第 66 期 Paper Reading CSP 理解顺序进程间通信">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 64 期深入浅出 Golang Runtime
+              第 66 期 Paper Reading CSP 理解顺序进程间通信
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 1 期每日阅读特训营 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -408,8 +408,8 @@
 <li>request cpu 份额: cgroup 中 <code>cpu.shares</code>，其中记录的数值是 CPU 分片数，一个 CPU 分为 1024 片（k8s 分成 1000 片），request.memory: 500m 表示申请 <sup>500</sup>&frasl;<sub>1000</sub> 个 cpu; 它保证程序能接收到申请的份数 CPU 片，但是如果程序没完全使用，其他程序是可以占用的；</li>
 <li>limit cpu 份额：<code>cpu.cfs_period_us</code> 表示一个 CPU 执行时间周期的时间，通常为 100ms（带宽控制系统定义了一个通常是 <sup>1</sup>&frasl;<sub>10</sub> 秒的周期）;<code>cpu.cfs_quota_us</code> 表示一个周期内分配的 CPU 时间; cpu.cfs_period_us/cpu.cfs_quota_us 合起来表示 limit 的 CPU 份额；</li>
 </ul></li>
-<li>查看 cgroup 命令：</li>
-</ol>
+
+<li><p>查看 cgroup 命令：</p>
 
 <pre><code>1. 找到容器中程序在宿主机上进程 ID
 $ cat /proc/${PID}/cgroup
@@ -419,7 +419,8 @@ $ cat /proc/${PID}/cgroup
 ...
 2. ls /sys/fs/cgroup/cpuacct,cpu/kubepods/burstable/podxxx/dockerid/ 
 3. ls /sys/fs/cgroup/memory/kubepods/burstable/podxxx/dockerid
-</code></pre>
+</code></pre></li>
+</ol>
 
 <h2 id="defer-笔记">“defer” 笔记</h2>
 
@@ -434,7 +435,7 @@ $ cat /proc/${PID}/cgroup
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -452,7 +453,7 @@ $ cat /proc/${PID}/cgroup
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/34-2019-03-16-plan9-guide/" title="第 34 期 Go 夜读之 plan9 汇编入门，带你打通应用和底层 by Xargin">
+      <a href="http://bytemode.github.io/reading/33-2019-03-07-defer-in-go/" title="第 33 期 Go 夜读之 Go defer 和逃逸分析">
         <span class="direction">
           Previous
         </span>
@@ -462,7 +463,7 @@ $ cat /proc/${PID}/cgroup
           </div>
           <div class="stretch">
             <div class="title">
-              第 34 期 Go 夜读之 plan9 汇编入门，带你打通应用和底层 by Xargin
+              第 33 期 Go 夜读之 Go defer 和逃逸分析
             </div>
           </div>
         </div>
@@ -472,14 +473,14 @@ $ cat /proc/${PID}/cgroup
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/33-2019-03-07-defer-in-go/" title="第 33 期 Go 夜读之 Go defer 和逃逸分析">
+      <a href="http://bytemode.github.io/reading/34-2019-03-16-plan9-guide/" title="第 34 期 Go 夜读之 plan9 汇编入门，带你打通应用和底层 by Xargin">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 33 期 Go 夜读之 Go defer 和逃逸分析
+              第 34 期 Go 夜读之 plan9 汇编入门，带你打通应用和底层 by Xargin
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

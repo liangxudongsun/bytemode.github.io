@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 27 期 Go 夜读之 go mod 源码阅读 part 2 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -358,7 +358,7 @@
 
 <h3 id="3-判断外部网络是否可用">3. 判断外部网络是否可用</h3>
 <div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;nacl&#34;</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;js&#34;</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Skipf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;skipping test: no external network on %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Skipf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;skipping test: no external network on %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOOS</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000;font-weight:bold">}</span></code></pre></div>
 <p>runtime.GOOS返回程序所在的操作系统名</p>
 
@@ -413,7 +413,7 @@ js 是指 Webassembly 技术，是在新版本1.11中才支持的,最新版本�
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/Isd-FOmM9C8" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/Isd-FOmM9C8" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -438,7 +438,7 @@ js 是指 Webassembly 技术，是在新版本1.11中才支持的,最新版本�
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/" title="第 28 期 Go 夜读之 go mod 源码阅读 part 3">
+      <a href="http://bytemode.github.io/reading/26-2019-01-03-blog-with-github-netlify/" title="第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客">
         <span class="direction">
           Previous
         </span>
@@ -448,7 +448,7 @@ js 是指 Webassembly 技术，是在新版本1.11中才支持的,最新版本�
           </div>
           <div class="stretch">
             <div class="title">
-              第 28 期 Go 夜读之 go mod 源码阅读 part 3
+              第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客
             </div>
           </div>
         </div>
@@ -458,14 +458,14 @@ js 是指 Webassembly 技术，是在新版本1.11中才支持的,最新版本�
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/26-2019-01-03-blog-with-github-netlify/" title="第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客">
+      <a href="http://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/" title="第 28 期 Go 夜读之 go mod 源码阅读 part 3">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客
+              第 28 期 Go 夜读之 go mod 源码阅读 part 3
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

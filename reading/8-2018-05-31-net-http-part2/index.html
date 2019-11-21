@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>第 8 期 2018-05-31 线下活动 - Go 标准包阅读 - Go Learn</title>
-    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="generator" content="Hugo 0.60.0-DEV" />
 
     
     <meta name="description" content="Go Learn.">
@@ -353,11 +353,11 @@
 <h3 id="问题">问题</h3>
 
 <ol>
-<li></li>
+<li><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Server</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">doKeepAlives</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">bool</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LoadInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">disableKeepAlives</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shuttingDown</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
 </ol>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Server</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">doKeepAlives</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">bool</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LoadInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">disableKeepAlives</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shuttingDown</span><span style="color:#000;font-weight:bold">()</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+
 <p>为什么要用 <code>atomic.LoadInt32(&amp;s.disableKeepAlives) == 0</code> ？</p>
 
 <p>原子操作比用锁更节约一点性能。</p>
@@ -365,22 +365,23 @@
 <ol>
 <li><p>server.go#Shutdown 不保险</p></li>
 
-<li><p>panicChan := make(chan interface{}, 1)</p></li>
+<li><p>panicChan := make(chan interface{}, 1)</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">	<span style="color:#000">panicChan</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">recover</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">panicChan</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#000">p</span>
+			<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000;font-weight:bold">}()</span>
+		<span style="color:#000">h</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">handler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ServeHTTP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87">close</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">done</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}()</span>
+	<span style="color:#204a87;font-weight:bold">select</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#000">panicChan</span><span style="color:#000;font-weight:bold">:</span>
+		<span style="color:#204a87">panic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#ce5c00;font-weight:bold">...</span></code></pre></div></li>
 </ol>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#000">panicChan</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
-            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">recover</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
-                <span style="color:#000">panicChan</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#000">p</span>
-            <span style="color:#000;font-weight:bold">}</span>
-        <span style="color:#000;font-weight:bold">}()</span>
-        <span style="color:#000">h</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">handler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ServeHTTP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">)</span>
-        <span style="color:#204a87">close</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">done</span><span style="color:#000;font-weight:bold">)</span>
-    <span style="color:#000;font-weight:bold">}()</span>
-    <span style="color:#204a87;font-weight:bold">select</span> <span style="color:#000;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#000">panicChan</span><span style="color:#000;font-weight:bold">:</span>
-        <span style="color:#204a87">panic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">...</span></code></pre></div>
+
 <p>外部处理就不能按照你的意愿去处理了，如果不拿出来，那么进程就挂掉了。</p>
 
 <ol>
@@ -398,7 +399,7 @@ ErrWriteAfterFlush = errors.New(&ldquo;unused&rdquo;)</p></li>
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/U84dn76gixQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+  <iframe src="https://www.youtube.com/embed/U84dn76gixQ" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
 
@@ -424,7 +425,7 @@ ErrWriteAfterFlush = errors.New(&ldquo;unused&rdquo;)</p></li>
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://bytemode.github.io/reading/9-2018-06-14-net-http-part3/" title="第 9 期 2018-06-14 线下活动">
+      <a href="http://bytemode.github.io/reading/7-2018-05-24-net-http-part1/" title="第 7 期 2018-05-24 线下活动 - Go 标准包阅读">
         <span class="direction">
           Previous
         </span>
@@ -434,7 +435,7 @@ ErrWriteAfterFlush = errors.New(&ldquo;unused&rdquo;)</p></li>
           </div>
           <div class="stretch">
             <div class="title">
-              第 9 期 2018-06-14 线下活动
+              第 7 期 2018-05-24 线下活动 - Go 标准包阅读
             </div>
           </div>
         </div>
@@ -444,14 +445,14 @@ ErrWriteAfterFlush = errors.New(&ldquo;unused&rdquo;)</p></li>
 
   <div class="next">
   
-      <a href="http://bytemode.github.io/reading/7-2018-05-24-net-http-part1/" title="第 7 期 2018-05-24 线下活动 - Go 标准包阅读">
+      <a href="http://bytemode.github.io/reading/9-2018-06-14-net-http-part3/" title="第 9 期 2018-06-14 线下活动">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              第 7 期 2018-05-24 线下活动 - Go 标准包阅读
+              第 9 期 2018-06-14 线下活动
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
