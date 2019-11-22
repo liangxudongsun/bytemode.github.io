@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第16期 queue-worker源码分析 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/reading/other/16-2018-09-06-queue-worker/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/reading/other/16-2018-09-06-queue-worker/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第16期 queue-worker源码分析
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第16期 queue-worker源码分析 </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<h2 id="异步函数和同步函数"><strong>异步函数和同步函数</strong></h2>
+
+<p>在OpenFaaS中同步调用函数时，将会连接到网关，直到函数成功返回才会关闭连接。同步调用是阻塞的。</p>
+
+<ul>
+<li>网关的路由是：<code>/function/&lt;function_name&gt;</code></li>
+<li>必须等待</li>
+<li>在结束的时候得到结果</li>
+<li>明确知道是成功还是失败</li>
+</ul>
+
+<p>异步函数会有一些差异：</p>
+
+<ul>
+<li>网关的路由是：<code>/async-function/&lt;function_name&gt;</code></li>
+<li>客户端获得202的即时响应码</li>
+<li>从queue-worker中调用函数</li>
+<li>默认情况下，结果是被丢弃的。</li>
+</ul>
+
+<h2 id="查看queue-worker的日志"><strong>查看queue-worker的日志</strong></h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">docker service logs -f func_queue-worker</code></pre></div>
+<h2 id="利用requestbin和x-callback-url获取异步函数的结果"><strong>利用requestbin和X-Callback-Url获取异步函数的结果</strong></h2>
+
+<p>如果需要获得异步函数的结果，有两个方法：</p>
+
+<ul>
+<li>更改代码，将结果返回给端点或者消息系统</li>
+<li>利用内置的回调
+内置的回调将会允许函数提供一个url，queue-worker会报告函数的成功或失败。
+requestbin会创建一个新的bin，这是互联网的一个url地址，可以从这里获取函数的结果。</li>
+</ul>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fuzvzbcz2vj30k00b3aar.jpg" alt="" /></p>
+
+<p><img src="https://ws3.sinaimg.cn/large/006tNbRwgy1fuzvztfu66j30k00b2757.jpg" alt="" /></p>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fuzw08o8w3j30k00b1aay.jpg" alt="" /></p>
+
+<h2 id="源码分析"><strong>源码分析</strong></h2>
+
+<h2 id="依赖项"><strong>依赖项</strong></h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">github</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">com</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">nats</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">io</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#204a87;font-weight:bold">go</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">nats</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">streaming</span>
+<span style="color:#000">github</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">com</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">nats</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">io</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#204a87;font-weight:bold">go</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">nats</span>
+
+<span style="color:#000">github</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">com</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">openfaas</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">faas</span></code></pre></div>
+<p>go-nats和go-nats-streaming是nats和nats-streaming的go版本的客户端。</p>
+
+<p>faas这个依赖其实是只用到了queue包下面的types.go文件。这个文件是定义了异步请求的Request结构体和一个CanQueueRequests接口。如下所示：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">queue</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;net/url&#34;</span>
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;net/http&#34;</span>
+
+<span style="color:#8f5902;font-style:italic">// Request for asynchronous processing
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Request</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">Header</span>      <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span>
+    <span style="color:#000">Body</span>        <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span>
+    <span style="color:#000">Method</span>      <span style="color:#204a87;font-weight:bold">string</span>
+    <span style="color:#000">QueryString</span> <span style="color:#204a87;font-weight:bold">string</span>
+    <span style="color:#000">Function</span>    <span style="color:#204a87;font-weight:bold">string</span>
+    <span style="color:#000">CallbackURL</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">url</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">URL</span> <span style="color:#4e9a06">`json:&#34;CallbackUrl&#34;`</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">// CanQueueRequests can take on asynchronous requests
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">CanQueueRequests</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">Queue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>从这里我们就可以明白作者的设计思路，只要是实现了这个CanQueueRequests接口，就可以作为一个queue-worker。</p>
+
+<h2 id="接口实现类natsqueue"><strong>接口实现类NatsQueue</strong></h2>
+
+<p>接口的实现类NatsQueue是在handler包里。它的属性都是nats中常用到的，包括clientId，clusterId，url，连接，主题等，如下所示：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// NatsQueue queue for work
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">NatsQueue</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">nc</span>        <span style="color:#000">stan</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Conn</span>    <span style="color:#8f5902;font-style:italic">// nats的连接
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">ClientID</span>  <span style="color:#204a87;font-weight:bold">string</span>       <span style="color:#8f5902;font-style:italic">// nats的clientId
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">ClusterID</span> <span style="color:#204a87;font-weight:bold">string</span>       <span style="color:#8f5902;font-style:italic">// nats的clusterId
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">NATSURL</span>   <span style="color:#204a87;font-weight:bold">string</span>       <span style="color:#8f5902;font-style:italic">// nats的URL
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">Topic</span>     <span style="color:#204a87;font-weight:bold">string</span>       <span style="color:#8f5902;font-style:italic">// 主题
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>它的queue方法也很简单，主要做了两件事儿：</p>
+
+<ol>
+<li>解析传入的Request对象，并转为json对象out</li>
+
+<li><p>将out发布到队列里</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// Queue request for processing
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">q</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">NatsQueue</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Queue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">queue</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">error</span> <span style="color:#000;font-weight:bold">{</span>
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">err</span> <span style="color:#204a87;font-weight:bold">error</span>
+
+<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;NatsQueue - submitting request: %s.\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Function</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">out</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">json</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Marshal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">q</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">nc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Publish</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">q</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Topic</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">out</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+</ol>
+
+<p>go语言没有构造方法，所以NatsQueue还用于创建NatsQueue的实例的方法，这里就成为工厂方法。这个工厂方法主要就是从配置文件中读取环境变量的值，然后创建一个nats的连接，相当于给NatsQueue的对象的每个属性进行赋值。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">CreateNatsQueue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">address</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">port</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientConfig</span> <span style="color:#000">NatsConfig</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">NatsQueue</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">queue1</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">NatsQueue</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">err</span> <span style="color:#204a87;font-weight:bold">error</span>
+    <span style="color:#000">natsURL</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;nats://%s:%d&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">address</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">port</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Opening connection to %s\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">natsURL</span><span style="color:#000;font-weight:bold">)</span>
+
+    <span style="color:#000">clientID</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">clientConfig</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GetClientID</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#000">clusterID</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#4e9a06">&#34;faas-cluster&#34;</span>
+
+    <span style="color:#000">nc</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">stan</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Connect</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">clusterID</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientID</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stan</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NatsURL</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">natsURL</span><span style="color:#000;font-weight:bold">))</span>
+    <span style="color:#000">queue1</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">nc</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">nc</span>
+
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">queue1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>这个CreateNatsQueue方法是Gateway项目中进行调用，我们可以在Gateway项目的main.go中找到，如果Gateway的配置开启了异步函数支持，就会调用该方法，创建一个NatsQueue对象，然后把函数放到队列中，这里就不深入讲解：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">UseNATS</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Async enabled: Using NATS Streaming.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">natsQueue</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">queueErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">natsHandler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CreateNatsQueue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NATSAddress</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NATSPort</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">natsHandler</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DefaultNatsConfig</span><span style="color:#000;font-weight:bold">{})</span>
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">queueErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatalln</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">queueErr</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">faasHandlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">QueuedProxy</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeQueuedProxy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">metricsOptions</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">natsQueue</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">faasHandlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AsyncReport</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeAsyncReport</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">metricsOptions</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>到这里，我相信读者也了解到，Gateway其实就是一个发布者，将异步请求扔到队列里。接下来肯定要有一个订阅者将请求消费处理。</p>
+
+<h2 id="订阅者处理"><strong>订阅者处理</strong></h2>
+
+<p>我们都知道，nats streaming的订阅者订阅到消息之后，会把消息扔给一个回调函数去处理。queue-worker的订阅者实现也是这样，它的实现并不复杂，所有逻辑都在main.go的中。</p>
+
+<p>我们先看回调函数mcb都做了什么：</p>
+
+<ol>
+<li>首先当然是将消息体反序列化成上面说到的用于异步处理的Request对象。</li>
+<li>构造http请求的url和querystring，url的格式如下：
+functionURL := fmt.Sprintf(&ldquo;http://%s%s:8080/%s&rdquo;, req.Function, config.FunctionSuffix, queryString)</li>
+<li>设置http的header，并以post的形式向functionURL发起请求。</li>
+<li>如果请求失败，设置返回状态码为<code>http.StatusServiceUnavailable</code>，并分别处理CallbackURL是否存在的情况。</li>
+<li>如果请求成功，同样也是要分别处理CallbackURL是否存在的情况。</li>
+</ol>
+
+<p>当然在这个callback中会根据一些环境变量的存在，选择是否打印日志出来。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">mcb</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">msg</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">stan</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Msg</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span>
+
+        <span style="color:#000">printMsg</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">msg</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#000">started</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Now</span><span style="color:#000;font-weight:bold">()</span>
+
+        <span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">queue</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">{}</span>
+        <span style="color:#000">unmarshalErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">json</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unmarshal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">msg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">unmarshalErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Unmarshal error: %s with data %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">unmarshalErr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">msg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Data</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#204a87;font-weight:bold">return</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Request for %s.\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Function</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DebugPrintBody</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">string</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">queryString</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#4e9a06">&#34;&#34;</span>
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">QueryString</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">queryString</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;?%s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">TrimLeft</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">QueryString</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;?&#34;</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">functionURL</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;http://%s%s:8080/%s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Function</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FunctionSuffix</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">queryString</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#000">request</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">functionURL</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">bytes</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewReader</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span><span style="color:#000;font-weight:bold">))</span>
+        <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Close</span><span style="color:#000;font-weight:bold">()</span>
+
+        <span style="color:#000">copyHeaders</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#000">res</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">client</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Do</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">status</span> <span style="color:#204a87;font-weight:bold">int</span>
+        <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">functionResult</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">byte</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">status</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusServiceUnavailable</span>
+
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000">timeTaken</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Since</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">started</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Seconds</span><span style="color:#000;font-weight:bold">()</span>
+
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Callback to: %s\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">String</span><span style="color:#000;font-weight:bold">())</span>
+
+                <span style="color:#000">resultStatusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">resultErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">postResult</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">res</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">functionResult</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">String</span><span style="color:#000;font-weight:bold">())</span>
+                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">resultErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">resultErr</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Posted result: %d&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">resultStatusCode</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#000">statusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">reportErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">postReport</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Function</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">status</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">timeTaken</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GatewayAddress</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">reportErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reportErr</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Posting report - %d\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">statusCode</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#204a87;font-weight:bold">return</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Close</span><span style="color:#000;font-weight:bold">()</span>
+
+            <span style="color:#000">resData</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ioutil</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadAll</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Body</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000">functionResult</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">resData</span>
+
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WriteDebug</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">string</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionResult</span><span style="color:#000;font-weight:bold">))</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Wrote %d Bytes\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">string</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionResult</span><span style="color:#000;font-weight:bold">)))</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">timeTaken</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Since</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">started</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Seconds</span><span style="color:#000;font-weight:bold">()</span>
+
+        <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Status</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Callback to: %s\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">String</span><span style="color:#000;font-weight:bold">())</span>
+            <span style="color:#000">resultStatusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">resultErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">postResult</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">res</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">functionResult</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CallbackURL</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">String</span><span style="color:#000;font-weight:bold">())</span>
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">resultErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">resultErr</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Posted result: %d&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">resultStatusCode</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000">statusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">reportErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">postReport</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">client</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Function</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">res</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">timeTaken</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GatewayAddress</span><span style="color:#000;font-weight:bold">)</span>
+
+        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">reportErr</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">reportErr</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Printf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Posting report - %d\n&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">statusCode</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p><code>postResult</code>函数是用来处理callbackURL存在的情况，在这个函数中将结果，以post请求调用callbackURL发送出去。</p>
+
+<p><code>postReport</code>函数用来处理callbackURL不存在的情况，这里是将结果发到Gateway网关的<code>&quot;http://&quot; + gatewayAddress + &quot;:8088/system/async-report&quot;</code>中，我们之后就可以从这个url里查询异步函数的执行结果了。</p>
+
+<h2 id="总结"><strong>总结</strong></h2>
+
+<p>本文主要分析了NATS Streaming版本的queue worker的实现，通过分析源码我们可以看到OpenFaaS在架构的设计很有考究，充分的考虑到了可扩展性，通过定义接口规范，使得开发者很容易实现自定义。</p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/other/16-2018-09-06-watchdog/" title="第16期 监视器 - watchdog">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第16期 监视器 - watchdog
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/reading/other/16-2018-09-06-openfaas-guide/" title="第16期 OpenFaas 介绍及源码分析">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第16期 OpenFaas 介绍及源码分析
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

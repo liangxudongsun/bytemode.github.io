@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第 64 期深入浅出 Golang Runtime - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/reading/64-2019-10-24-go-runtime/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/reading/64-2019-10-24-go-runtime/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第 64 期深入浅出 Golang Runtime
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第 64 期深入浅出 Golang Runtime </h1>
+            <aside >
+                 作者: 郝以奋@腾讯NOW直播 
+            </aside>
+
+            
+
+<h2 id="go-夜读第-64-期深入浅出-golang-runtime">Go 夜读第 64 期深入浅出 Golang Runtime</h2>
+
+<h2 id="内容简介">内容简介</h2>
+
+<p>本次分享将会对 go runtime 的调度，内存分配，gc 做一些细节上的讲解，同时也需要参与者对 runtime 有一些初步了解。</p>
+
+<h2 id="内容大纲">内容大纲</h2>
+
+<ul>
+<li>Golang Runtime 是什么，其发展历程；</li>
+<li>调度的实质和关键数据结构，函数；</li>
+<li>内存分配中 mspan, mheap, mcentral, mcache 等数据结构</li>
+<li>Golang GC 发展，Golang 三色标记实现的一些细节，元信息，写屏障，1.5 与 1.12 GC 的区别；</li>
+<li>一点优化思路与问题排查思路；</li>
+<li>总结及 question；</li>
+<li>平时我看 runtime 代码的一些方式；</li>
+</ul>
+
+<h2 id="分享嘉宾">分享嘉宾</h2>
+
+<p>郝以奋，yifhao, 腾讯 NOW 直播后台开发，负责 NOW 直播 CPP+JAVA 双栈 -&gt; Golang 转型：框架协同建设，业务功能定制，Go Mod 引入，服务模板，RPC 协议 Go Mod 化，服务模板，Golang 培训，文档等。</p>
+
+<p>目前 NOW 直播后台有 300 多个 Go 服务。</p>
+
+<h2 id="分享信息">分享信息</h2>
+
+<p>时间：2019-10-17 21:00:00 ~ 23:10:00, UTC+8
+分享 Slides：<a href="https://github.com/Frank-Hust/share">https://github.com/Frank-Hust/share</a></p>
+
+<h2 id="回看视频">回看视频</h2>
+
+<ul>
+<li><a href="https://www.bilibili.com/video/av73297683">https://www.bilibili.com/video/av73297683</a></li>
+<li><a href="https://youtu.be/oFJL8S1dwsw">https://youtu.be/oFJL8S1dwsw</a></li>
+</ul>
+
+<hr />
+
+<h2 id="q-a-总结">Q&amp;A 总结</h2>
+
+<h3 id="q-腾讯现在用go的多吗">Q: 腾讯现在用go的多吗?</h3>
+
+<p>多, 至少 2000 人的级别了，对go的接受度挺高的，使用人数在迅速增加，当然大部分团队还是 cpp。</p>
+
+<h3 id="q-腾讯-now-直播-go-开发占比多少">Q: 腾讯 NOW 直播 go 开发占比多少？</h3>
+
+<p>我们都是从其他语言转的，cpp，java-&gt;golang，一开始就写 go 的比较少。基本上学习一下，一个星期就可以开始写线上 go 服务了。目前新服务都是 go。</p>
+
+<h3 id="q-线程切换的开销">Q: 线程切换的开销</h3>
+
+<p>线程切换大概在几微秒级别，协程切换大概在百 ns 级别。</p>
+
+<p>线程切换过程:
+1. 进入系统调用
+2. 调度器本身代码执行
+3. 线程上下文切换: PC, SP 等寄存器，栈，线程相关的一些局部变量，还涉及一些 cache miss 的情况；
+4. 退出系统调用</p>
+
+<p>协程切换不需要进入和退出系统调用, 在进行上下文切换时也更轻量, 只需要切换几个寄存器, 协程 <code>runtime.g</code> 结构只有 40 多个字段, 而线程的 task struct 有大概 300 个字段.</p>
+
+<p>可参考进程/线程上下文切换会用掉你多少CPU？
+<a href="https://zhuanlan.zhihu.com/p/79772089">https://zhuanlan.zhihu.com/p/79772089</a></p>
+
+<p>协程究竟比线程能省多少开销？
+<a href="https://zhuanlan.zhihu.com/p/80037638">https://zhuanlan.zhihu.com/p/80037638</a></p>
+
+<h3 id="q-为啥是边缘触发-而不是水平触发的方式">Q: 为啥是边缘触发, 而不是水平触发的方式?</h3>
+
+<p>因为网络操作 ready 和未 ready 对于协程来说就是状态的切换。
+socket fd ready 了, 阻塞之上的协程就从 waiting 变成 runnable。
+操作时 socket fd 未 ready，那协程就从 running 变成 waiting。
+假如采取水平触发，如果一个协程因为某个连接读而变成 waiting 状态，这个连接有数据后，与之关联的协程就变成 ready，这个协程一直没去读数据，那水平触发一直就会 poll 出来该 fd，没必要。</p>
+
+<h3 id="q-内存什么时候释放">Q: 内存什么时候释放?</h3>
+
+<p>内存释放分两步
+没有存活对象的 span 被 GC 回收, 归还到 mheap 结构中，变成 free 的 page。
+sysmon 协程会扫描，超过一段时间没有再被使用的 page(1.12 机制有改变), 通过 madvise 系统调用告诉操作系统，这些 page 对应的物理内存不再需要了，可以与虚拟内存解绑，给其他分配使用。</p>
+
+<h3 id="q-0-1-13-0-3ms-三个时间的意思">Q: 0.1+13+0.3ms 三个时间的意思？</h3>
+
+<p><code>GCDEBUG=gctrace=1</code> 会打印出 gc 相关的时间，这三个分别代表，gc 开始时第一个 stw 的 wall time, 并发标记的 wall time 以及 GC 标记结束阶段 stw 的 wall time。</p>
+
+<h3 id="q-byte-于-string-的黑魔法">Q: []byte 于 string 的黑魔法</h3>
+
+<p>底层数据共享，减少数据拷贝。
+<a href="https://jaycechant.info/2019/golang-unsafe-cast-between-string-and-bytes/">https://jaycechant.info/2019/golang-unsafe-cast-between-string-and-bytes/</a></p>
+
+<h3 id="q-之前说的-netpoll-被-gopark-挂起的-g-扔哪了-怎么找到对应的-g-然后又怎么扔给对应的-m-的-runq-的">Q: 之前说的 netpoll，被 gopark 挂起的 G 扔哪了，怎么找到对应的 G，然后又怎么扔给对应的 M 的 runQ 的？</h3>
+
+<p>并没有扔哪里去，也没放在哪个队列。
+一个协程因为某个网络 fd 的操作阻塞时，会把该 fd 添加到 epoll 中，使用以下系统调用。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">epoll_ctl</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">epfd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">op</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">epoll_event</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">event</span><span style="color:#000;font-weight:bold">);</span>
+<span style="color:#204a87;font-weight:bold">typedef</span> <span style="color:#204a87;font-weight:bold">union</span> <span style="color:#000">epoll_data</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">ptr</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">fd</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000">__uint32_t</span> <span style="color:#000">u32</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000">__uint64_t</span> <span style="color:#000">u64</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span> <span style="color:#000">epoll_data_t</span><span style="color:#000;font-weight:bold">;</span>
+
+<span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">epoll_event</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">__uint32_t</span> <span style="color:#000">events</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#8f5902;font-style:italic">/* Epoll events */</span>
+    <span style="color:#000">epoll_data_t</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#8f5902;font-style:italic">/* User data variable */</span>
+<span style="color:#000;font-weight:bold">};</span></code></pre></div>
+<p>go 在 epoll_event 中的 epoll_data_t 放了一个指针值，该指针指向一个包含 runtime.g 的结构体。
+下次 epoll_wait 时，便可把该 epoll_data_t 也 poll 出来，相当于与该 fd 关联的上下文，也就可以找到阻塞其上的协程。</p>
+
+<p>不需要再放回对应的 M 的 runq 中，目前是通过 injectglist 放在全局的 runq 中。</p>
+
+<hr />
+
+<h2 id="观看视频">观看视频</h2>
+
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/oFJL8S1dwsw" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/63-2019-10-17-go-style-and-go-advices/" title="第 63 期 Go 编码风格阅读与讨论">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 63 期 Go 编码风格阅读与讨论
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/reading/65-2019-10-31-go-net/" title="第 65 期 Go 原生网络模型 vs 异步 Reactor 模型">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 65 期 Go 原生网络模型 vs 异步 Reactor 模型
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

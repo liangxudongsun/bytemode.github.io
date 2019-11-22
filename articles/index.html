@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>分享文章 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/articles/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/articles/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+    <link href="https://bytemode.github.io/articles/index.xml" rel="alternate" type="application/rss+xml" title="Go Learn" />
+    <link href="https://bytemode.github.io/articles/index.xml" rel="feed" type="application/rss+xml" title="Go Learn" />
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                分享文章
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a class="current" title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+<ul id="scrollspy">
+</ul>
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">The author</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>目录 - 分享文章</h1>
+
+            
+            <a href="https://bytemode.github.io/articles/how_to_test/readme/" title="how to testing">
+                <h2>how to testing </h2>
+            </a>
+            <br> 
+           
+              HOW TO TESTING 原文/源码参考：
+ how_to_test  作者：xpzouying@gmail.com
+测试的作用：
+ 验证代码是否符合预期 资源竞争检查：race detect 调优：profiling：memory/cpu  原始代码 代码功能：访客记次数。
+package main import ( &#34;fmt&#34; &#34;log&#34; &#34;net/http&#34; ) var counter = map[string]int{} func handleHello(w http.ResponseWriter, r *http.Request) 
+              <a href="https://bytemode.github.io/articles/how_to_test/readme/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/2018-11-11-golang-file-lock/" title="golang 的文件锁操作">
+                <h2>golang 的文件锁操作 </h2>
+            </a>
+            <br> 
+           
+              这篇文章给大家介绍一下 golang 的文件锁。我们在使用 golang 开发程序的时候，经常会出现多个 goroutine 操作同一个文件（或目录）的时候，如果不加锁，很容易导致文件中的数据混乱，于是，Flock 应运而生。
+Flock 是对于整个文件的建议性锁（不强求 goroutine 遵守），如果一个 goroutine 在文件上获取了锁，那么其他 goroutine 是可以知道的。默认情况下，当一个 goroutine 将文件锁住，另外一个 goroutine 可以直接操作被锁住的文件，原因在于 Flock 只是用于检测文件是否被加锁，针对文件已经被加锁，另一个 goroutine 
+              <a href="https://bytemode.github.io/articles/2018-11-11-golang-file-lock/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_cond_source_code_analysis/" title="sync.Cond源码分析">
+                <h2>sync.Cond源码分析 </h2>
+            </a>
+            <br> 
+           
+              Cond的主要作用就是获取锁之后，wait()方法会等待一个通知，来进行下一步锁释放等操作，以此控制锁合适释放，释放频率,适用于在并发环境下goroutine的等待和通知。
+针对Golang 1.9的sync.Cond，与Golang 1.10一样。 源代码位置：sync\cond.go。
+结构体 type Cond struct { noCopy noCopy // noCopy可以嵌入到结构中，在第一次使用后不可复制,使用go vet作为检测使用  // 根据需求初始化不同的锁，如*Mutex 和 *RWMutex    L Locker notify notifyList // 通知列表,调 
+              <a href="https://bytemode.github.io/articles/sync/sync_cond_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_map_source_code_analysis/" title="sync.Map源码分析">
+                <h2>sync.Map源码分析 </h2>
+            </a>
+            <br> 
+           
+              背景 众所周知,go普通的map是不支持并发的，换而言之,不是线程(goroutine)安全的。博主是从golang 1.4开始使用的，那时候map的并发读是没有支持，但是并发写会出现脏数据。golang 1.6之后，并发地读写会直接panic：
+fatal error: concurrent map read and map write  package main func main() { m := make(map[int]int) go func() { for { _ = m[1] } }() go func() { for { m[2] = 2 } }() select {} } 
+              <a href="https://bytemode.github.io/articles/sync/sync_map_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/" title="sync.Mutex 源码分析">
+                <h2>sync.Mutex 源码分析 </h2>
+            </a>
+            <br> 
+           
+              针对 Golang 1.10.3 的 sync.Mutex 进行分析，代码位置：sync/mutex.go
+结构体 type Mutex struct { state int32 // 指代mutex锁当前的状态    sema uint32 // 信号量，用于唤醒goroutine } Mutex 中的 state 用于指代锁当前的状态，如下所示
+1111 1111 &hellip;&hellip; 1111 1111 ______<strong><em>29</em></strong>_______/||| 存储等待 goroutine 数量 ||表示当前 mutex 是否加锁 |表示当前 mutex 是否被唤醒 表示 mutex 当前是否处于饥饿状 
+              <a href="https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_once_source_code_analysis/" title="sync.Once源码分析">
+                <h2>sync.Once源码分析 </h2>
+            </a>
+            <br> 
+           
+              sync.Once可以实现单例模式，确保sync.Once.Do(f func())只会被执行一次，可以初始化某个实例单例。
+针对Golang 1.9的sync.Once，与Golang 1.10一样。 源代码位置：sync\once.go。
+结构体 Once结构体定义如下：
+type Once struct { m Mutex done uint32 // 初始值为0表示还未执行过，1表示已经执行过 } Do func (o *Once) Do(f func()) { // done==1表示已经执行过了，直接结束返回    if atomic.LoadUint32(&amp;o.done) = 
+              <a href="https://bytemode.github.io/articles/sync/sync_once_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_rwmutex_source_code_analysis/" title="sync.RWMutex源码分析">
+                <h2>sync.RWMutex源码分析 </h2>
+            </a>
+            <br> 
+           
+              针对 Golang 1.9 的 sync.RWMutex 进行分析，与 Golang 1.10 基本一样除了将panic改为了throw之外其他的都一样
+RWMutex 是读写互斥锁，锁可以由任意数量的读取器或单个写入器来保持
+RWMutex 的零值是一个解锁的互斥锁
+RWMutex 是抢占式的读写锁，写锁之后来的读锁是加不上的
+以下代码均去除race竞态检测代码
+源代码位置：sync/rwmutex.go
+结构体 type RWMutex struct { w Mutex // 互斥锁  writerSem uint32 // 写锁信号量  readerSem uint32 // 读锁信号量 
+              <a href="https://bytemode.github.io/articles/sync/sync_rwmutex_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/sync_waitgroup_source_code_analysis/" title="sync.WaitGroup源码分析">
+                <h2>sync.WaitGroup源码分析 </h2>
+            </a>
+            <br> 
+           
+              针对Golang 1.9的sync.WaitGroup进行分析，与Golang 1.10基本一样除了将panic改为了throw之外其他的都一样。 源代码位置：sync\waitgroup.go。
+结构体 type WaitGroup struct { noCopy noCopy // noCopy可以嵌入到结构中，在第一次使用后不可复制,使用go vet作为检测使用，并因此只能进行指针传递，从而保证全局唯一 // 位值:高32位是计数器，低32位是goroutine等待计数。 // 64位的原子操作需要64位的对齐，但是32位。编译器不能确保它,所以分配了12个byte对齐的8个byte作为 
+              <a href="https://bytemode.github.io/articles/sync/sync_waitgroup_source_code_analysis/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sony-gobreaker/readme/" title="Sony gobreaker熔断器源码分析">
+                <h2>Sony gobreaker熔断器源码分析 </h2>
+            </a>
+            <br> 
+           
+              最近看了一下go-kit，发现这个微服务框架的熔断器，也是使用sony开源的作为基础。 sony开源在 github 的熔断器 在源代头注释中发现，原来sony实现的是微软2015时公布的CircuitBreaker标准，果然微软才开源界的大神。
+1）微软定义的 Circuit breaker 微软的原文件在此：<a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">https://msdn.microsoft.com/en-us/library/dn589784.aspx</a> 名不知道怎么正确翻译，直观翻译，可能叫：环形熔断器（或叫：循环状态自动切换中断器）。 因为它是在下面3个状态循环切换 ：
+ Closed / \ Half-Open &lt;- 
+              <a href="https://bytemode.github.io/articles/sony-gobreaker/readme/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sonarqube-for-golang/" title="Golang 代码质量持续检测">
+                <h2>Golang 代码质量持续检测 </h2>
+            </a>
+            <br> 
+           
+              Author: Kenny Allen
+Email: kennyallen0520@gmail.com
+ 前言 在软件开发过程中，人工检查项目代码中的漏洞和潜在的 BUG 是一件让人十分费神费力的事情，为了解决这一痛点，SonarQube诞生了，它实现了一系列代码自动检测过程，包括命名规范，代码漏洞，代码重复量等。
+但是光有 SonarQube 还不能发挥出应有的高效率，一个完整的代码质量持续检测应配合代码仓库(如 gitlab) 和 Jenkins 来共同构建一个自动化过程。
+环境  Gitlab、Jenkins、SonarQube 服务都在一台物理机上的Docker中运行
+ 网络 (局域网 
+              <a href="https://bytemode.github.io/articles/sonarqube-for-golang/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/2018-05-31-batch-del-redis-key/" title="批量删除redis中的key">
+                <h2>批量删除redis中的key </h2>
+            </a>
+            <br> 
+           
+              1.首先看图    1.我创建了三个以go:read开头的key 2.通过keys go:read:<em>可以全部找出来 3.接下来退出redis-cli,使用redis-cli -p 6379 keys &quot;go:read</em>&quot; | xargs redis-cli -p 6379 del可以批量删除    2.查看原理    1.执行redis-cli -p 6379 keys &quot;go:read<em>&quot;控制台输出了需要的key 2.执行redis-cli -p 6379 keys &quot;go:read</em>&quot; | xargs -0 echo,可以看到输 
+              <a href="https://bytemode.github.io/articles/2018-05-31-batch-del-redis-key/"><br>[阅读全文]</a>  
+            
+            <hr> 
+            <a href="https://bytemode.github.io/articles/sync/readme/" title="说明">
+                <h2>说明 </h2>
+            </a>
+            <br> 
+           
+              内容均来自OSC_梦朝思夕博客,51CTO_梦朝思夕博客 
+              <a href="https://bytemode.github.io/articles/sync/readme/"><br>[阅读全文]</a>  
+            
+            <hr> 
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第16期 faas-provider - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/reading/other/16-2018-09-06-faas-provider/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/reading/other/16-2018-09-06-faas-provider/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第16期 faas-provider
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第16期 faas-provider </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<p>faas-provider是一个模板，只要实现了这个模板的接口，就可以自定义实现自己的provider。</p>
+
+<h2 id="faas-provider">faas-provider</h2>
+
+<p>OpenFaaS官方提供了两套后台provider：</p>
+
+<ul>
+<li>Docker Swarm</li>
+<li>Kubernetes</li>
+</ul>
+
+<p>这两者在部署和调用函数的时候流程图如下：</p>
+
+<p>部署一个函数</p>
+
+<p><img src="https://ws1.sinaimg.cn/large/b831e4c7gy1ftuggjuhtpj20xc07k0x7.jpg" alt="" /></p>
+
+<p>调用一个函数</p>
+
+<p><img src="https://ws1.sinaimg.cn/large/b831e4c7gy1ftuggyto07j20xc071n1c.jpg" alt="" /></p>
+
+<p>provider要提供的一些API有：</p>
+
+<ul>
+<li>List / Create / Delete 一个函数</li>
+</ul>
+
+<p><code>/system/functions</code></p>
+
+<p>方法: GET / POST / DELETE</p>
+
+<ul>
+<li>获取一个函数</li>
+</ul>
+
+<p><code>/system/function/{name:[-a-zA-Z_0-9]+}</code></p>
+
+<p>方法: GET</p>
+
+<ul>
+<li>伸缩一个函数</li>
+</ul>
+
+<p><code>/system/scale-function/{name:[-a-zA-Z_0-9]+}</code></p>
+
+<p>方法: POST</p>
+
+<ul>
+<li>调用一个函数</li>
+</ul>
+
+<p><code>/function/{name:[-a-zA-Z_0-9]+}</code></p>
+
+<p>方法: POST</p>
+
+<p>在provider的server.go的serve方法，可以看到这个serve方法创建了几个路由，接受一个FaaSHandler对象。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// Serve load your handlers into the correct OpenFaaS route spec. This function is blocking.
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">Serve</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">handlers</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FaaSHandlers</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">config</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">types</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FaaSConfig</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/functions&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FunctionReader</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/functions&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeployHandler</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;POST&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/functions&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">DeleteHandler</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;DELETE&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/functions&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">UpdateHandler</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;PUT&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/function/{name:[-a-zA-Z_0-9]+}&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReplicaReader</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/scale-function/{name:[-a-zA-Z_0-9]+}&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReplicaUpdater</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;POST&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/function/{name:[-a-zA-Z_0-9]+}&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FunctionProxy</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/function/{name:[-a-zA-Z_0-9]+}/&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FunctionProxy</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/system/info&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">InfoHandler</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">EnableHealth</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/healthz&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Health</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Methods</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;GET&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#8f5902;font-style:italic">// 省略
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>因此在自定义的provider，只需实现FaaSHandlers中的几个路由处理函数即可。这几个handler是：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// FaaSHandlers provide handlers for OpenFaaS
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">FaaSHandlers</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">FunctionReader</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">DeployHandler</span>  <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">DeleteHandler</span>  <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">ReplicaReader</span>  <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">FunctionProxy</span>  <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">ReplicaUpdater</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+
+	<span style="color:#8f5902;font-style:italic">// Optional: Update an existing function
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">UpdateHandler</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">Health</span>        <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+	<span style="color:#000">InfoHandler</span>   <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>我们以官方实现的faas-netes为例，讲解一下这几个hander的实现过程。</p>
+
+<h2 id="faas-netes">faas-netes</h2>
+
+<p>我们看下在faas-netes的中的FaaSHandlers实现：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">bootstrapHandlers</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">bootTypes</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FaaSHandlers</span><span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">FunctionProxy</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeProxy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">cfg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadTimeout</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">DeleteHandler</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeDeleteHandler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">DeployHandler</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeDeployHandler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">deployConfig</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">FunctionReader</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeFunctionReader</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">ReplicaReader</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeReplicaReader</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">ReplicaUpdater</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeReplicaUpdater</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">),</span>
+	<span style="color:#000">UpdateHandler</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeUpdateHandler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">Health</span><span style="color:#000;font-weight:bold">:</span>         <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeHealthHandler</span><span style="color:#000;font-weight:bold">(),</span>
+		<span style="color:#000">InfoHandler</span><span style="color:#000;font-weight:bold">:</span>    <span style="color:#000">handlers</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MakeInfoHandler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">version</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">BuildVersion</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">version</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GitCommit</span><span style="color:#000;font-weight:bold">),</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>因为是Kubernetes上的provider实现，所以这些函数都带有一个namespace的参数。</p>
+
+<h3 id="functionproxy">FunctionProxy</h3>
+
+<p>这里最重要的就是FunctionProxy，它主要负责调用函数。这个handler其实也是起到了一个代理转发的作用，在这个函数中，只接受get和post。调用函数只接受post和get请求</p>
+
+<ol>
+<li><p>创建一个http的client对象</p></li>
+
+<li><p>只处理get和post请求。</p></li>
+
+<li><p>组装代理转发的watchdog的地址</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">url</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">forwardReq</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ToURL</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;%s.%s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">service</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">watchdogPort</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></li>
+</ol>
+
+<p>所以最后请求的格式就会形如：</p>
+
+<pre><code>   http://函数名.namespace:监视器的端口/路径
+</code></pre>
+
+<ol>
+<li><p>将请求发出去</p></li>
+
+<li><p>设置http响应的头</p></li>
+</ol>
+
+<h3 id="replicareader和replicaupdater">ReplicaReader和ReplicaUpdater</h3>
+
+<p>这两个是和副本数相关的，所以放在一起对比讲解。这两个的实现依赖于Kubernetes的客户端，获取代码如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">kubernetes</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewForConfig</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">config</span><span style="color:#000;font-weight:bold">)</span></code></pre></div>
+<p>这个config主要满足以下几个条件就行：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">Config</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// TODO: switch to using cluster DNS.
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#000">Host</span><span style="color:#000;font-weight:bold">:</span>            <span style="color:#4e9a06">&#34;https://&#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">net</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">JoinHostPort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">host</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">port</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">BearerToken</span><span style="color:#000;font-weight:bold">:</span>     <span style="color:#204a87">string</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">token</span><span style="color:#000;font-weight:bold">),</span>
+		<span style="color:#000">TLSClientConfig</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">tlsClientConfig</span><span style="color:#000;font-weight:bold">,</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>Kubernetes的所有操作都可以通过rest api来完成，这两个handler也是通过调用Kubernetes的api来做的。</p>
+
+<h4 id="replicareader">ReplicaReader</h4>
+
+<p><code>MakeReplicaReader</code>函数是获取当前的副本数：</p>
+
+<ol>
+<li><p>通过mux从路由中获取到name参数</p></li>
+
+<li><p>调用getService方法获取副本数，getService的核心代码就一句：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">item</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ExtensionsV1beta1</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Deployments</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">getOpts</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></li>
+
+<li><p>序列化之后，把结果返回</p></li>
+</ol>
+
+<h4 id="replicaupdater">ReplicaUpdater</h4>
+
+<p><code>MakeReplicaUpdater</code>是解析从gateway传过来的post请求，调用k8s的API设置副本数。</p>
+
+<ol>
+<li><p>从请求中取出body</p></li>
+
+<li><p>首先获取该函数的已部署的deployment对象</p></li>
+
+<li><p>然后将deployment的副本数量设置为应设数量，这样做的目的是为了仅仅修改副本数，而不修改别的属性。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ExtensionsV1beta1</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Deployments</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">deployment</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></li>
+</ol>
+
+<blockquote>
+<p>注：mux做路由的时候，如果成功的时候不对w做任何处理，是会默认状态码为200，空字符串。</p>
+</blockquote>
+
+<h4 id="deletehandler-deployhandler-functionreader和updatehandler">DeleteHandler，DeployHandler，FunctionReader和UpdateHandler</h4>
+
+<p>这几个都是对函数的操作，其实就是调用一下Kubernetes的API进行操作。</p>
+
+<p>这几个是核心的几句代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ExtensionsV1beta1</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Deployments</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Delete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FunctionName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">opts</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">deploy</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Extensions</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Deployments</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">res</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ExtensionsV1beta1</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Deployments</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">List</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">listOpts</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">updateErr</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">clientset</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CoreV1</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Services</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">functionNamespace</span><span style="color:#000;font-weight:bold">).</span><span style="color:#000">Update</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">service</span><span style="color:#000;font-weight:bold">)</span></code></pre></div>
+<h2 id="总结">总结</h2>
+
+<p>官方还提供了一个faas-swarm，其实现思路也是这样，操作swarm的api来做对容器的操作。至于如何调用一个函数，都是在函数的watchdog中实现。</p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/other/16-2018-09-06-openfaas-guide/" title="第16期 OpenFaas 介绍及源码分析">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第16期 OpenFaas 介绍及源码分析
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/reading/other/16-2018-09-06-quick-start/" title="第 16 期 Go 快速入门">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 16 期 Go 快速入门
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

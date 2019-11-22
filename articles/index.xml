@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分享文章 on Go Learn</title>
+    <link>https://bytemode.github.io/articles/</link>
+    <description>Recent content in 分享文章 on Go Learn</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Nov 2018 12:32:37 +0800</lastBuildDate>
+    
+	<atom:link href="https://bytemode.github.io/articles/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>how to testing</title>
+      <link>https://bytemode.github.io/articles/how_to_test/readme/</link>
+      <pubDate>Tue, 25 Dec 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/how_to_test/readme/</guid>
+      <description>HOW TO TESTING 原文/源码参考：
+ how_to_test  作者：xpzouying@gmail.com
+测试的作用：
+ 验证代码是否符合预期 资源竞争检查：race detect 调优：profiling：memory/cpu  原始代码 代码功能：访客记次数。
+package main import ( &amp;#34;fmt&amp;#34; &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; ) var counter = map[string]int{} func handleHello(w http.ResponseWriter, r *http.Request) { name := r.FormValue(&amp;#34;name&amp;#34;) counter[name]++ w.Header().Set(&amp;#34;Content-Type&amp;#34;, &amp;#34;text/html; charset=utf-8&amp;#34;) w.Write([]byte(&amp;#34;&amp;lt;h1 style=&amp;#39;color: &amp;#34; + r.FormValue(&amp;#34;color&amp;#34;) + &amp;#34;&amp;#39;&amp;gt;Welcome!&amp;lt;/h1&amp;gt; &amp;lt;p&amp;gt;Name: &amp;#34; + name + &amp;#34;&amp;lt;/p&amp;gt; &amp;lt;p&amp;gt;Count: &amp;#34; + fmt.Sprint(counter[name]) + &amp;#34;&amp;lt;/p&amp;gt;&amp;#34;)) } func main() { http.HandleFunc(&amp;#34;/hello&amp;#34;, handleHello) log.Fatal(http.ListenAndServe(&amp;#34;:8080&amp;#34;, nil)) } 运行：</description>
+    </item>
+    
+    <item>
+      <title>golang 的文件锁操作</title>
+      <link>https://bytemode.github.io/articles/2018-11-11-golang-file-lock/</link>
+      <pubDate>Sun, 11 Nov 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/2018-11-11-golang-file-lock/</guid>
+      <description>这篇文章给大家介绍一下 golang 的文件锁。我们在使用 golang 开发程序的时候，经常会出现多个 goroutine 操作同一个文件（或目录）的时候，如果不加锁，很容易导致文件中的数据混乱，于是，Flock 应运而生。
+Flock 是对于整个文件的建议性锁（不强求 goroutine 遵守），如果一个 goroutine 在文件上获取了锁，那么其他 goroutine 是可以知道的。默认情况下，当一个 goroutine 将文件锁住，另外一个 goroutine 可以直接操作被锁住的文件，原因在于 Flock 只是用于检测文件是否被加锁，针对文件已经被加锁，另一个 goroutine 写入数据的情况，内核不会阻止这个 goroutine 的写入操作，也就是建议性锁的内核处理策略。
+函数 import &amp;#34;syscall&amp;#34; func Flock(fd int, how int) (err error) Flock 位于 syscall 包中，fd 参数指代文件描述符，how 参数指代锁的操作类型。
+how 主要的参数类型：
+ LOCK_SH，共享锁，多个进程可以使用同一把锁，常被用作读共享锁； LOCK_EX，排他锁，同时只允许一个进程使用，常被用作写锁； LOCK_NB，遇到锁的表现，当采用排他锁的时候，默认 goroutine 会被阻塞等待锁被释放，采用 LOCK_NB 参数，可以让 goroutine 返回 Error; LOCK_UN，释放锁；  示例 下面的例子来自于 NSQ，位于 nsq/internal/dirlock，用于实现对目录的加锁
+// +build !windows  package dirlock import ( &amp;#34;fmt&amp;#34; &amp;#34;os&amp;#34; &amp;#34;syscall&amp;#34; ) // 定义一个 DirLock 的struct type DirLock struct { dir string // 目录路径，例如 /home/XXX/go/src 	f *os.</description>
+    </item>
+    
+    <item>
+      <title>sync.Cond源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_cond_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_cond_source_code_analysis/</guid>
+      <description>Cond的主要作用就是获取锁之后，wait()方法会等待一个通知，来进行下一步锁释放等操作，以此控制锁合适释放，释放频率,适用于在并发环境下goroutine的等待和通知。
+针对Golang 1.9的sync.Cond，与Golang 1.10一样。 源代码位置：sync\cond.go。
+结构体 type Cond struct { noCopy noCopy // noCopy可以嵌入到结构中，在第一次使用后不可复制,使用go vet作为检测使用  // 根据需求初始化不同的锁，如*Mutex 和 *RWMutex 	L Locker notify notifyList // 通知列表,调用Wait()方法的goroutine会被放入list中,每次唤醒,从这里取出 	checker copyChecker // 复制检查,检查cond实例是否被复制 } 再来看看等待队列notifyList结构体：
+type notifyList struct { wait uint32 notify uint32 lock uintptr head unsafe.Pointer tail unsafe.Pointer } 函数 NewCond 相当于Cond的构造函数，用于初始化Cond。
+参数为Locker实例初始化,传参数的时候必须是引用或指针,比如&amp;amp;sync.Mutex{}或new(sync.Mutex)，不然会报异常:cannot use lock (type sync.Mutex) as type sync.Locker in argument to sync.NewCond。
+大家可以想想为什么一定要是指针呢？ 因为如果传入 Locker 实例，在调用 c.L.Lock() 和 c.</description>
+    </item>
+    
+    <item>
+      <title>sync.Map源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_map_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_map_source_code_analysis/</guid>
+      <description>背景 众所周知,go普通的map是不支持并发的，换而言之,不是线程(goroutine)安全的。博主是从golang 1.4开始使用的，那时候map的并发读是没有支持，但是并发写会出现脏数据。golang 1.6之后，并发地读写会直接panic：
+fatal error: concurrent map read and map write  package main func main() { m := make(map[int]int) go func() { for { _ = m[1] } }() go func() { for { m[2] = 2 } }() select {} } 所以需要支持对map的并发读写时候，博主使用两种方法： 1. 第三方类库 concurrent-map。 2. map加上sync.RWMutex来保障线程(goroutine)安全的。
+golang 1.9之后,go 在sync包下引入了并发安全的map，也为博主提供了第三种方法。本文重点也在此，为了时效性，本文基于golang 1.10源码进行分析。
+sync.Map 结构体 Map type Map struct { mu Mutex //互斥锁，用于锁定dirty map  read atomic.Value //优先读map,支持原子操作，注释中有readOnly不是说read是只读，而是它的结构体。read实际上有写的操作  dirty map[interface{}]*entry // dirty是一个当前最新的map，允许读写  misses int // 主要记录read读取不到数据加锁读取read map以及dirty map的次数，当misses等于dirty的长度时，会将dirty复制到read } readOnly readOnly 主要用于存储，通过原子操作存储在Map.</description>
+    </item>
+    
+    <item>
+      <title>sync.Mutex 源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/</guid>
+      <description>针对 Golang 1.10.3 的 sync.Mutex 进行分析，代码位置：sync/mutex.go
+结构体 type Mutex struct { state int32 // 指代mutex锁当前的状态 	sema uint32 // 信号量，用于唤醒goroutine } Mutex 中的 state 用于指代锁当前的状态，如下所示
+1111 1111 ...... 1111 1111 \_________29__________/||| 存储等待 goroutine 数量 ||表示当前 mutex 是否加锁 |表示当前 mutex 是否被唤醒 表示 mutex 当前是否处于饥饿状态  几个常量 const ( mutexLocked = 1 &amp;lt;&amp;lt; iota mutexWoken mutexStarving mutexWaiterShift = iota starvationThresholdNs = 1e6 )  mutexLocked 值为1，根据 mutex.state &amp;amp; mutexLocked 得到 mutex 的加锁状态，结果为1表示已加锁，0表示未加锁 mutexWoken 值为2（二进制：10），根据 mutex.</description>
+    </item>
+    
+    <item>
+      <title>sync.Once源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_once_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_once_source_code_analysis/</guid>
+      <description>sync.Once可以实现单例模式，确保sync.Once.Do(f func())只会被执行一次，可以初始化某个实例单例。
+针对Golang 1.9的sync.Once，与Golang 1.10一样。 源代码位置：sync\once.go。
+结构体 Once结构体定义如下：
+type Once struct { m Mutex done uint32 // 初始值为0表示还未执行过，1表示已经执行过 } Do func (o *Once) Do(f func()) { // done==1表示已经执行过了，直接结束返回 	if atomic.LoadUint32(&amp;amp;o.done) == 1 { return } // 锁住对象，避免并发问题 	o.m.Lock() defer o.m.Unlock() if o.done == 0 { // 执行f函数后将done设置为1 	defer atomic.StoreUint32(&amp;amp;o.done, 1) f() } } 需要注意的是执行f函数是同步进行的，也就是说可能存在阻塞问题。</description>
+    </item>
+    
+    <item>
+      <title>sync.RWMutex源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_rwmutex_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_rwmutex_source_code_analysis/</guid>
+      <description>针对 Golang 1.9 的 sync.RWMutex 进行分析，与 Golang 1.10 基本一样除了将panic改为了throw之外其他的都一样
+RWMutex 是读写互斥锁，锁可以由任意数量的读取器或单个写入器来保持
+RWMutex 的零值是一个解锁的互斥锁
+RWMutex 是抢占式的读写锁，写锁之后来的读锁是加不上的
+以下代码均去除race竞态检测代码
+源代码位置：sync/rwmutex.go
+结构体 type RWMutex struct { w Mutex // 互斥锁  writerSem uint32 // 写锁信号量  readerSem uint32 // 读锁信号量  readerCount int32 // 读锁计数器  readerWait int32 // 获取写锁时需要等待的读锁释放数量 } 常量
+const rwmutexMaxReaders = 1 &amp;lt;&amp;lt; 30 // 支持最多2^30个读锁 方法 以下是 sync.RWMutex 提供的4个方法
+Lock 提供写锁加锁操作
+func (rw *RWMutex) Lock() { // 使用 Mutex 锁 	rw.</description>
+    </item>
+    
+    <item>
+      <title>sync.WaitGroup源码分析</title>
+      <link>https://bytemode.github.io/articles/sync/sync_waitgroup_source_code_analysis/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/sync_waitgroup_source_code_analysis/</guid>
+      <description>针对Golang 1.9的sync.WaitGroup进行分析，与Golang 1.10基本一样除了将panic改为了throw之外其他的都一样。 源代码位置：sync\waitgroup.go。
+结构体 type WaitGroup struct { noCopy noCopy // noCopy可以嵌入到结构中，在第一次使用后不可复制,使用go vet作为检测使用，并因此只能进行指针传递，从而保证全局唯一 // 位值:高32位是计数器，低32位是goroutine等待计数。 // 64位的原子操作需要64位的对齐，但是32位。编译器不能确保它,所以分配了12个byte对齐的8个byte作为状态。 state1 [12]byte // byte=uint8范围：0~255，只取前8个元素。转为2进制：0000 0000，0000 0000... ...0000 0000 sema uint32 // 信号量，用于唤醒goroutine }  不知道大家是否和我一样，不论是使用Java的CountDownLatch还是Golang的WaitGroup，都会疑问，可以装下多个线程|协程等待呢？看了源码后可以回答了，可以装下
+1111 1111 1111 ... 1111 \________32___________/  2^32个辣么多！所以不需要担心单机情况下会被撑爆了。
+函数 以下代码已经去掉了与核心代码无关的race代码。
+Add 添加或者减少等待goroutine的数量。
+参数delta可能是负的，加到WaitGroup计数器,可能出现如下结果 - 如果计数器变为零，所有被阻塞的goroutines都会被释放。 - 如果计数器变成负数，就增加恐慌。
+func (wg *WaitGroup) Add(delta int) { // 获取到wg.state1数组中元素组成的二进制对应的十进制的值 statep := wg.state() // 高32位是计数器 // 原子操作，如初始状态 statep 为空，且 delta 等于 1, 操作 加 1： // 00000000 00000000 00000000 00000001 00000000 …… 00000000 // \___________ 前32位 _______________/\__ 后32位均为0 __/ // 若当前状态位存在值 1，则再添加 delta 等于 1， 其结果为： // 00000000 00000000 00000000 00000010 00000000 …… 00000000 // \___________ 前32位 _______________/\__ 后32位均为0 __/ state := atomic.</description>
+    </item>
+    
+    <item>
+      <title>Sony gobreaker熔断器源码分析</title>
+      <link>https://bytemode.github.io/articles/sony-gobreaker/readme/</link>
+      <pubDate>Thu, 26 Jul 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sony-gobreaker/readme/</guid>
+      <description>最近看了一下go-kit，发现这个微服务框架的熔断器，也是使用sony开源的作为基础。 sony开源在 github 的熔断器 在源代头注释中发现，原来sony实现的是微软2015时公布的CircuitBreaker标准，果然微软才开源界的大神。
+1）微软定义的 Circuit breaker 微软的原文件在此：https://msdn.microsoft.com/en-us/library/dn589784.aspx 名不知道怎么正确翻译，直观翻译，可能叫：环形熔断器（或叫：循环状态自动切换中断器）。 因为它是在下面3个状态循环切换 ：
+ Closed / \ Half-Open &amp;lt;--&amp;gt; Open 初始状态是：Closed，指熔断器放行所有请求。 达到一定数量的错误计数，进入Open 状态，指熔断发生，下游出现错误，不能再放行请求。 经过一段Interval时间后，自动进入Half-Open状态，然后开始尝试对成功请求计数。 进入Half-Open后，根据成功/失败计数情况，会自动进入Closed或Open。  2）sony开源的go实现 // 从定义的错误来看，sony的应该增加了对连接数进行了限制 。  var ( // ErrTooManyRequests is returned when the CB state is half open and the requests count is over the cb maxRequests 	ErrTooManyRequests = errors.New(&amp;#34;too many requests&amp;#34;) // ErrOpenState is returned when the CB state is open 	ErrOpenState = errors.</description>
+    </item>
+    
+    <item>
+      <title>Golang 代码质量持续检测</title>
+      <link>https://bytemode.github.io/articles/sonarqube-for-golang/</link>
+      <pubDate>Sun, 22 Jul 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sonarqube-for-golang/</guid>
+      <description>Author: Kenny Allen
+Email: kennyallen0520@gmail.com
+ 前言 在软件开发过程中，人工检查项目代码中的漏洞和潜在的 BUG 是一件让人十分费神费力的事情，为了解决这一痛点，SonarQube诞生了，它实现了一系列代码自动检测过程，包括命名规范，代码漏洞，代码重复量等。
+但是光有 SonarQube 还不能发挥出应有的高效率，一个完整的代码质量持续检测应配合代码仓库(如 gitlab) 和 Jenkins 来共同构建一个自动化过程。
+环境  Gitlab、Jenkins、SonarQube 服务都在一台物理机上的Docker中运行
+ 网络 (局域网IP：192.168.1.100)
+   主机科学上网代理  192.168.1.100:1087
+ 模拟外网访问
+# 修改 hosts 文件，模拟外网访问 sudo sh -c &amp;#34;echo &amp;#39;192.168.1.100 jenkins.kenny.com\n192.168.1.100 gitlab.kenny.com\n192.168.1.100 sonarqube.kenny.com&amp;#39; &amp;gt;&amp;gt; /etc/hosts&amp;#34;   工具集     名称 版本     golang go1.10.3   docker 18.03.1-ce    搭建 接下来，我以一个完整的案例来介绍搭建过程。</description>
+    </item>
+    
+    <item>
+      <title>批量删除redis中的key</title>
+      <link>https://bytemode.github.io/articles/2018-05-31-batch-del-redis-key/</link>
+      <pubDate>Thu, 31 May 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/2018-05-31-batch-del-redis-key/</guid>
+      <description>1.首先看图    1.我创建了三个以go:read开头的key 2.通过keys go:read:*可以全部找出来 3.接下来退出redis-cli,使用redis-cli -p 6379 keys &amp;quot;go:read*&amp;quot; | xargs redis-cli -p 6379 del可以批量删除    2.查看原理    1.执行redis-cli -p 6379 keys &amp;quot;go:read*&amp;quot;控制台输出了需要的key 2.执行redis-cli -p 6379 keys &amp;quot;go:read*&amp;quot; | xargs -0 echo,可以看到输出了需要的key，但是有点不一样，双引号被去掉了,这说明数据通过管道传递给了xargs作了相应处理 3.执行redis-cli -p 6379 keys &amp;quot;go:read*&amp;quot; | xargs redis-cli -p 6379 del删除了输出的key,这说明xargs对接收到数据分别进行了redis-cli -p 6379 del操作    3.遇到的问题    1.同样的原理，我设置了三个key，但是这三个key里面包含了双引号,双引号前得加上\转义符 2.使用redis-cli -p 6379 keys &amp;quot;go:read*&amp;quot; | xargs redis-cli -p 6379 del,发现没删除 3.</description>
+    </item>
+    
+    <item>
+      <title>说明</title>
+      <link>https://bytemode.github.io/articles/sync/readme/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://bytemode.github.io/articles/sync/readme/</guid>
+      <description>内容均来自OSC_梦朝思夕博客,51CTO_梦朝思夕博客</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>第16期 监视器 - watchdog - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/reading/other/16-2018-09-06-watchdog/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/reading/other/16-2018-09-06-watchdog/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                第16期 监视器 - watchdog
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>第16期 监视器 - watchdog </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<p><strong>监视器</strong></p>
+
+<p>监视器提供了一个外部世界和函数之间的非托管的通用接口。它的工作是收集从API网关来的HTTP请求，然后调用程序。监视器是一个小型的Golang服务——下图展示了它是如何工作的：</p>
+
+<p><img src="https://ws1.sinaimg.cn/large/006tNbRwgy1fuzw3rkue0j30k00bamy2.jpg" alt="" /></p>
+
+<blockquote>
+<p>上图：一个小型的web服务，可以为每个传入的HTTP请求分配所需要的进程。</p>
+</blockquote>
+
+<p>每个函数都需要嵌入这个二进制文件并将其作为<code>ENTRYPOINT</code> 或 <code>CMD</code>，实际上是把它作为容器的初始化进程。一旦你的进程被创建分支，监视器就会通过<code>stdin</code> 传递HTTP请求并从<code>stdout</code>中读取HTTP响应。这意味着你的程序无需知道web和HTTP的任何信息。</p>
+
+<h2 id="轻松创建新函数"><strong>轻松创建新函数</strong></h2>
+
+<p><strong>从CLI创建一个函数</strong></p>
+
+<p>创建函数最简单的方法是使用FaaS CLI和模板。CLI抽象了所有Docker的知识，使得你只需要编写所支持语言的handler文件即可。</p>
+
+<ul>
+<li><a href="https://link.zhihu.com/?target=https%3A//blog.alexellis.io/first-faas-python-function/">你的第一个使用OpenFaaS的无服务器Python函数</a></li>
+<li><a href="https://link.zhihu.com/?target=https%3A//github.com/openfaas/faas-cli">阅读有关FaaS CLI的教程</a></li>
+</ul>
+
+<h2 id="深入研究"><strong>深入研究</strong></h2>
+
+<p><strong>Package your function打包你的函数</strong></p>
+
+<p>如果你不想使用CLI或者现有的二进制文件或镜像，可以使用下面的方法去打包函数：</p>
+
+<ul>
+<li>使用一个现有的或者一个新的Docker镜像作为基础镜像 <code>FROM</code></li>
+<li>通过<code>curl</code> 或 <code>ADD https://</code>从 <a href="https://link.zhihu.com/?target=https%3A//github.com/openfaas/faas/releases">Releases 页面</a> 添加fwatchdog二进制文件</li>
+<li>为每个你要运行的函数设置 <code>fprocess</code>(函数进程) 环境变量</li>
+<li>Expose port 8080</li>
+<li>暴露端口8080</li>
+<li>Set the <code>CMD</code> to <code>fwatchdog</code></li>
+<li>设置 <code>CMD</code>为<code>fwatchdog</code></li>
+</ul>
+
+<p>一个<code>echo</code>函数的示例Dockerfile：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">FROM alpine:3.7
+
+ADD https://github.com/openfaas/faas/releases/download/0.8.0/fwatchdog /usr/bin
+RUN chmod +x /usr/bin/fwatchdog
+
+# Define your binary here
+ENV fprocess=&#34;/bin/cat&#34;
+
+CMD [&#34;fwatchdog&#34;]</code></pre></div>
+<p><strong>Implementing a Docker healthcheck实现一个Docker健康检查</strong></p>
+
+<p>Docke的健康检查不是必需的，但是它是最佳实践。这会确保监视器已经在API网关转发请求之前准备好接收请求。如果函数或者监视器遇到一个不可恢复的问题，Swarm也会重启容器。</p>
+
+<p>Here is an example of the <code>echo</code> function implementing a healthcheck with a 5-second checking interval.</p>
+
+<p>下面是实现了一个具有5秒间隔的健康检查的<code>echo</code>函数示例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">FROM functions/alpine
+
+ENV fprocess=&#34;cat /etc/hostname&#34;
+
+HEALTHCHECK --interval=5s CMD [ -e /tmp/.lock ] || exit 1</code></pre></div>
+<p>监视器进程早启动内部Golang HTTP服务的时候会在 <code>/tmp/</code>下面创建一个.lock文件。<code>[ -e file_name ]</code>shell命令可以检查文件是否存在。在Windows容器中，这是一个不合法的路径，所以你可能需要设置<code>suppress_lock</code> 环境变量。</p>
+
+<p>有关健康检查，请阅读我的Docker Swarm教程：</p>
+
+<ul>
+<li><a href="https://link.zhihu.com/?target=http%3A//blog.alexellis.io/test-drive-healthcheck/">10分钟内试用Docker的健康检查</a></li>
+</ul>
+
+<p><strong>环境变量重载:</strong></p>
+
+<p>监视器可以通过环境变量来配置，你必须始终指定一个<code>fprocess</code> 变量</p>
+
+<h2 id="高级-调整"><strong>高级/调整</strong></h2>
+
+<h2 id="新-子监视器和http模式"><strong>(新)——子监视器和HTTP模式</strong></h2>
+
+<ul>
+<li>部分的监视器</li>
+</ul>
+
+<p>为每个请求创建一个新的进程分支具有进程隔离，可移植和简单的优点。任何进程都可以在没有任何附加代码的情况下变成一个函数。of-watchdog可和HTTP模式是一种优化，这样就可以在所有请求之间维护一个单一的进程。</p>
+
+<p>新版本的监视器正在<a href="https://link.zhihu.com/?target=https%3A//github.com/openfaas-incubator/of-watchdog">openfaas-incubator/of-watchdog</a>上测试。</p>
+
+<p>这种重写主要是生成一个可以持续维护的结构。它将会替代现有的监视器，也会有二进制的释放版。</p>
+
+<h2 id="使用http头"><strong>使用HTTP头</strong></h2>
+
+<p>HTTP的头和其他请求信息以下面的格式注入到环境变量中：</p>
+
+<pre><code>X-Forwarded-By`头变成了`Http_X_Forwarded_By
+</code></pre>
+
+<ul>
+<li><code>Http_Method</code> - GET/POST etc</li>
+<li><code>Http_Method</code> - GET/POST 等等</li>
+<li><code>Http_Query</code> - QueryString value</li>
+<li><code>Http_Query</code> - 查询字符串的值</li>
+<li><code>Http_ContentLength</code> - gives the total content-length of the incoming HTTP request received by the watchdog.</li>
+<li><code>Http_ContentLength</code> - 监视器收到的HTTP请求的内容长度。</li>
+</ul>
+
+<blockquote>
+<p>默认情况下，通过<code>cgi_headers</code> 环境变量启用该行为。</p>
+</blockquote>
+
+<p>以下是带有附加头和查询字符串的POST请求的示例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ cgi_headers=true fprocess=env ./watchdog &amp;
+2017/06/23 17:02:58 Writing lock-file to: /tmp/.lock
+
+$ curl &#34;localhost:8080?q=serverless&amp;page=1&#34; -X POST -H X-Forwarded-By:http://my.vpn.com</code></pre></div>
+<p>如果你再Linux系统下设置了<code>fprocess</code> 到 <code>env</code>中，会看到如下结果：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Http_User_Agent=curl/7.43.0
+Http_Accept=*/*
+Http_X_Forwarded_By=http://my.vpn.com
+Http_Method=POST
+Http_Query=q=serverless&amp;page=1</code></pre></div>
+<p>也可以使用<code>GET</code>请求：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ curl &#34;localhost:8080?action=quote&amp;qty=1&amp;productId=105&#34;</code></pre></div>
+<p>监视器的输出如下：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Http_User_Agent=curl/7.43.0
+Http_Accept=*/*
+Http_Method=GET
+Http_Query=action=quote&amp;qty=1&amp;productId=105</code></pre></div>
+<p>现在就可以在程序中使用HTTP状态来做决策了。</p>
+
+<h2 id="http方法"><strong>HTTP方法</strong></h2>
+
+<p>监视器支持的HTTP方法有：</p>
+
+<p>带有请求体的：</p>
+
+<ul>
+<li>POST, PUT, DELETE, UPDATE</li>
+</ul>
+
+<p>不带请求体的：</p>
+
+<ul>
+<li>GET</li>
+</ul>
+
+<blockquote>
+<p>API网关现在支持函数的POST路由。</p>
+</blockquote>
+
+<h2 id="请求响应的内容类型"><strong>请求响应的内容类型</strong></h2>
+
+<p>默认情况下，监视器会匹配客户端的&rdquo;Content-Type&rdquo;。</p>
+
+<ul>
+<li>如果客户端发送Content-Type 为 <code>application/json</code> 的json形式的post请求，将会在响应的时候自动匹配。</li>
+<li>如果客户端发送Content-Type 为 <code>text/plain</code> 的json形式的post请求，响应也会自动匹配。</li>
+</ul>
+
+<p>若要重载所有响应的Content-Type ，需要设置<code>content_type</code> 环境变量。</p>
+
+<h2 id="i-don-t-want-to-use-the-watchdog"><strong>I don&rsquo;t want to use the watchdog</strong></h2>
+
+<h2 id="我不想使用监视器"><strong>我不想使用监视器</strong></h2>
+
+<p>这种案例是OpenFaaS所不支持的，但是如果你的容器符合以下要求，那么OpenFaaS的网关和其他工具也会管理和伸缩服务。</p>
+
+<p>你需要提供一个锁文件 <code>/tmp/.lock</code>，以便业务流程系统可以在容器中运行健康检查。如果你正在使用swarm，那么请确保在Dockerfile中提供<code>HEALTHCHECK</code>指令——在 <code>faas</code>存储库中有示例。</p>
+
+<ul>
+<li>在HTTP之上暴露TCP端口8080</li>
+<li>创建<code>/tmp/.lock</code> 文件，或者在响应操作tempdir系统调用的任何位置。</li>
+</ul>
+
+<h2 id="调整自动伸缩"><strong>调整自动伸缩</strong></h2>
+
+<p>自动伸缩式从1个副本开始，以5个位一个单位进行升级：</p>
+
+<ul>
+<li>1-&gt;5</li>
+<li>5-&gt;10</li>
+<li>10-&gt;15</li>
+<li>15-&gt;20</li>
+</ul>
+
+<p>你可以通过标签来覆盖一个函数minimum 和 maximum 。</p>
+
+<p>如果要在2到15之间的话，请在部署的时候配置以下标签：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">com.openfaas.scale.min: &#34;2&#34;
+com.openfaas.scale.max: &#34;15&#34;</code></pre></div>
+<p>这些标签是可选的</p>
+
+<p><strong>禁用自动伸缩</strong></p>
+
+<p>如果要禁用某个函数的自动伸缩，将最小和最大的副本数设置为相同的值，即“1”。</p>
+
+<p>同样也可以删除AlertManager。</p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/15-2018-08-23-pool-workshop-in-go/" title="第 15 期 多路复用资源池组件剖析">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 15 期 多路复用资源池组件剖析
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/reading/other/16-2018-09-06-queue-worker/" title="第16期 queue-worker源码分析">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第16期 queue-worker源码分析
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

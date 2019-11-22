@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>sync.Mutex 源码分析 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/articles/sync/sync_mutex_source_code_analysis/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                sync.Mutex 源码分析
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>sync.Mutex 源码分析 </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<p>针对 Golang 1.10.3 的 sync.Mutex 进行分析，代码位置：<code>sync/mutex.go</code></p>
+
+<h2 id="结构体">结构体</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Mutex</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">state</span> <span style="color:#204a87;font-weight:bold">int32</span>  <span style="color:#8f5902;font-style:italic">// 指代mutex锁当前的状态
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">sema</span>  <span style="color:#204a87;font-weight:bold">uint32</span> <span style="color:#8f5902;font-style:italic">// 信号量，用于唤醒goroutine
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>Mutex 中的 state 用于指代锁当前的状态，如下所示</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#0000cf;font-weight:bold">1111</span> <span style="color:#0000cf;font-weight:bold">1111</span> <span style="color:#ce5c00;font-weight:bold">......</span> <span style="color:#0000cf;font-weight:bold">1111</span> <span style="color:#0000cf;font-weight:bold">1111</span>
+<span style="color:#a40000">\</span><span style="color:#000">_________29__________</span><span style="color:#ce5c00;font-weight:bold">/||</span><span style="color:#000;font-weight:bold">|</span>
+ <span style="color:#000">存储等待</span> <span style="color:#000">goroutine</span> <span style="color:#000">数量</span> <span style="color:#ce5c00;font-weight:bold">||</span><span style="color:#000">表示当前</span> <span style="color:#000">mutex</span> <span style="color:#000">是否加锁</span>
+                       <span style="color:#000;font-weight:bold">|</span><span style="color:#000">表示当前</span> <span style="color:#000">mutex</span> <span style="color:#000">是否被唤醒</span>
+                       <span style="color:#000">表示</span> <span style="color:#000">mutex</span> <span style="color:#000">当前是否处于饥饿状态</span>
+                   	</code></pre></div>
+<h2 id="几个常量">几个常量</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">const</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#000">mutexLocked</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span> <span style="color:#204a87;font-weight:bold">iota</span>
+	<span style="color:#000">mutexWoken</span>
+	<span style="color:#000">mutexStarving</span>
+	<span style="color:#000">mutexWaiterShift</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">iota</span>
+	<span style="color:#000">starvationThresholdNs</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1e6</span>
+<span style="color:#000;font-weight:bold">)</span></code></pre></div>
+<ul>
+<li>mutexLocked 值为1，根据 <code>mutex.state &amp; mutexLocked</code> 得到 mutex 的加锁状态，结果为1表示已加锁，0表示未加锁</li>
+<li>mutexWoken 值为2（二进制：10），根据 <code>mutex.state &amp; mutexWoken</code> 得到 mutex 的唤醒状态，结果为1表示已唤醒，0表示未唤醒</li>
+<li>mutexStarving 值为4（二进制：100），根据 <code>mutex.state &amp; mutexStarving</code> 得到 mutex 的饥饿状态，结果为1表示处于饥饿状态，0表示处于正常状态</li>
+<li>mutexWaiterShift 值为3，根据 <code>mutex.state &gt;&gt; mutexWaiterShift</code> 得到当前等待的 goroutine 数目</li>
+<li>starvationThresholdNs 值为1e6纳秒，也就是1毫秒，当等待队列中队首 goroutine 等待时间超过 starvationThresholdNs，mutex 进入饥饿模式</li>
+</ul>
+
+<h2 id="饥饿模式与正常模式">饥饿模式与正常模式</h2>
+
+<p>Mutex 有两种工作模式：正常模式和饥饿模式</p>
+
+<p>在正常模式中，等待者按照 FIFO 的顺序排队获取锁，但是一个被唤醒的等待者有时候并不能获取 mutex，它还需要和新到来的 goroutine 们竞争 mutex 的使用权。新到来的 goroutine 存在一个优势，它们已经在 CPU 上运行且它们数量很多，因此一个被唤醒的等待者有很大的概率获取不到锁，在这种情况下它处在等待队列的前面。如果一个 goroutine 等待 mutex 释放的时间超过1ms，它就会将 mutex 切换到饥饿模式</p>
+
+<p>在饥饿模式中，mutex 的所有权直接从解锁的 goroutine 递交到等待队列中排在最前方的 goroutine。新到达的 goroutine 们不要尝试去获取 mutex，即使它看起来是在解锁状态，也不要试图自旋，而是排到等待队列的尾部</p>
+
+<p>如果一个等待者获得 mutex 的所有权，并且看到以下两种情况中的任一种：1) 它是等待队列中的最后一个，或者 2) 它等待的时间少于1ms，它便将 mutex 切换回正常操作模式</p>
+
+<h2 id="函数">函数</h2>
+
+<p>以下代码已经去掉了与核心代码无关的 race 代码</p>
+
+<h3 id="lock">Lock</h3>
+
+<p>Lock 方法申请对 mutex 加锁，Lock 执行的时候，分三种情况</p>
+
+<ol>
+<li><strong>无冲突</strong> 通过 CAS 操作把当前状态设置为加锁状态</li>
+<li><strong>有冲突 开始自旋</strong>，并等待锁释放，如果其他 goroutine 在这段时间内释放了该锁，直接获得该锁；如果没有释放，进入3</li>
+
+<li><p><strong>有冲突，且已经过了自旋阶段</strong> 通过调用 semacquire 函数来让当前 goroutine 进入等待状态</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Mutex</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// 查看 state 是否为0，如果是则表示可以加锁，将其状态转换为1，当前 goroutine 加锁成功，函数返回
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CompareAndSwapInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">waitStartTime</span> <span style="color:#204a87;font-weight:bold">int64</span> <span style="color:#8f5902;font-style:italic">// 当前 goroutine 开始等待的时间
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">starving</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">false</span> <span style="color:#8f5902;font-style:italic">// mutex 当前所处的模式
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">awoke</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">false</span> <span style="color:#8f5902;font-style:italic">// 当前 goroutine 是否被唤醒
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">iter</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#8f5902;font-style:italic">// 自旋迭代的次数
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">old</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span> <span style="color:#8f5902;font-style:italic">// old 保存当前 mutex 的状态
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// 当 mutex 处于正常工作模式且能够自旋的时候，进行自旋操作（汇编实现，内部持续调用 PAUSE 指令，消耗 CPU 时间）
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexStarving</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">mutexLocked</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">runtime_canSpin</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">iter</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// 将 mutex.state 的倒数第二位设置为1，用来告 Unlock 操作，存在 goroutine
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// 即将得到锁，不需要唤醒其他 goroutine
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">awoke</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexWoken</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span><span style="color:#000">mutexWaiterShift</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span>
+				<span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CompareAndSwapInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">old</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">old</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexWoken</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">awoke</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">true</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000">runtime_doSpin</span><span style="color:#000;font-weight:bold">()</span>
+			<span style="color:#000">iter</span><span style="color:#ce5c00;font-weight:bold">++</span>
+			<span style="color:#000">old</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span>
+			<span style="color:#204a87;font-weight:bold">continue</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">old</span>
+		<span style="color:#8f5902;font-style:italic">// 当 mutex 不处于饥饿状态的时候，将 new 的第一位设置为1，即加锁
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexStarving</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">|=</span> <span style="color:#000">mutexLocked</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#8f5902;font-style:italic">// 当 mutex 处于加锁状态或饥饿状态的时候，新到来的 goroutine 进入等待队列
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexStarving</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span> <span style="color:#000">mutexWaiterShift</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#8f5902;font-style:italic">// 当前 goroutine 将 mutex 切换为饥饿状态，但如果当前 mutex 未加锁，则不需要切换
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#8f5902;font-style:italic">// Unlock 操作希望饥饿模式存在等待者
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">starving</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexLocked</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">|=</span> <span style="color:#000">mutexStarving</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">awoke</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// 当前 goroutine 被唤醒，将 mutex.state 倒数第二位重置
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">new</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexWoken</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">throw</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;sync: inconsistent mutex state&#34;</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">&amp;^=</span> <span style="color:#000">mutexWoken</span>
+		<span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#8f5902;font-style:italic">// 调用 CAS 更新 state 状态
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CompareAndSwapInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">old</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// mutex 处于未加锁，正常模式下，当前 goroutine 获得锁
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexStarving</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">break</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#8f5902;font-style:italic">// queueLifo 为 true 代表当前 goroutine 是等待状态的 goroutine
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">queueLifo</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">waitStartTime</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">waitStartTime</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#8f5902;font-style:italic">// 记录开始等待时间
+</span><span style="color:#8f5902;font-style:italic"></span>				<span style="color:#000">waitStartTime</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">runtime_nanotime</span><span style="color:#000;font-weight:bold">()</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#8f5902;font-style:italic">// 将被唤醒却没得到锁的 goroutine 插入当前等待队列的最前端
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">runtime_SemacquireMutex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">sema</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">queueLifo</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#8f5902;font-style:italic">// 如果当前 goroutine 等待时间超过starvationThresholdNs，mutex 进入饥饿模式
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">starving</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">starving</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">runtime_nanotime</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">waitStartTime</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#000">starvationThresholdNs</span>
+			<span style="color:#000">old</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexStarving</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexWoken</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span><span style="color:#000">mutexWaiterShift</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#000">throw</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;sync: inconsistent mutex state&#34;</span><span style="color:#000;font-weight:bold">)</span>
+				<span style="color:#000;font-weight:bold">}</span>
+				<span style="color:#8f5902;font-style:italic">// 等待状态的 goroutine - 1
+</span><span style="color:#8f5902;font-style:italic"></span>				<span style="color:#000">delta</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">int32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span><span style="color:#000">mutexWaiterShift</span><span style="color:#000;font-weight:bold">)</span>
+				<span style="color:#8f5902;font-style:italic">// 如果不是饥饿模式了或者当前等待着只剩下一个，退出饥饿模式
+</span><span style="color:#8f5902;font-style:italic"></span>				<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">starving</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span><span style="color:#000">mutexWaiterShift</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
+					<span style="color:#000">delta</span> <span style="color:#ce5c00;font-weight:bold">-=</span> <span style="color:#000">mutexStarving</span>
+				<span style="color:#000;font-weight:bold">}</span>
+				<span style="color:#8f5902;font-style:italic">// 更新状态
+</span><span style="color:#8f5902;font-style:italic"></span>				<span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">delta</span><span style="color:#000;font-weight:bold">)</span>
+				<span style="color:#204a87;font-weight:bold">break</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000">awoke</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">true</span>
+			<span style="color:#000">iter</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+		<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">old</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+</ol>
+
+<h3 id="unlock">Unlock</h3>
+
+<p>Unlock方法释放所申请的锁</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Mutex</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#8f5902;font-style:italic">// mutex 的 state 减去1，加锁状态 -&gt; 未加锁
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">new</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#8f5902;font-style:italic">// 未 Lock 直接 Unlock，报 panic
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">new</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexLocked</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">throw</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;sync: unlock of unlocked mutex&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#8f5902;font-style:italic">// mutex 正常模式
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">new</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">mutexStarving</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">old</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">new</span>
+		<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#8f5902;font-style:italic">// 如果没有等待者，或者已经存在一个 goroutine 被唤醒或得到锁，或处于饥饿模式
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#8f5902;font-style:italic">// 无需唤醒任何处于等待状态的 goroutine
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span><span style="color:#000">mutexWaiterShift</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">old</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">mutexLocked</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexWoken</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000">mutexStarving</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#204a87;font-weight:bold">return</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#8f5902;font-style:italic">// 等待者数量减1，并将唤醒位改成1
+</span><span style="color:#8f5902;font-style:italic"></span>			<span style="color:#000">new</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">old</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span><span style="color:#000">mutexWaiterShift</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">|</span> <span style="color:#000">mutexWoken</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">CompareAndSwapInt32</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">old</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#8f5902;font-style:italic">// 唤醒一个阻塞的 goroutine，但不是唤醒第一个等待者
+</span><span style="color:#8f5902;font-style:italic"></span>				<span style="color:#000">runtime_Semrelease</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">sema</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span>
+				<span style="color:#204a87;font-weight:bold">return</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000">old</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">state</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#8f5902;font-style:italic">// mutex 饥饿模式，直接将 mutex 拥有权移交给等待队列最前端的 goroutine
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#000">runtime_Semrelease</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">m</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">sema</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/articles/sync/sync_once_source_code_analysis/" title="sync.Once源码分析">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              sync.Once源码分析
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/articles/sync/sync_map_source_code_analysis/" title="sync.Map源码分析">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              sync.Map源码分析
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

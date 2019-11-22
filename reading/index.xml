@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go源码阅读 on Go Learn</title>
+    <link>https://bytemode.github.io/reading/</link>
+    <description>Recent content in Go源码阅读 on Go Learn</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 15 Nov 2018 12:32:37 +0800</lastBuildDate>
+    
+	<atom:link href="https://bytemode.github.io/reading/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>第 67 期 Go database/sql 数据库连接池分析</title>
+      <link>https://bytemode.github.io/reading/67-2019-11-14-sql-pool-reading/</link>
+      <pubDate>Thu, 14 Nov 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/67-2019-11-14-sql-pool-reading/</guid>
+      <description> Go 夜读第 67 期 Go database/sql 数据库连接池分析 本期 Go 夜读是由 POP 后端团队的邹文通给大家带来的 Go 标准包 database/sql 数据库连接池源码剖析。
+大纲  sql 连接池简介 连接池的工作原理 sql 包连接池源码分析 连接池使用 tips  Slides  https://docs.google.com/presentation/d/10kGjeHGbB0h0Cz8f58reXOyCdyWSOSKrr2160IFNla4/edit?usp=sharing  回看视频  https://www.bilibili.com/video/av75690189/ https://youtu.be/JKJ8ehtiqUM  参考资料  Go组件学习——database/sql数据库连接池你用对了吗 Go组件学习——手写连接池并没有那么简单 Chapter 8 Connection Pooling with Connector/J 彻底弄懂mysql（二）&amp;ndash;连接方式  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 66 期 Paper Reading CSP 理解顺序进程间通信</title>
+      <link>https://bytemode.github.io/reading/66-2019-11-07-paper-reading-csp/</link>
+      <pubDate>Thu, 07 Nov 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/66-2019-11-07-paper-reading-csp/</guid>
+      <description>Go 夜读第 66 期 Paper Reading CSP 理解顺序进程间通信 本期 Go 夜读是由 Go 夜读 SIG 核心小组成员欧长坤给大家带来的经典论文 CSP 的 Paper Reading。
+CSP 是什么？ 我们常常在讨论中提及 CSP，但鲜有人能真正说清楚 CSP 的演进历史，及其最核心的基本思想。我们已经对 Go 提供的并发原语足够熟悉了，是时候深入理解其背后的基础理论 —— 顺序进程间通信（Communicating Sequential Processes, CSP）了。本次分享我们针对 [Hoare 1978] 探讨 CSP 理论的原始设计（CSP 1978），主要围绕以下几个问题展开：
+Tony Hoare 提出 CSP 的时代背景是什么？ - CSP 1978 理论到底有哪些值得我们研究的地方？ - CSP 1978 理论是否真的就是我们目前熟知的基于通道的同步方式？ - CSP 1978 理论的早期设计存在什么样的缺陷？
+大纲  CSP 1978 的诞生背景 CSP 1978 的主要内容及其结论 CSP 1978 理论中存在的设计缺陷 讨论与反思  分享 Slides  https://docs.</description>
+    </item>
+    
+    <item>
+      <title>第 65 期 Go 原生网络模型 vs 异步 Reactor 模型</title>
+      <link>https://bytemode.github.io/reading/65-2019-10-31-go-net/</link>
+      <pubDate>Thu, 31 Oct 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/65-2019-10-31-go-net/</guid>
+      <description>Go 夜读第 65 期 Go 原生网络模型 vs 异步 Reactor 模型 本期 Go 夜读是由 Go 夜读 SIG 核心小组邀请到潘建锋给大家分享 Go 原生网络模型 vs 异步 Reactor 模型，以下是本次分享的部分内容和 QA 。 &amp;gt;潘建锋，曾任职腾讯、现亚马逊在职。Go 语言业余爱好者，开源库 gnet 和 ants 作者。
+引子 我们都知道 Golang 基于 goroutine 构建了一个简洁而优秀的原生网络模型，让开发者能够用同步的模式去编写异步的逻辑：goroutine-per-connection 模式，极大地降低了开发者编写网络应用时的心智负担，而且借助于 Go Scheduler 对 goroutines 的高效调度，这个原生网络模型足以应对绝大部分的应用场景。
+然而，在工程性上能做到如此高的普适和兼容，给开发者提供如此简单易用的接口，其背后必然是基于非常复杂的封装，做了很多取舍，放弃了一些『极致』的概念和设计。事实上 Golang 的 netpoll 底层就是基于 epoll/kqueue/iocp 这些系统调用来做封装的，最终暴露出 goroutine-per-connection 这样的网络编程模式给开发者。
+在绝大部分应用场景下，我推荐大家还是遵循 Golang 的 best practices，以这种模式来构建自己的网络应用，然而，在某些极度需要提高性能、节省资源以及技术栈必须是原生 Go （不考虑 C/C++ 写中间层供 Go 调用）的场景下，我们可以考虑自己构建 Reactor 网络模型。那么，Reactor 模型相对原生模型有哪些优势和弊端呢？我开发了的一个基于事件驱动机制的实验性质的异步网络框架：gnet，其在性能和资源占用上都远超 Go 原生 net 包（少数特定的应用场景），通过解析这个框架和 Go 原生网络模型，我们来一一分析～～</description>
+    </item>
+    
+    <item>
+      <title>第 64 期深入浅出 Golang Runtime</title>
+      <link>https://bytemode.github.io/reading/64-2019-10-24-go-runtime/</link>
+      <pubDate>Thu, 24 Oct 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/64-2019-10-24-go-runtime/</guid>
+      <description>Go 夜读第 64 期深入浅出 Golang Runtime 内容简介 本次分享将会对 go runtime 的调度，内存分配，gc 做一些细节上的讲解，同时也需要参与者对 runtime 有一些初步了解。
+内容大纲  Golang Runtime 是什么，其发展历程； 调度的实质和关键数据结构，函数； 内存分配中 mspan, mheap, mcentral, mcache 等数据结构 Golang GC 发展，Golang 三色标记实现的一些细节，元信息，写屏障，1.5 与 1.12 GC 的区别； 一点优化思路与问题排查思路； 总结及 question； 平时我看 runtime 代码的一些方式；  分享嘉宾 郝以奋，yifhao, 腾讯 NOW 直播后台开发，负责 NOW 直播 CPP+JAVA 双栈 -&amp;gt; Golang 转型：框架协同建设，业务功能定制，Go Mod 引入，服务模板，RPC 协议 Go Mod 化，服务模板，Golang 培训，文档等。
+目前 NOW 直播后台有 300 多个 Go 服务。
+分享信息 时间：2019-10-17 21:00:00 ~ 23:10:00, UTC+8 分享 Slides：https://github.</description>
+    </item>
+    
+    <item>
+      <title>第 63 期 Go 编码风格阅读与讨论</title>
+      <link>https://bytemode.github.io/reading/63-2019-10-17-go-style-and-go-advices/</link>
+      <pubDate>Thu, 17 Oct 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/63-2019-10-17-go-style-and-go-advices/</guid>
+      <description>Go 夜读第 63 期 Go 编码风格阅读与讨论 内容简介 本期主要是针对近期 uber-go/guide style 和 go-advices 的解读以及开发者讨论。
+内容大纲  Go CodeReview Comments Uber-go/style Go-advices  分享地址 2019-10-17 21:00:00 ~ 22:10:00, UTC+8
+https://zoom.us/j/6923842137
+分享 Slides https://docs.google.com/presentation/d/1MlzZJBK0Zq0VzJVC_AqSWmmlS4Of-8xY6NGZmfhKQXI/edit?usp=sharing
+进一步阅读的材料  Go CodeReviewComments uber-go/guide style go-advices  Go CodeReviewComments 翻译  Go Code Review Comments 译文（截止 2018 年 7 月 27 日）  Go 官方的建议已经涉及到非常方面：
+ Gofmt Comment Sentences Contexts Copying Crypto Rand Declaring Empty Slices Doc Comments Don&amp;rsquo;t Panic Error Strings Examples Goroutine Lifetimes Handle Errors Imports Import Dot In-Band Errors Indent Error Flow Initialisms Interfaces Line Length Mixed Caps Named Result Parameters Naked Returns Package Comments Package Names Pass Values Receiver Names Receiver Type Synchronous Functions Useful Test Failures Variable Names  gofmt 不管你是用什么开发工具，都推荐一定要配置 goimports。</description>
+    </item>
+    
+    <item>
+      <title>第 62 期 Go-Micro 微服务框架 Part 1</title>
+      <link>https://bytemode.github.io/reading/62-2019-10-10-go-micro-part1/</link>
+      <pubDate>Thu, 10 Oct 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/62-2019-10-10-go-micro-part1/</guid>
+      <description>Go 夜读第 62 期 Go-Micro 微服务框架 Part 1 内容简介 介绍Go-Micro的设计及其重要组件
+内容大纲  什么是 Micro Micro 风格服务架构 Go-Micro 框架的设计 Go-Micro 主要的组件 Go-Micro 的插件化  分享地址 2019-10-10 21:00 ~ 22:00, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料  Micro 项目 Micro 文档 示例项目 PPT  请点击：https://github.com/developer-learning/reading-go/issues/457
+Q&amp;amp;A 总结  micro 是Restful吗？  答：go-micro并不是一个web框架，不过go-micro中有web模块可以提供restful风格服务。
+ srv里面是包含client和server吗？  答：每一个服务都会有client和server，服务要能调用其它服务就需要一个client，能接收请求就需要server。
+ 为什么异构service互相调用一定要经过proxy，rpc不应该是编码和transport约定好本身就支持异构调用吗？  答：micro proxy并不支持互调，它提供一个go-micro特性的代理，其它非go-micro风格的服务通过这个代理加入go-micro体系，便可以通过proxy被其它服务调用，可以是http、grpc等。
+我会在未来几天增加一篇专门介绍micro的文档在这里：micro proxy
+ micro与k8s  答：这是一个常见的问题，micro会常与k8s、istio比较或联系，这是不公平的也是不合理的。主要在这么几个方面：
+a) micro与k8s同时起步，或者说micro更早些，k8s的产生是基于容器技术的兴起，而容器需要管理与编排。K8s确实给大型服务集群提供了极好的运维平台，但是它在一定适度上并不是面向开发人员的工具，更多是面向运维人员的。
+b) 基于a，Micro是面向开发人员的微服务框架，如果人们用了K8s，那应该就不要用micro。
+c) 绝大部分开发者可以试问内心的需求：自己当下的服务运行需求，真的需要K8s吗？说句傲娇的话，如果不能看到micro的价值，那请不要使用micro，在K8s中使用micro，就像皇宫的大内总管，少了件最重要的东西。
+ 为啥要 consul 换成 etcd  答：从4年的结合Consul经验来说，它工作得比较正常但并不尽如人意，它有太多功能我们用不到。consul更多是面向Hashicorp体系的服务，而Etcd则更纯粹是服务注册组件，是的，我们需要更纯粹的中间件。更多可以参考一篇不太细致的博文：deprecating-consul</description>
+    </item>
+    
+    <item>
+      <title>第 60 期 IPFS 星际文件系统</title>
+      <link>https://bytemode.github.io/reading/60-2019-09-19-ipfs-guide/</link>
+      <pubDate>Thu, 19 Sep 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/60-2019-09-19-ipfs-guide/</guid>
+      <description>Go 夜读第 60 期 IPFS 星际文件系统 背景介绍 传统的 HTTP 都是通过资源定位符来定位，在服务器关闭后，有些数据可能会永远丢失，而且如果某客户离服务器比较远，则可能延时较高。IPFS 提出使用基于内容寻址，只要拥有 hash 且网络上有人存储此数据，即可获得数据，同时自带 CDN 效果（热数据会自动分散）。
+内容简介 主要介绍一下 ipfs 的基本思想与使用，并分析源码结构以及粗略介绍相关兄弟项目（如 multiformats,filecoin 等)
+内容大纲  IPFS 的底层技术原理。 IPFS 源码概述。 超越 IPFS - 区块链存储简述。 Q&amp;amp;A。  分享地址 2019-09-19, 21:00 ~ 22:10, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料  IPFS paper 源码 PPT 预习资料  请点击：https://github.com/developer-learning/reading-go/issues/460
+Q&amp;amp;A 总结  IPFS 是如何组网的？ 答：IPFS 的底层网络库是 Libp2p，Libp2p 的路由算法是 S-KadDHT（分布式哈希表），只要能连接到网络中的几个节点，通过节点发现与交换，很容易就能进入到网络里，所以需要设置 bootstrap 节点作为连接种子。对于个人或公司想用 IPFS 组网，可以用 swarm.key 组建一个私网（需要指定一bootstrap），即可实现内部的 IPFS 网络。
+ IPFS 如何实现模糊搜索？ 答：首先 IPFS 的 DAG 节点里面都是有一个 name 项，此外还有一些其他的信息可以解析，这样的话可以爬取这些元数据信息，用一些搜索引擎工具即可模糊搜索，开源实现：https://github.</description>
+    </item>
+    
+    <item>
+      <title>第 59 期 Real-world Go Concurrency Bugs</title>
+      <link>https://bytemode.github.io/reading/59-2019-09-12-real-world-go-concurrency-bugs-in-paper-reading/</link>
+      <pubDate>Thu, 12 Sep 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/59-2019-09-12-real-world-go-concurrency-bugs-in-paper-reading/</guid>
+      <description>Go 夜读第 59 期 Real-world Go Concurrency Bugs 内容简介 Go 语言鼓励其用户多使用基于消息传递的同步原语 channel，但也不排斥其用户使用基于内存共享的同步原语，提供了诸如 sync.Mutex 等互斥原语。在过去十年的时间里，Go 的实践者不断思考着这些问题：哪种同步原语更加优秀？究竟什么场景下应该使用何种同步原语？哪类同步原语能够更好的保证数据操纵的正确性？哪类同步原语对程序员的心智负担较大？何种同步原语更容易产生程序 Bug？channel 是一种反模式吗？什么类型的 Bug 能够更好的被 Bug 检测器发现？……
+[Tu et al., 2019] 调研了包括 Docker, Kubernetes, gRPC 等六款主流大型 Go 程序在演进过程中出现的 171 个与同步原语相关的 Bug，并给出了一些有趣的见解。本次分享将讨论 [Tu et al. 2019] 的研究论文。
+内容大纲  Go 常见的并发模式与论文的研究背景 论文的研究方法 Go 并发 Bug 的分类及部分主要结论  阻塞式 Bug 非阻塞式 Bug  Go 运行时死锁、数据竞争检测器对 Bug 的检测能力与算法原理（如果时间允许） 论文的结论、争议与我们的反思  分享地址 2019-09-12, 21:00 ~ 22:10, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料  [Ou, 2019a] Real-world Go Concurrency Bugs PPT  本次分享的 PPT: 这里  [Pike, 2012] Go Concurrency Patterns  Rob Pike 关于 「Go 并发模式」的 PPT  [Gerrand, 2013] Advanced Go Concurrency Patterns  Sameer Ajmani 关于 「Go 并发模式进阶」的 PPT  [Tu et al.</description>
+    </item>
+    
+    <item>
+      <title>第 58 期 What&#39;s new in Go 1.13？</title>
+      <link>https://bytemode.github.io/reading/58-2019-09-05-whats-new-in-go1.13/</link>
+      <pubDate>Thu, 05 Sep 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/58-2019-09-05-whats-new-in-go1.13/</guid>
+      <description> Go 夜读第 58 期 What&amp;rsquo;s new in Go 1.13？ 内容简介
+主要介绍了刚刚发布的 Go 1.13 Release 的内容。
+内容大纲 - Go modules - Toolchain - Runtime - CoreLibrary Improve Performance - Q&amp;amp;A
+分享地址 2019-09-05, 21:00 ~ 22:10, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料  https://golang.org/doc/go1.13 improve defer perfermance 30% goproxy.cn - 为中国 Go 语言开发者量身打造的模块代理  更多见：https://github.com/developer-learning/reading-go/issues/465
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 57 期 sync/semaphore 源码浅析</title>
+      <link>https://bytemode.github.io/reading/57-2019-08-29-sync-semaphore/</link>
+      <pubDate>Thu, 29 Aug 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/57-2019-08-29-sync-semaphore/</guid>
+      <description> Go 夜读第 57 期 sync/semaphore 源码浅析 内容简介
+主要分析 golang.org/x/sync/semaphore 相关代码和 semaphore 部分使用场景。
+内容大纲 - semaphore 定义 - 源码分析 - Q&amp;amp;A
+分享地址 2019.08.29, 21:00 ~ 21:40, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料  semaphore 定义 源码 分享 PPT  补充资料  同步原语 结合 errgroup 使用 关于是否应该支持 resize 的讨论 semaphore 实现的 taskpool  更多见：https://github.com/developer-learning/reading-go/issues/456
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 56 期 channel &amp; select 源码分析</title>
+      <link>https://bytemode.github.io/reading/56-2019-08-22-channel-select-in-go/</link>
+      <pubDate>Thu, 22 Aug 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/56-2019-08-22-channel-select-in-go/</guid>
+      <description>Go 夜读第 56 期 channel &amp;amp; select 源码分析 内容简介
+Go 语言除了提供传统的互斥量、同步组等同步原语之外，还受 CSP 理论的影响，提供了 channel 这一强有力的同步原语。本次分享将讨论 channel 及其相关的 select 语句的源码，并简要讨论 Go 语言同步原语中的性能差异与反思。
+内容大纲 - 同步原语概述 - channel/select 回顾 - channel 的结构设计 - channel 的初始化行为 - channel 的发送与接收过程及其性能优化 - channel 的回收 - select 的本质及其相关编译器优化
+分享地址 2019.08.22, 20:30 ~ 21:30, UTC+8
+https://zoom.us/j/6923842137
+进一步阅读的材料 [Ou, 2019] channel &amp;amp; select 源码分析 分享内容的 PPT [Ou, 2018] Go 源码研究 分享者写的一本 Go 源码分析 [Mullender and Cox, 2008] S.</description>
+    </item>
+    
+    <item>
+      <title>第 55 期 Go&amp;WebAssembly 简介</title>
+      <link>https://bytemode.github.io/reading/55-2019-08-15-go-webassembly-guide/</link>
+      <pubDate>Thu, 15 Aug 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/55-2019-08-15-go-webassembly-guide/</guid>
+      <description>Go 夜读第 55 期 Go&amp;amp;WebAssembly 简介 WebAssembly 简介 WebAssembly 是一种新兴的网页虚拟机标准，它的设计目标包括：高可移植性、高安全性、高效率（包括载入效率和运行效率）、尽可能小的程序体积。
+根据 Ending 定律：⼀切可被编译为 WebAssembly 的，终将被编译为 WebAssembly。
+本次分享 Go&amp;amp;WebAssembly 相关的用法。
+分享时间 2019-08-15 21:00:00
+分享平台 zoom 在线直播 - https://zoom.us/j/6923842137
+更多讨论 FelixSeptem：补充一下 go 官方给的 wiki https://github.com/golang/go/wiki/WebAssembly 以及 WebAssembly 官网 https://webassembly.org/ 个人比较倾向于对于 https://github.com/gopherjs/gopherjs 来比较理解，相对于 go-&amp;gt;js (包括 react 等等) 的方案，WebAssembly 带来的异同是什么？
+chai2010 ：@FelixSeptem wasm 和 gopherjs 最大的差异：wasm 是官方支持，同时 wasm 是国际标准是其它语言认可的中间格式。
+以前虽然很多工具输出 js，那是因为没有 wasm 可以选择。 现在有了 wasm，大家肯定只支持 wasm 而逐渐弱化 js 的支持。 毕竟 wasm 虚拟机实现比 v8 简单多了，性能又可以秒杀 js。</description>
+    </item>
+    
+    <item>
+      <title>第 54 期 Go 夜读之 TiDB SQL 兼容性测试工具简介</title>
+      <link>https://bytemode.github.io/reading/54-2019-08-14-tidb-sql-tools/</link>
+      <pubDate>Wed, 14 Aug 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/54-2019-08-14-tidb-sql-tools/</guid>
+      <description> Go 夜读第 54 期 TiDB SQL 兼容性测试工具简介 本次分享包含两方面内容：
+通过 MySQL yacc 文件生成 SQL Cases，并用于 TiDB 的兼容性测试的原理讲解。 TiDB Parser 兼容性社区活动介绍，手把手的演示如何参与本次社区活动。
+(彩蛋：Parser Working Group 成立了，有兴趣的小伙伴可以看视频然后扫描加入。)
+分享时间 2019-08-14 21:00:00
+分享平台 zoom 在线直播 - https://zoom.us/j/6923842137
+参考资料  三十分钟成为 Contributor | 提升 TiDB Parser 对 MySQL 8.0 语法的兼容性  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 53 期 Go 夜读之 build in func delete from map</title>
+      <link>https://bytemode.github.io/reading/53-2019-08-01-build-in-delete-from-map-in-go/</link>
+      <pubDate>Thu, 01 Aug 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/53-2019-08-01-build-in-delete-from-map-in-go/</guid>
+      <description> Go 夜读第 53 期 delete from map in go 突然有一个需求要删除 map 中的一些过滤数据。 &amp;gt;由此查阅了一些资料，然后促成此次分享。
+PPT： build-in func delete from map in go.pptx
+分享时间 2019-08-01 21:00:00
+分享平台 zoom 在线直播 - https://zoom.us/j/6923842137
+参考资料  https://stackoverflow.com/questions/1736014/delete-mapkey-in-go https://blog.cyeam.com/json/2017/11/02/go-map-delete https://blog.golang.org/go-maps-in-action https://gobyexample.com/maps https://stackoverflow.com/questions/23229975/is-it-safe-to-remove-selected-keys-from-map-within-a-range-loop https://www.cnblogs.com/qcrao-2018/p/10903807.html https://appdividend.com/2019/05/12/golang-maps-tutorial-with-examples-maps-in-go-explained/ https://www.jianshu.com/p/92e9efec8688 https://www.reddit.com/r/golang/comments/5tfx7i/why_delete_doesnt_return_a_bool/ https://www.liwenzhou.com/posts/Go/08_map/ https://github.com/EDDYCJY/blog/tree/master/map  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 52 期 Go 夜读之 httprouter 简介</title>
+      <link>https://bytemode.github.io/reading/52-2019-07-25-httprouter-guide/</link>
+      <pubDate>Thu, 25 Jul 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/52-2019-07-25-httprouter-guide/</guid>
+      <description> httprouter 简介 详细内容，可以查看 https://cch123.github.io/httprouter/
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 51 期 Go 夜读之 sync/errgroup 源码阅读</title>
+      <link>https://bytemode.github.io/reading/51-2019-07-18-sync-errgroup/</link>
+      <pubDate>Thu, 18 Jul 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/51-2019-07-18-sync-errgroup/</guid>
+      <description> golang.org/x/sync/errgroup errgroup 唯一的坑是for循环里千万别忘了 i, x := i, x，以前用 waitgroup 的时候都是 go func 手动给闭包传参解决这个问题的，errgroup 的.Go没法这么干，犯了好几次错才改过来&amp;rdquo;
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 50 期 Go 夜读之 GoLand Tips &amp; Tricks</title>
+      <link>https://bytemode.github.io/reading/50-2019-06-27-goland-practrice/</link>
+      <pubDate>Thu, 27 Jun 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/50-2019-06-27-goland-practrice/</guid>
+      <description>GoLand Tips &amp;amp; Tricks 问答 21:01:08 From Shengyou Fan : 全程英文+中文翻译 21:04:11 From Hao : Shengyou , r u come from TW ? 21:04:50 From Shengyou Fan : Yes, I’m from TW 21:10:04 From lucas : ctrl + tab 对应 mac 是？ 21:10:12 From mai yang : presentation assistant 21:10:26 From Shengyou Fan : 也是 ctrl + tab 21:14:26 From Dominic : 这种 example 自己在document中定义的话 是代码块吗 21:27:37 From lucas : 有什么办法可以在terminal中快速打开一个文件吗？ 21:27:46 From 江金 饶 to mai yang (Privately) : open xxx 21:27:50 From mai yang to 江金 饶 (Privately) : opne xxx 21:27:59 From mai yang : open xxx 21:28:01 From Dominic : open on mac or start on win 21:28:03 From Hao : Mac, open file 21:28:08 From Zhongxuan的 iPhone : Open .</description>
+    </item>
+    
+    <item>
+      <title>第 49 期 TiDB 源码阅读之 Transaction</title>
+      <link>https://bytemode.github.io/reading/49-2019-06-26-tidb-transaction-reading/</link>
+      <pubDate>Wed, 26 Jun 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/49-2019-06-26-tidb-transaction-reading/</guid>
+      <description>TiDB Transaction 内容介绍 本次分享主要讲 TiDB 的事务执行过程和一些异常处理，涉及 TiDB 的 session 和 tikv 部分模块。
+PDF: Source code reading of TiDB Transaction .pdf
+推荐阅读  TiDB 源码阅读系列文章（十九）tikv-client（下） 三篇文章了解 TiDB 技术内幕 - 说存储 Transaction in TiDB Coprocessor in TiKV  视频回看  TiDB 源码学习之 Executor - YouTube TiDB 源码学习之 Executor - Bilibili  问题 21:17:34 From zq : 分享妹子用的是什么IDE 21:17:44 From mrj : goland 21:17:45 From Pure White : 左上角，goland 21:17:45 From tangyinpeng : goland 21:17:46 From Heng Long : goland 21:17:57 From zq : goland现在做得这么好看啦 21:18:05 From Heng Long : Meterial theme 21:18:07 From mrj : 下来主题 21:18:22 From lk : 有什么比较不错的主题吗？ 21:18:31 From Pure White : darcula 21:18:35 From mrj : 默认的就挺好的 21:20:04 From mai yang : 明天晚上将由 GoLand 布道师给我们分享 GoLand 的使用及技巧实践分享。 21:28:23 From HAITAO的 iPhone : 点查不带timestamp，直接读最新稳定版本么？ 21:28:32 From Wei Yao : 对 21:28:52 From liber xue : 双击shift 直接search 21:28:55 From Wei Yao : 最新 commited 版本 21:35:50 From HAITAO的 iPhone : 点查，实际会默认给一个当前最新的timestamp,根据这个ts，kv返回对应的版本值?</description>
+    </item>
+    
+    <item>
+      <title>第 48 期 TiDB 源码阅读之 Compiler</title>
+      <link>https://bytemode.github.io/reading/48-2019-06-19-tidb-compiler-reading/</link>
+      <pubDate>Wed, 19 Jun 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/48-2019-06-19-tidb-compiler-reading/</guid>
+      <description>TiDB Compiler 内容介绍 本次分享主要讲 TiDB 的优化器框架以及具体的 SQL 执行优化原理 。主要涉及 TiDB 的 planner 模块。欢迎大家参加！
+PPT: TiDB Compiler.pdf
+推荐阅读  TiDB 源码阅读系列文章（七）基于规则的优化 TiDB 源码阅读系列文章（八）基于代价的优化 TiDB 源码阅读系列文章（二十一）基于规则的优化 II  视频回看  TiDB 源码学习之 Executor - YouTube TiDB 源码学习之 Executor - Bilibili  问题 22:13:46 From mai yang : rule 怎么对照文档帮助理解呢？ 22:16:31 From dqyuan : 怎么快速找到代码对应的pr？ 22:18:43 From Wei Yao : git blame 22:23:04 From kzl : Order by 是会下推到tikv吗？ 22:25:02 From Wei Yao : 除非 order by 带了 limit，要不然推下去没意义 22:25:25 From Wei Yao : 有一些情况，如果是 order by 一个索引，那就直接消除掉这个 排序操作了 22:26:07 From zhao : 有意义吧，推了之后 tidb端可以直接stream merge，不知道实现了没有 22:27:38 From Wei Yao : 是可以 stream merge, 但是现在 tidb 还没实现这个，因为优先级不是太高 22:30:42 From Wei Yao : stream merge 主要是可以节省一些内存，避免 order by 太多导致 tidb oom 22:30:56 From Heng Long : 嗯，会让 tikv 的压力变大 22:34:28 From hezhiyong : limit offset 分页性能不好 22:34:53 From hezhiyong : 有好变通改写方法没 22:35:52 From hezhiyong : limit offset 会有下推到tikv么 22:36:19 From Wei Yao : limit offset 没办法的，这个是全局的 offset 22:36:40 From Wei Yao : tikv 并不知道自己的 offset 在全局的 offset 是多少 22:37:05 From Wei Yao : 这个其他数据库其实也一样 22:37:37 From hezhiyong : 那就是这个数据就是要全拿到tidb层在来过滤 22:37:38 From hezhiyong : 是吧 22:39:27 From Hao’s iPad : 喝口水吧 22:45:35 From zhao : 这个skyline prune有相关的资料吗 22:45:41 From zhao : paper之类的 22:47:09 From Wei Yao : 我记得暂时还没有 public 22:47:20 From Wei Yao : skyline pruning 就是消除一些路径 23:04:22 From mai yang : 怎么快速找到代码对应的pr？git blame 这个可以演示一下吗？ 23:06:42 From tangenta : github 上面看文件的时候有个选项是 blame，那里应该比较清晰 23:09:44 From mai yang : github 上面看文件的时候有个选项是 blame，那里应该比较清晰 —— 这个不错，看到了。</description>
+    </item>
+    
+    <item>
+      <title>第 47 期 TiDB 源码阅读之 Executor</title>
+      <link>https://bytemode.github.io/reading/47-2019-06-12-tidb-exector-reading/</link>
+      <pubDate>Wed, 12 Jun 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/47-2019-06-12-tidb-exector-reading/</guid>
+      <description> TiDB Executor 内容介绍 本次分享主要讲 TiDB 中 insert/update/delete/select, 以及 DDL 等是如何执行的，以及涉及到相关模块。大概会涉及以下模块：
+ executor distsql ddl  PPT: TiDB Executor 源码阅读.pdf
+推荐阅读  Select 语句概览 INSERT 语句详解 DDL 源码解析  视频回看  TiDB 源码学习之 Executor - YouTube TiDB 源码学习之 Executor - Bilibili  PPT: https://github.com/developer-learning/reading-go/files/3281080/TiDB.Executor.pdf
+问题  表的信息是怎么存的呢  id的生成规则是什么  如果索引里面不保存handle_id，那怎么根据索引找到这行数据呢  索引字段很大会不会有问题，作为id的一部分的话 单条6m的限制是怎么计算出来的？还是压力测出来的？ ddl时，job放到tikv的队列，tikv是分布式的，job具体是放到哪个tikv上的呢？ 并行ddl 如何跑 tikv整体上可以看成一个kv store region这部分概念可以配合hbase去看看能更好的理解 难道own tidb server要遍历所有的tikv server上的queue，去取ddl的job？ tidb 的统计信息也是放一个表里面，每次parse 都会去拿这个信息，这样的话请求到一个region,这个表是不是很容易成为热点  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 46 期 TiDB 源码阅读之概览</title>
+      <link>https://bytemode.github.io/reading/46-2019-06-05-tidb-overview-reading/</link>
+      <pubDate>Wed, 05 Jun 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/46-2019-06-05-tidb-overview-reading/</guid>
+      <description>TiDB Source Code Overview 视频回看  TiDB 源码学习之 Source Code Overview - YouTube TiDB 源码学习之 Source Code Overview - Bilibili  意见反馈  【Go夜读】《TiDB Source Code Overview》反馈  chat 答疑 20:54:52 From mai yang : 大家好，欢迎大家前来参加 Go 夜读&amp;amp;TiDB 源码学习！ 21:22:34 From nange : Session 怎么初始化的？ 21:22:46 From ccong deng : 每个连接都是跟一个session对象对应么？ 21:22:48 From jeffery : session主要包含什么？ 21:22:59 From jeffery : 譬如： 21:23:01 From Wei Yao : 对，一个链接一个 session 21:23:09 From Wei Yao : 具体包含什么，可以大家自己去看了 21:23:17 From Wei Yao : 这个线上不可能所有都讲的 21:23:25 From jeffery : 好的，谢谢了 21:31:00 From Wei Yao : 大家如果对语法分析，词法分析感兴趣，可以去看看 yacc 跟 lex 21:31:10 From hezhiyong : parser 这一层不是使用mysql的parser吗 21:31:17 From Wei Yao : 不，我们自己写的 21:31:56 From hezhiyong : mysql 的语法解析是在那一步用到了？ 21:32:01 From tianyi wang : select coalesce（）中coalesce是在fields里面吗 21:32:10 From Wei Yao : 我们的语法解析就是兼容 mysql， 21:32:12 From window930030@gmail.</description>
+    </item>
+    
+    <item>
+      <title>第 45 期 goim 架构设计与源码分析</title>
+      <link>https://bytemode.github.io/reading/45-2019-05-30-goim-reading/</link>
+      <pubDate>Thu, 30 May 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/45-2019-05-30-goim-reading/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 44 期 Go map 源码阅读分析</title>
+      <link>https://bytemode.github.io/reading/44-2019-05-29-go-map-reading/</link>
+      <pubDate>Wed, 29 May 2019 21:10:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/44-2019-05-29-go-map-reading/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 43 期 gomonkey 框架设计与应用实践</title>
+      <link>https://bytemode.github.io/reading/43-2019-05-23-gomonkey-framework-design-and-practives/</link>
+      <pubDate>Thu, 23 May 2019 21:30:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/43-2019-05-23-gomonkey-framework-design-and-practives/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 42 期 An Introduction to Failpoint Design</title>
+      <link>https://bytemode.github.io/reading/42-2019-05-16-go-failpoint-design/</link>
+      <pubDate>Thu, 16 May 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/42-2019-05-16-go-failpoint-design/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 41 期 golint 及 golangci-lint 的介绍和使用</title>
+      <link>https://bytemode.github.io/reading/41-2019-05-12-golint-golangci-lint/</link>
+      <pubDate>Sun, 12 May 2019 20:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/41-2019-05-12-golint-golangci-lint/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 40 期 atomic.Value 的使用和源码分析</title>
+      <link>https://bytemode.github.io/reading/40-2019-04-27-atomic-value-in-go/</link>
+      <pubDate>Sat, 27 Apr 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/40-2019-04-27-atomic-value-in-go/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 39 期 init function 使用分析</title>
+      <link>https://bytemode.github.io/reading/39-2019-04-18-init-function-in-go/</link>
+      <pubDate>Thu, 18 Apr 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/39-2019-04-18-init-function-in-go/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 38 期 kubernetes scheduler 源码阅读</title>
+      <link>https://bytemode.github.io/reading/38-2019-04-13-k8s-scheduler-reading/</link>
+      <pubDate>Sat, 13 Apr 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/38-2019-04-13-k8s-scheduler-reading/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 37 期 从 serverless 的一个设计说起</title>
+      <link>https://bytemode.github.io/reading/37-2019-04-01-talk-from-serverless-in-apache-pulsar/</link>
+      <pubDate>Mon, 01 Apr 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/37-2019-04-01-talk-from-serverless-in-apache-pulsar/</guid>
+      <description> 参考资料  预习材料 pulsar-effectively-once  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 36 期 k8s context 实践源码阅读</title>
+      <link>https://bytemode.github.io/reading/36-2019-03-28-reading-k8s-context/</link>
+      <pubDate>Thu, 28 Mar 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/36-2019-03-28-reading-k8s-context/</guid>
+      <description> 实践  WithValue WithCancel WithTimeout  WithDeadline 基本上没有用到。
+参考资料  How to correctly use context.Context in Go 1.7 How to correctly use package context 视频笔记：如何正确使用 Context - Jack Lindamood  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 35 期 context 源码阅读</title>
+      <link>https://bytemode.github.io/reading/35-2019-03-21-reading-context/</link>
+      <pubDate>Thu, 21 Mar 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/35-2019-03-21-reading-context/</guid>
+      <description> 预习材料 第 35 期 Go 夜读之《context 包源码阅读》预习资料 #191
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 34 期 Go 夜读之 plan9 汇编入门，带你打通应用和底层 by Xargin</title>
+      <link>https://bytemode.github.io/reading/34-2019-03-16-plan9-guide/</link>
+      <pubDate>Sat, 16 Mar 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/34-2019-03-16-plan9-guide/</guid>
+      <description>2019.3.16 晚上 21 点 ~ 23点
+直播过程中的文字讨论 （如有涉及到隐私，请告知） 21:08:32	From xiong hekuan : 几乎没有 21:08:47	From amatist Kurisu : 大佬开下麦... 21:09:02	From Laily Long : 能听到 21:09:02	From xiong hekuan : 可以 21:09:03	From 何翔宇 : 可以 21:09:06	From xiye : 能听到 21:09:09	From haoc7 : 听到了 21:09:12	From 星星 : 挺清楚的 21:11:01	From amatist Kurisu : ok 21:13:57	From panda : 👍 21:15:40	From albert’s iPhoneSE : 32位都差不多复杂 21:28:15	From 红红火火 : 不太好理解 21:28:24	From dongzerun : rax rbx ….</description>
+    </item>
+    
+    <item>
+      <title>第 33 期 Go 夜读之 Go defer 和逃逸分析</title>
+      <link>https://bytemode.github.io/reading/33-2019-03-07-defer-in-go/</link>
+      <pubDate>Thu, 07 Mar 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/33-2019-03-07-defer-in-go/</guid>
+      <description> 2019.3.7 晚上
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 32 期 Go 夜读之 etcd raft 源码阅读</title>
+      <link>https://bytemode.github.io/reading/32-2019-03-02-etcd-raft/</link>
+      <pubDate>Sat, 02 Mar 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/32-2019-03-02-etcd-raft/</guid>
+      <description> etcd raft 阅读
+etcd 版本：3.3.10
+2019.3.2 晚上
+总结 etcd里的raft模块只实现了raft共识算法，而像消息的网络传输，数据存储都由上层应用来完成。
+下面是各个文件（夹）的功能简介：
+ raftpb  用Protocol Buffer定义了一些需要序列化的数据结构，比如Entry和Message。
+ log_unstable.go  unstable数据结构表示用于还没有被用户层持久化的数据，它维护了两部分内容snapshot和entries。
+ storage.go  这个文件定义了一个Storage接口，应用层需要实现这个接口，以提供存储和查询日志的能力。
+ log.go  维护本地日志信息。其中的committed和applied分别表示已提交和已经应用到状态机的日志索引。
+ progress.go  Leader节点通过Progress这个数据结构来追踪一个follower的状态，并根据Progress里的信息来决定每次同步的日志项。
+ raft.go  Raft协议的具体实现就在这个文件里。其中最重要的就是Step函数，它用来处理不同的消息。所以以后当我们想知道raft对某种消息的处理逻辑时，到这里找就对了。
+ node.go  node的主要作用是应用层和共识模块（raft）的衔接。将应用层的消息传递给底层共识模块，并将底层共识模块共识后的结果反馈给应用层。
+参考资料  深入浅出 Raft - 基本概念 深入浅出 Raft - Membership Change 深入浅出 Raft - Leader 选举 深入浅出 Raft - Optimization Raft在etcd中的实现 etcd contrib Etcd超全解：原理阐释及部署设置的最佳实践  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 31 期 Go 夜读之 flag 包源码阅读</title>
+      <link>https://bytemode.github.io/reading/31-2019-02-23-flag/</link>
+      <pubDate>Sat, 23 Feb 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/31-2019-02-23-flag/</guid>
+      <description> Go 标准包阅读
+Go 版本：go 1.11.5
+总结  *v.URL = *u flag 下有 package flag_test？？ init 中定义相同的 stringvar ； 当一个文件中出现多个 init 函数时，他们都会被加载，并且以 init 出现在文件中的前后顺序执行。 type Value interface { String() string Set(string) error } type Getter interface { Value Get() interface{} } type boolFlag interface { Value IsBoolFlag() bool } strconv.ParseBool 的返回值可以被利用
+v, err := strconv.ParseBool(s) *b = boolValue(v) return err  参考资料  Go 语言中值 receiver 和指针 receiver 的对比（收集的一些资料）  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 30 期 Go 夜读之 go mod 源码阅读 part 4</title>
+      <link>https://bytemode.github.io/reading/30-2019-02-16-go-mod-part-4/</link>
+      <pubDate>Sat, 16 Feb 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/30-2019-02-16-go-mod-part-4/</guid>
+      <description> Go 标准包阅读
+Go 版本：go 1.11.5
+net/http  `` 换行  本期没有视频回放。
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 29 期 Go opentracing jaeger 集成及源码分析</title>
+      <link>https://bytemode.github.io/reading/29-2019-01-23-opentracing-jaeger-in-go/</link>
+      <pubDate>Wed, 23 Jan 2019 21:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/29-2019-01-23-opentracing-jaeger-in-go/</guid>
+      <description>Go opentracing jaeger 集成及源码分析 一、分布式追踪论文 论文地址：http://bigbully.github.io/Dapper-translation/
+为什么要用分布式追踪  当代的互联网的服务，通常都是用复杂的、大规模分布式集群来实现的。 互联网应用构建在不同的软件模块集上，这些软件模块，有可能是由不同的团队开发、 可能使用不同的编程语言来实现、有可能布在了几千台服务器，横跨多个不同的数据中心。 因此，就需要一些可以帮助理解系统行为、用于分析性能问题的工具。
+ 分布式系统调用过程 使用分布式追踪要留意哪些问题  低损耗
+ 跟踪系统对在线服务的影响应该做到足够小。
+ 应用透明
+ 对于应用的程序员来说，是不需要知道有跟踪系统这回事的。
+  二、Opentracing简介 Opentracing的作用  OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能够方便的添加（或更换）追踪系统的实现。  可以很自由的在不同的分布式追 踪系统中切换
+ 不负责具体实现
+  Opentracing主要组成  一个Trace &amp;gt; 一个trace代表了一个事务或者流程在（分布式）系统中的执行过程
+ Span &amp;gt; 记录Trace在执行过程中的信息
+ 无限极分类 &amp;gt; 服务与服务之间使用无限极分类的方式，通过HTTP头部或者请求地址传输到最低层，从而把整个调用链串起来。
+  Jaeger-client的实现 Jaeger-client源码 提取  为什么要提取 &amp;gt; 主要作用是为了找到父亲
+ 从哪里提取 &amp;gt; 进程内，不同进程之间各自约定 &amp;gt; 粟子：github.com/opentracing-contrib/go-stdlib/nethttp/server.go P86
+ 提取什么 &amp;gt; traceid:spanid:parentid:是否采集 &amp;gt; uber-trace-id=157b74261b51d917:157b74261b51d917:0:1 &amp;gt; github.</description>
+    </item>
+    
+    <item>
+      <title>第 28 期 Go 夜读之 go mod 源码阅读 part 3</title>
+      <link>https://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/</link>
+      <pubDate>Thu, 17 Jan 2019 20:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/28-2019-01-17-go-mod-part-3/</guid>
+      <description> Go 标准包阅读
+Go 版本：go 1.11.5
+学到的内容  json:&amp;quot;,omitempty&amp;quot;   方法一：
+if path[len(path)-1] == &amp;#39;/&amp;#39; { return fmt.Errorf(&amp;#34;trailing slash&amp;#34;) } 方法二：
+strings.HasSuffix(path, &amp;#34;/&amp;#34;) benchmark
+   方法一：
+strings.TrimSuffix(pathMajor, &amp;#34;-unstable&amp;#34;) 方法二：
+i := len(path) if strings.HasSuffix(path, &amp;#34;-unstable&amp;#34;) { i -= len(&amp;#34;-unstable&amp;#34;) } benchmark
+ if i := strings.Index(arg, &amp;#34;@&amp;#34;); i &amp;gt;= 0 { path, vers = arg[:i], arg[i+1:] }  也可以用 split(arg, &amp;quot;@&amp;quot;) 来实现。
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 27 期 Go 夜读之 go mod 源码阅读 part 2</title>
+      <link>https://bytemode.github.io/reading/27-2019-01-10-go-mod-part-2/</link>
+      <pubDate>Thu, 10 Jan 2019 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/27-2019-01-10-go-mod-part-2/</guid>
+      <description>Go 标准包阅读
+Go 版本：go 1.11.5
+学到的内容 1. mf := new(modfile.File) 2. lineno++ 感觉是无用的代码？ dep.go 中 ParseGopkgLock 方法第48行有用到 lineno ，会打印出 strconv.Unquote 解析错误的文件名和行号
+if len(val) &amp;gt;= 2 &amp;amp;&amp;amp; val[0] == &amp;#39;&amp;#34;&amp;#39; &amp;amp;&amp;amp; val[len(val)-1] == &amp;#39;&amp;#34;&amp;#39; { q, err := strconv.Unquote(val) // Go unquoting, but close enough for now  if err != nil { return nil, fmt.Errorf(&amp;#34;%s:%d: invalid quoted string: %v&amp;#34;, file, lineno, err) } val = q } 其他几个文件可能是为了保持一致，或者为了将来输出错误信息特意保留的。其他文件里面的 lineno 没有地方引用，大家在阅读代码时会产生困惑，建议用空白符_来替代。</description>
+    </item>
+    
+    <item>
+      <title>第 26 期 Go 夜读之手把手教你基于 Github&#43;Netlify 构建自动化持续集成的技术团队博客</title>
+      <link>https://bytemode.github.io/reading/26-2019-01-03-blog-with-github-netlify/</link>
+      <pubDate>Thu, 03 Jan 2019 21:15:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/26-2019-01-03-blog-with-github-netlify/</guid>
+      <description> Github Netlify 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 25 期 TSDB 引擎介绍，对比及存储细节</title>
+      <link>https://bytemode.github.io/reading/25-2018-12-27-tsdb/</link>
+      <pubDate>Thu, 27 Dec 2018 20:35:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/25-2018-12-27-tsdb/</guid>
+      <description> TSDB 引擎介绍，对比及存储细节  OpenTSDB InfluxDB Druid  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 24 期 go mod 源码阅读 part 1</title>
+      <link>https://bytemode.github.io/reading/24-2018-12-23-go-mod-part-1/</link>
+      <pubDate>Sun, 23 Dec 2018 21:05:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/24-2018-12-23-go-mod-part-1/</guid>
+      <description>Go 标准包阅读
+Go 版本：go 1.11.5
+观看视频   阅读重点  os.Stat filepath.SplitList os.Getwd() switch sync.Once os.IsNotExist(errMod) MustQuote AutoQuote modcmd.runGraph
+format := func(m module.Version) string { if m.Version == &amp;#34;&amp;#34; { return m.Path } return m.Path + &amp;#34;@&amp;#34; + m.Version } sort.Slice
+  什么是 go mod module 是相关 Go 依赖包的集合。module 是源代码交换和版本控制的单元。go 工具链会直接支持使用 go module，其功能包含记录和解析对其他第三方包的依赖项。模块将会替换旧的基于 $GOPATH 的模式
+目前 Go1.11 是初步支持，后续建议持续观望一下。详见 godoc
+开关 由于当前还在试验阶段，需要设置环境变量 GO111MODULE=on，才能够使用 go mod。支持一下选项：
+ off：禁用 go module，按原有 $GOPATH、vendor 的寻址逻辑 on：启用 go module auto：若当前不在 $GOPATH 下，且当前目录的根目录下含有 go.</description>
+    </item>
+    
+    <item>
+      <title>第 23 期 Drone 简单介绍和部分源码分析</title>
+      <link>https://bytemode.github.io/reading/23-2018-12-13-drone-guide/</link>
+      <pubDate>Thu, 13 Dec 2018 20:35:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/23-2018-12-13-drone-guide/</guid>
+      <description> 观看视频   参考资料  基于 gogs/gitlab 和 drone 搭建的 CI/CD 平台 Drone 源码分析之同步 repos 的策略研讨 Drone 源码分析之数据库初始化  </description>
+    </item>
+    
+    <item>
+      <title>第 22 期 Go 开发工具讨论</title>
+      <link>https://bytemode.github.io/reading/22-2018-12-06-go-ide-discuss/</link>
+      <pubDate>Thu, 06 Dec 2018 20:30:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/22-2018-12-06-go-ide-discuss/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 21 期 Go errors 处理及 zap 源码分析</title>
+      <link>https://bytemode.github.io/reading/21-2018-11-28-errors-in-go/</link>
+      <pubDate>Wed, 28 Nov 2018 11:13:59 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/21-2018-11-28-errors-in-go/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 20 期 go test 及测试覆盖率</title>
+      <link>https://bytemode.github.io/reading/20-2018-11-15-go-test/</link>
+      <pubDate>Thu, 15 Nov 2018 11:19:26 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/20-2018-11-15-go-test/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 19 期 如何开发一个简单高性能的http router及gorouter源码分析</title>
+      <link>https://bytemode.github.io/reading/19-2018-11-08-http-router-in-go/</link>
+      <pubDate>Thu, 08 Nov 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/19-2018-11-08-http-router-in-go/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 18 期 去中心化加密通信框架 CovenantSQL/DH-RPC的设计</title>
+      <link>https://bytemode.github.io/reading/18-2018-09-27-covenantsql-dh-rpc/</link>
+      <pubDate>Thu, 27 Sep 2018 11:19:54 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/18-2018-09-27-covenantsql-dh-rpc/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 17 期 grpc 开发及 grpcp 的源码分析</title>
+      <link>https://bytemode.github.io/reading/17-2018-09-20-grpcp/</link>
+      <pubDate>Thu, 20 Sep 2018 11:36:54 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/17-2018-09-20-grpcp/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 16 期 gateway-reading</title>
+      <link>https://bytemode.github.io/reading/16-2018-09-06-gateway-reading/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/16-2018-09-06-gateway-reading/</guid>
+      <description>OpenFaaS的Gateway是一个golang实现的请求转发的网关，在这个网关服务中，主要有以下几个功能：
+ UI 部署函数 监控 自动伸缩  架构分析 从图中可以发现，当Gateway作为一个入口，当CLI或者web页面发来要部署或者调用一个函数的时候，Gateway会将请求转发给Provider，同时会将监控指标发给Prometheus。AlterManager会根据需求，调用API自动伸缩函数。
+源码分析 依赖 github.com/gorilla/mux github.com/nats-io/go-nats-streaming github.com/nats-io/go-nats github.com/openfaas/nats-queue-worker github.com/prometheus/client_golang mux 是一个用来执行http请求的路由和分发的第三方扩展包。
+go-nats-streaming，go-nats，nats-queue-worker这三个依赖是异步函数的时候才会用到，在分析queue-worker的时候有说到Gateway也是一个发布者。
+client_golang是Prometheus的客户端。
+项目结构 ├── Dockerfile ├── Dockerfile.arm64 ├── Dockerfile.armhf ├── Gopkg.lock ├── Gopkg.toml ├── README.md ├── assets ├── build.sh ├── handlers │ ├── alerthandler.go │ ├── alerthandler_test.go │ ├── asyncreport.go │ ├── baseurlresolver_test.go │ ├── basic_auth.go │ ├── basic_auth_test.go │ ├── callid_middleware.go │ ├── cors.go │ ├── cors_test.go │ ├── forwarding_proxy.go │ ├── forwarding_proxy_test.</description>
+    </item>
+    
+    <item>
+      <title>第 16 期 Go 快速入门</title>
+      <link>https://bytemode.github.io/reading/other/16-2018-09-06-quick-start/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/16-2018-09-06-quick-start/</guid>
+      <description>创建一个新函数
+faas-cli new --lang node hell-node  构建函数
+faas-cli build -f hello-node.yml  推送函数到docker仓库
+faas-cli push -f hello-node.yml  部署函数
+faas-cli deploy -f hello-node.yml  稍等几秒钟，等待部署，然后就可以从postman发送get或者post请求。
+在rancher中的状态
+函数的状态</description>
+    </item>
+    
+    <item>
+      <title>第16期 faas-provider</title>
+      <link>https://bytemode.github.io/reading/other/16-2018-09-06-faas-provider/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/16-2018-09-06-faas-provider/</guid>
+      <description>faas-provider是一个模板，只要实现了这个模板的接口，就可以自定义实现自己的provider。
+faas-provider OpenFaaS官方提供了两套后台provider：
+ Docker Swarm Kubernetes  这两者在部署和调用函数的时候流程图如下：
+部署一个函数
+调用一个函数
+provider要提供的一些API有：
+ List / Create / Delete 一个函数  /system/functions
+方法: GET / POST / DELETE
+ 获取一个函数  /system/function/{name:[-a-zA-Z_0-9]+}
+方法: GET
+ 伸缩一个函数  /system/scale-function/{name:[-a-zA-Z_0-9]+}
+方法: POST
+ 调用一个函数  /function/{name:[-a-zA-Z_0-9]+}
+方法: POST
+在provider的server.go的serve方法，可以看到这个serve方法创建了几个路由，接受一个FaaSHandler对象。
+// Serve load your handlers into the correct OpenFaaS route spec. This function is blocking. func Serve(handlers *types.FaaSHandlers, config *types.FaaSConfig) { r.HandleFunc(&amp;#34;/system/functions&amp;#34;, handlers.FunctionReader).Methods(&amp;#34;GET&amp;#34;) r.</description>
+    </item>
+    
+    <item>
+      <title>第16期 OpenFaas 介绍及源码分析</title>
+      <link>https://bytemode.github.io/reading/other/16-2018-09-06-openfaas-guide/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/16-2018-09-06-openfaas-guide/</guid>
+      <description> 关于我 网名： Lucas
+Github：https://github.com/zhenfeng-zhu
+博客：https://zhenfeng-zhu.github.io/
+知乎：https://www.zhihu.com/people/zhu-zhen-feng-96/activities
+专栏：https://zhuanlan.zhihu.com/openfaas-cn
+微信：zhuzhenfeng1993
+主要内容  OpenFaaS的简介
+ OpenFaaS的快速入门
+ OpenFaaS的基础组件
+ OpenFaaS的源码分析
+ OpenFaaS的定制
+  观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第16期 queue-worker源码分析</title>
+      <link>https://bytemode.github.io/reading/other/16-2018-09-06-queue-worker/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/16-2018-09-06-queue-worker/</guid>
+      <description>异步函数和同步函数 在OpenFaaS中同步调用函数时，将会连接到网关，直到函数成功返回才会关闭连接。同步调用是阻塞的。
+ 网关的路由是：/function/&amp;lt;function_name&amp;gt; 必须等待 在结束的时候得到结果 明确知道是成功还是失败  异步函数会有一些差异：
+ 网关的路由是：/async-function/&amp;lt;function_name&amp;gt; 客户端获得202的即时响应码 从queue-worker中调用函数 默认情况下，结果是被丢弃的。  查看queue-worker的日志 docker service logs -f func_queue-worker 利用requestbin和X-Callback-Url获取异步函数的结果 如果需要获得异步函数的结果，有两个方法：
+ 更改代码，将结果返回给端点或者消息系统 利用内置的回调 内置的回调将会允许函数提供一个url，queue-worker会报告函数的成功或失败。 requestbin会创建一个新的bin，这是互联网的一个url地址，可以从这里获取函数的结果。  源码分析 依赖项 github.com/nats-io/go-nats-streaming github.com/nats-io/go-nats github.com/openfaas/faas go-nats和go-nats-streaming是nats和nats-streaming的go版本的客户端。
+faas这个依赖其实是只用到了queue包下面的types.go文件。这个文件是定义了异步请求的Request结构体和一个CanQueueRequests接口。如下所示：
+package queue import &amp;#34;net/url&amp;#34; import &amp;#34;net/http&amp;#34; // Request for asynchronous processing type Request struct { Header http.Header Body []byte Method string QueryString string Function string CallbackURL *url.URL `json:&amp;#34;CallbackUrl&amp;#34;` } // CanQueueRequests can take on asynchronous requests type CanQueueRequests interface { Queue(req *Request) error } 从这里我们就可以明白作者的设计思路，只要是实现了这个CanQueueRequests接口，就可以作为一个queue-worker。</description>
+    </item>
+    
+    <item>
+      <title>第16期 监视器 - watchdog</title>
+      <link>https://bytemode.github.io/reading/other/16-2018-09-06-watchdog/</link>
+      <pubDate>Thu, 06 Sep 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/16-2018-09-06-watchdog/</guid>
+      <description>监视器
+监视器提供了一个外部世界和函数之间的非托管的通用接口。它的工作是收集从API网关来的HTTP请求，然后调用程序。监视器是一个小型的Golang服务——下图展示了它是如何工作的：
+ 上图：一个小型的web服务，可以为每个传入的HTTP请求分配所需要的进程。
+ 每个函数都需要嵌入这个二进制文件并将其作为ENTRYPOINT 或 CMD，实际上是把它作为容器的初始化进程。一旦你的进程被创建分支，监视器就会通过stdin 传递HTTP请求并从stdout中读取HTTP响应。这意味着你的程序无需知道web和HTTP的任何信息。
+轻松创建新函数 从CLI创建一个函数
+创建函数最简单的方法是使用FaaS CLI和模板。CLI抽象了所有Docker的知识，使得你只需要编写所支持语言的handler文件即可。
+ 你的第一个使用OpenFaaS的无服务器Python函数 阅读有关FaaS CLI的教程  深入研究 Package your function打包你的函数
+如果你不想使用CLI或者现有的二进制文件或镜像，可以使用下面的方法去打包函数：
+ 使用一个现有的或者一个新的Docker镜像作为基础镜像 FROM 通过curl 或 ADD https://从 Releases 页面 添加fwatchdog二进制文件 为每个你要运行的函数设置 fprocess(函数进程) 环境变量 Expose port 8080 暴露端口8080 Set the CMD to fwatchdog 设置 CMD为fwatchdog  一个echo函数的示例Dockerfile：
+FROM alpine:3.7 ADD https://github.com/openfaas/faas/releases/download/0.8.0/fwatchdog /usr/bin RUN chmod +x /usr/bin/fwatchdog # Define your binary here ENV fprocess=&amp;#34;/bin/cat&amp;#34; CMD [&amp;#34;fwatchdog&amp;#34;] Implementing a Docker healthcheck实现一个Docker健康检查</description>
+    </item>
+    
+    <item>
+      <title>第 15 期 多路复用资源池组件剖析</title>
+      <link>https://bytemode.github.io/reading/15-2018-08-23-pool-workshop-in-go/</link>
+      <pubDate>Thu, 23 Aug 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/15-2018-08-23-pool-workshop-in-go/</guid>
+      <description>2018-08-23 22:00:00 分享会之后的答疑。
+ 源代码地址：pool#workshop
+一个网友在分享会之后的个人理解：对是独占资源对象的复用，提升了最后的 qps，独占式方法 TestChanPool() 函数中使用了从资源池获取 worker 对象，执行完毕后再放回资源池，如果获取不到则阻塞等待，因此，100 000 请求，每个请求占用 10ms，可用 worker 对象 50 个，则最后 100 000*10/50 =20s ,视频中测试结果也显示 21s 符合预期。而 TestWorkshop() 函数中使用回调函数对 worker 进行加锁，每个线程使用的那一刻是 worker 对象是被独占的，而后续的 do{sleep(10ms)} 是并发执行的，并且根据每个 worker 同时执行的 do 的任务数，进行负载均衡，所以最后测试性能 QPS 能够有 20 倍的提升。
+ workshop 中每个协程只在获得 worker 的那一刻是互斥的，且不会从池子中移除，通过状态统计达到资源的负载均衡。在业务上真正使用资源时其实是无锁状态，所以能被其他协程同时使用，进而吞吐量提升。业务逻辑耗时越长，相比独占式资源池的吞吐量优势越显著。本机测试 50 个资源 10ms 时可提升 20 倍。
+ 为什么不使用轮询使用资源，代码实现会更简单？  实际场景中每次业务逻辑耗时不相同，轮询并不能保证真的负载均衡。尤其是当突发异常时，可能导致负载失衡。
+ 为什么长连接异步通信不使用一条连接而是连接池？ 说到长连接异步通信，为什么不使用一条连接而是连接池，其实涉及到多条连接抢占带宽和 TCP 丢包后速率下降的问题。这对于下载场景（迅雷就是这么做的）和使用共享云主机的场景比较有用。 具体可以看这篇文章：为什么多 TCP 连接比单TCP连接传输快
+ 以前在做加速的一项就是多线程下载，开启多个 tcp 连接，同时下载，比只有一个连接下载快多了。
+ workshop 的使用场景 使用 workshop 的前提就是该资源可以被同时使用，比如长连接的异步IO通信。</description>
+    </item>
+    
+    <item>
+      <title>第 14 期 sync.Pool 源码分析及适用场景</title>
+      <link>https://bytemode.github.io/reading/14-2018-08-17-sync-pool-reading/</link>
+      <pubDate>Fri, 17 Aug 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/14-2018-08-17-sync-pool-reading/</guid>
+      <description> Go 标准包阅读
+观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 13 期 Kubernetes 入门指南</title>
+      <link>https://bytemode.github.io/reading/13-2018-08-09-kubernetes-guide/</link>
+      <pubDate>Thu, 09 Aug 2018 00:00:08 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/13-2018-08-09-kubernetes-guide/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 12 期 golang 中 goroutine 的调度</title>
+      <link>https://bytemode.github.io/reading/12-2018-08-02-goroutine-gpm/</link>
+      <pubDate>Thu, 02 Aug 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/12-2018-08-02-goroutine-gpm/</guid>
+      <description>郑宝杨(boya) 2018-08-01 listomebao@gmail.com
+阅读源码前可以阅读的资料  Goroutine背后的系统知识 golang源码剖析-雨痕老师 go-intervals 也谈goroutine调度器  golang的调度模型概览 调度的机制用一句话描述：
+runtime准备好G,P,M，然后M绑定P，M从各种队列中获取G，切换到G的执行栈上并执行G上的任务函数，调用goexit做清理工作并回到M，如此反复。
+基本概念 M（machine）  M代表着真正的执行计算资源，可以认为它就是os thread（系统线程）。 M是真正调度系统的执行者，每个M就像一个勤劳的工作者，总是从各种队列中找到可运行的G，而且这样M的可以同时存在多个。 M在绑定有效的P后，进入调度循环，而且M并不保留G状态，这是G可以跨M调度的基础。  P（processor）  P表示逻辑processor，是线程M的执行的上下文。 P的最大作用是其拥有的各种G对象队列、链表、cache和状态。  G（goroutine）  调度系统的最基本单位goroutine，存储了goroutine的执行stack信息、goroutine状态以及goroutine的任务函数等。 在G的眼中只有P，P就是运行G的“CPU”。 相当于两级线程  线程实现模型 来自Go并发编程实战
+ +-------+ +-------+ | KSE | | KSE | +-------+ +-------+ | | 内核空间 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - | | 用户空间 +-------+ +-------+ | M | | M | +-------+ +-------+ | | | | +------+ +------+ +------+ +------+ | P | | P | | P | | P | +------+ +------+ +------+ +------+ | | | | | | | | | +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ | G | | G | | G | | G | | G | | G | | G | | G | | G | +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+   KSE（Kernel Scheduling Entity）是内核调度实体</description>
+    </item>
+    
+    <item>
+      <title>第 11 期 Golang 代码质量持续检测实践</title>
+      <link>https://bytemode.github.io/reading/11-2018-07-26-golang-jenkins-sonarqube/</link>
+      <pubDate>Thu, 26 Jul 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/11-2018-07-26-golang-jenkins-sonarqube/</guid>
+      <description> 观看视频   </description>
+    </item>
+    
+    <item>
+      <title>第 10 期 2018-06-28 线下活动</title>
+      <link>https://bytemode.github.io/reading/10-2018-06-28-net-http-part4/</link>
+      <pubDate>Thu, 28 Jun 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/10-2018-06-28-net-http-part4/</guid>
+      <description>  参与人数: 10 人
+ Go 标准包阅读  Go版本：go 1.10.2  net包  http/server.go http/request.go textproto/reader.go  读取位置  textproto/reader.go(140行)  问题  1.各个系统的回车换行符区别
+  注意:10.13及其以上是macOS系统   2.URI，URL和URN的区别
+  查看详情   3.HTTP CONNECT方法介绍
+ 会议讨论小结
+	可以建立一个代理服务器到目标服务器的透明通道（tcp连接通道），中间完全不会对数据做任何处理，直接转发（支持https，一种翻墙的手段，专线独享）   HTTP代理协议 HTTP/1.1的CONNECT方法   4.peek读取字节内部实现
+  这里先peek获取流数据(注意：这里没有对Peek的错误进行处理，而是根据是否Buffered读取到数据来判断错误) 为什么没有对Peek的错误进行处理呢？主要是因Peek失败了也有可能不会返回错误
+	golang读取字节表现形式是阻塞式的，但其实底层是用了非阻塞式的NIO，如果没有读取到数据会定时轮询读取    5.http header尾部的符号什么情况下会存在\n\n的情况？(待解决，欢迎在下面评论)
+ 看源码发现hearder结尾会存在\r\n\r\n和\n\n两种字符情况
+网络上查资料发现只会存在\r\n\r\n
+观看视频    TODO
+  相关链接  uri和url的详细规范 扒一扒HTTP的构成 20180628直播视频  </description>
+    </item>
+    
+    <item>
+      <title>第 9 期 2018-06-14 线下活动</title>
+      <link>https://bytemode.github.io/reading/9-2018-06-14-net-http-part3/</link>
+      <pubDate>Thu, 14 Jun 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/9-2018-06-14-net-http-part3/</guid>
+      <description>参与人数: 12 人
+ Go 标准包阅读
+Go 版本：go 1.10.2
+net/http  server.go h2_bundle.go  问题  WriteHeader(statusCode int)   要先调用 header.set() 再调用 WriteHeader() 然后调用 Write()  如果在调用 Write() 之后，还有比较多的逻辑要处理，则一定要紧跟着马上调一下 Flush()  然后调用 Flush()   HTTP2 不支持 Hijacker
+ 使用了 Hijacker 之后不能再使用 Request.Body
+type Hijacker interface { // After a call to Hijack, the original Request.Body must not be used. 	Hijack() (net.Conn, *bufio.ReadWriter, error) } The returned bufio.</description>
+    </item>
+    
+    <item>
+      <title>第 8 期 2018-05-31 线下活动 - Go 标准包阅读</title>
+      <link>https://bytemode.github.io/reading/8-2018-05-31-net-http-part2/</link>
+      <pubDate>Thu, 31 May 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/8-2018-05-31-net-http-part2/</guid>
+      <description>参与人数: 10 人
+ Go 标准包阅读
+Go 版本：go 1.10.2
+net/http  server.go  问题  func (s *Server) doKeepAlives() bool { return atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 &amp;amp;&amp;amp; !s.shuttingDown() }  为什么要用 atomic.LoadInt32(&amp;amp;s.disableKeepAlives) == 0 ？
+原子操作比用锁更节约一点性能。
+ server.go#Shutdown 不保险
+ panicChan := make(chan interface{}, 1)
+panicChan := make(chan interface{}, 1) go func() { defer func() { if p := recover(); p != nil { panicChan &amp;lt;- p } }() h.</description>
+    </item>
+    
+    <item>
+      <title>第 7 期 2018-05-24 线下活动 - Go 标准包阅读</title>
+      <link>https://bytemode.github.io/reading/7-2018-05-24-net-http-part1/</link>
+      <pubDate>Thu, 24 May 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/7-2018-05-24-net-http-part1/</guid>
+      <description>参与人数: 10 人
+ Go 标准包阅读
+Go 版本：go 1.10.1
+net/http  server.go  问题  Next Protocol Negotiation = NPN Expect 100 Continue support   见参考资料
+  header提到了：Expect和host 判断了 header里面的HOST，但是后面又删除，为什么？  server.go#L980
+delete(req.Header, &amp;#34;Host&amp;#34;)  判断是否支持 HTTP2 （isH2Upgrade）
+// isH2Upgrade reports whether r represents the http2 &amp;#34;client preface&amp;#34; // magic string. func (r *Request) isH2Upgrade() bool { return r.Method == &amp;#34;PRI&amp;#34; &amp;amp;&amp;amp; len(r.Header) == 0 &amp;amp;&amp;amp; r.</description>
+    </item>
+    
+    <item>
+      <title>第2期 2018-04-11 线下分享内容语音实录（文字版本 by 录音宝）</title>
+      <link>https://bytemode.github.io/reading/other/2-2018-04-11_voice/</link>
+      <pubDate>Wed, 11 Apr 2018 11:49:10 +0800</pubDate>
+      
+      <guid>https://bytemode.github.io/reading/other/2-2018-04-11_voice/</guid>
+      <description>在开始前的话，我就先闻着大概介绍一下。我我叫李亚春。李亚坤。那个网名就是亨利出实验，然后嗯13年开始写go，嗯写过几个开盘项目，然后主要有一个爬虫用猪，这个还有这个嗯开炮。今天我们要要介绍的一个然后还有就是一个黑狗，这就是一个外部框架。我叫吴良肖，然后我啊我毕业两年，然后我是从毕业的时候开始写够的，然后到现在没有开源项目，所以我的目标就是有一个开源项目。我叫武帝陵一个比较低的，然后我是整体来说，去年年底是开始觉得自己也写两个小工具放到D卡上面，因为现在我们公司要搬到S上面，学习架构云的与。BW好，我叫朱静涛，嗯够的话，我十年吧是对就接触这个语言，然后看他语法就特别特有吸引力，跟我之前是写开心嘛自己自己看，然后写一些小工具。啊因为我觉得作用呢没有开发。啊就是写小同学啊在做自动化U这一块。所以后面经常去去写的，嘛但是还是挺崇拜构造的内心就是可以这种进行动力。然后我我自己也是有写一些工具吧以前写进去。来来讲。啊大家我要睡觉前取的名字叫麦克。我也是13年开始学go，不是还没还没开始就是学的时候，然后剩下也没什么看一下。希望正在的专业开始这么说，好。我叫杨文，然后是了解够的话，应该是个刚出来的时候就知道，但是当时没有写对，然后过了几年之后才开始写了。然后现在的话也是在学习，学习吧那我们开始了。就是今天和大家分享一个微服务框架。那这个微服务框架的话，嗯其实是分为三主要是三个相关的库，一个就是那个暗室，这个案子是在小A公司的，那个然后嗯她主要是放在这个微服私访网关，还有配置中心以及一个一个脚手架工具。按那这个她恢复的框架是这个pp gun麦克。对，他是封装的这个开放的电影。实际上在写服务的时候都是用开炮。那这个提高MAC这个就是实现了一个呃就是服务，发现治理这一块的一些一些功能，实际上对业务代码没有没有影响。我们了解他的话，可以先先从那个案子生成一个项目，嗯这个是我是我那个安装好的一个案子，赢利。先看一下。这个命令，行，呢两个命令，一个是按指定，一个按摩院，这个店就是生成项目干嘛的，然后便是一个热编译的工具。我们可以先生成一个项目看一下，就就剩被告。啊这个是之前生成过，所以他那个先删一下。这个这个是这个好像看不到那个车。介绍。这个目的就是这样的。就是施工项目之后，这是一个任命，为动力里面就是只是把这个项目名称写到这里来。然后还有一个面，啊这个就是使用的那个et基因，做的那个注册中心。然后还有一个太太不是就是一些就是经历了一些类型，像刚刚我生存的话，他使用的是默认的一个模板，这个模板文件自己可以改。可以可以指定的。然后刚默认的就是这个问题。那这个这个代表就是说要注册一个嗯拉的一个物流，就是请求响应。所以这里面这是一个直接注册函数的那种方式，就是接受一个参数，返回一个结果，然后也可以嗯里边再套一个接口。这个接口就是在下面的定义，实际上它就是一个呃生出来之后，它就是一个结构体，然后里面的方法就是他的一个方法。然后还有这个这是一个朴实，朴实的话就是嗯推嘛他就没有返回值，所以他只接受一个参数，我们看它它生出来的这这个是他的那个类型。那个参数和结果。这个定义到这里，它会升到那个txt里面去。就是在那个开幕式目录下面。这里面就是刚申请的。没带。那么ATS这个后续的这个这个都是那里生成。那这一块呃态度是这里就是放那些定义的一些一些结构体的，啊通用的一些嗯结构体都可以在这里定义。然后嗯还有一个就是APA这一块，刚刚看到的那个max啊home和。S这两个就是后后面就会变成变成直接变成一个函数，嘛然后S这里边只有一个除法的，就是它的一个方法。刚刚这个定义的接口，然后这是那个推送。这个参数。嗯就是推送的话，他就会有那个前辈，这是一个上下文。铺然后如果是嗯推送的，就是这个刚刚是那个说出错这个是拉的，然后这个是推送的。像这这里面生成的文件，有的是带着这个点击，一恩典够，这个就是代表着生成的，是不允许修改的，因为在这个案子跟这个命令行工具会可以覆盖。重新生成的。就是你可以修改模板，修改完了之后，然后再运行，按它就会把这些带的这个后缀的全部都重新生成一遍，然后不带后背的这些，你可以自己。这是一个路由注册的地方。啊这个就是做一个分组。分组都有。然后下面这个就是在这个分组下，嗯注册一个拉个函数，然后这是一个拉的结构体验，就是把它当那个注册上来。然后这个是推的。像这个它只是一个自定义，就是说让我们在这个资金里面，这样的话就会影响这个视频的代码。然后它还会自动生成sk，就是我们调用的时候就不用再去写，直接就已经在这里生。在服务之间调用就可以。可以调，这个然后像这个态度为什么会单独独立出来就是就是这个sd T这一块它会用到哪些类型？啊这个类型。如果说把它放到其他其他位置的话，比如说放到放到这个逻辑层这个这里，边的话，他就会有很多的其他不必要的光导入进来。所以对SDK来讲的话，它是不必要的会有很多的依赖。所以把这些类型放一起。然后这个老者就是那个逻辑层的一些代码。这个他是身为一个呃临时文件，它就是建议你嗯照着那个去把把这些函数实现类型，实现这个函数之后，我们整个服务就已经写好，然后把这个名字改一下，就不要用那个名字，因为这个名字会在你重新申请项目的时候会会覆盖掉。这个文件是每次就如果新加一个类型的什么之类的，做一个自己的一个方法，就是都是覆盖到这个那个文件里面去。嗯他就是你可以随时去改这个模板，改这个模板之后，它会在在生成的，我我我们可以在这里再写一个，写一个。啊是这样的对吧？然后我再同意。然后回来再看。有了。然后在这里边写的一些故事，它也会自动往你家过去的。这里是没有注释的，对吧？然后如果给它加个故事，然后就是ap I叫憨豆。API下面的看到连这个都在这里。就是说你可以去重复，嗯像这个case这里的话，它只是生成的，都是空的，因为没那么智能，说你这些参数到底应该是什么？所以这块都是空的，到后期自己在写的时候，可以把这个把这些地方都可以给他真正的给它写出来。到底到底它应该是哪个字段是什么？你敢稍微改一下就可以了，整个整个价值都在这里。是改的话这个阶层。对。就是这种。所以这里边就是就是购买是吧？go代码就是go文件，然后我是通过那个呃购的那个语法树，也提出来，啊然后根据他的一些东西去去生产够像这些注释，啊然后包括嗯后面这些标签，你只要写在这里生成的时候，它会自动带到这边，然后还有就是txt里面，它会自动加。这个节省，它自动帮你加解释。这个标签。然后这里这里是有有一个标签叫胖，是吧？这个标签的话是绑自动绑定参数，并且校验的一个一个标签。这个就是方便我们嗯去做大量的那些参数校验。嗯其实这个有很很多的一些呃一些功能在这里，比如说嗯这个参数，它就代表说他是从包里来的一个一个一个一个阶段，然后它的范围是要在0:01到一万。啊10万。就是这一个范围，然后比如说嗯我如果加一个I参数，加油快累彪记啊就是表示这个不是来自于包的，而是来自于UI的。就是url。还有啥？然后还有一个教室唉这个参数，这个是表示它来自于嗯上传插件，写到了一个缓存区的，就是我们是支持插件在上层，可能把它寄到了一个上下文当中，吗啊然后通过这个时代交换区，这个含义可以拿到对应这个T的做绑定，然后也可以做校验。还有就是你可以指定他的名字，比如说我不叫我不叫比尔的bb，就这样子。如果说我希望他呃错误返回的错误，比如说它校验失败的，啊他不是那个范围的，那我我这里可以有个错误给他抽，嘛然后在错误码就是一千，然后再给他一个什么什么错误。随随便写。随便写，就是你写好之后，这个东西就是会把它作为一个错误码，还有吗？C嗯一起。发过去。然后其实还有一项是DKLDKL就是那个错误，因为这个错误是是框架自己定义的，就是通用的整个的从底层到上层的服务全部都是一个错误，这个错误就是有一个call的，有一个mic有一个底TL那这里的话你定义在后面这一段定义的只是他的max，就是你告诉用户给用户呈现的应该是怎么告诉她？比如我们经常说的是网络不给力的，那实际上它是什么错误？就是在tt L当中，他们校验的时候，比如他不在这个范围，其实它会自动帮你生成一个呃他是大还是小了。这样一个一一个具体的错误出来。还还要讲的。你那个参数是定义在哪个库里面？三个三。唉对，那个参数是定义在说那个错误，嘛就说这是拍卖这个弟弟，就是我要用什么规则去就是哦是吧，说在在哪里有介绍的，或者这里面有它的源码不是在不是在这里，是在EST扩展包里面的。扩展不。扩展库里边有一个单个人绑定，就是它实现就是他的他的介绍。他刚刚讲的这两个都有，然后其实还有一个描述是吧？啊这个这个描述就是你写了之后，然后会就是你你这个参数是增加一个描述。但这个的话其实呃目前来讲还没有用。实际上你如果要做就是自动化文档的时候会有用。API的一个介绍，啊这个只是一个宝贝参数。啊这个这个是一个长度，就是说比如你是一个字符串，或者是一个切片类型，那你可以指定它是多长，这个就是3到6。那后面这个例子，3到6，院子就是一个数数字的范围。然后这个是它是非零的表示不允许为零只。啊这个就是挣得，你可以自己写个正则。啊这个就是定义的错误。向这些前面出现的这些东西，都是都是在监控号的前部前半部分。都是在前面的。说比如说这个话，他他因为他没有值，你就这样写就好了，对吧？如果是峰值的话，你就要跟别的一样的，后面就开始写，啊往后面就写写你的这个啊，注意注意，这个这个不用引号和单引号。转义吗？原来？涉及到这个别的没有。他还会生成一个这个忽略文件这个是go的呃默认的第二行，它也会帮你摸人家这个这个所以他也会帮你加上。这是一个R一RS这个就是呃给的一个规范。你这个项目里边有一些什么错误啊就都在这里定义，一定遇到一个位置，这样就就方便看，因为所有的错误，它的它你看它的返回值吗？他的反馈都是两个。对吧？因为一个结果一个错误。这个错误是我们定义的，就在这里，然后加像这些字段这个这个这个长度一般都是自自己定义，吧嗯建议都是四位数以上。三位数以内的在网关那里会有的会帮你自动处理状态。就是网络上那个HTTP网关也发现这这个就介绍到这里吧啊，有没有疑问？或者我们想想讨论一下。在重庆没有。这个大一呃你生成了之后没有这个嘛反正是没有更新。啊你你重新更新一下，就是装这一套东西的化妆。这一套东西只要一个秘密好，主要这个这个他就会把相关的全部都拿下来，然后将那个案子命令的话要在那里再住一次到一下。这块没有问题。就是因为大家也没带电脑。大众在这个可以在U盘啊都可以，啊对，因为购物员本身是跨平台的，嘛不是不是它是跨平台的。如果这块没有问题的话，我们就介绍一些呃它的一些设计啊一些一些细节的东西，就这个我就给给大家一个感知，吗就是大概它是一个这样的一个东西。然后到底它是怎么实现的，给大家了解了解，然后也可以探讨。在讲这个之前的话，我大概说一下这个网关吧那个网关跟那个项目是相关的。这个呃微服务项目它自动生成的，这个是使用tcp都说使用的。服务发现的。然后嗯你外部访问的话，就要通过这个KTV去对外访问，然后这个DV的话它是嗯双网关支持长链接和http两两个的啊这个可以这个正好可以做一下演示。啊有啊三的。那个你你找那个武器。就是小A5系内饰。有个那个VIP的，连VIP吧也可以。你那个密码就不要去做一点。电流。就是在这个KTV项目里边有一个sample，有仓库里边有一个呃C口，最后就是说呃我给了一个简单的示例。简单的事例，就是这个是网关的实现代码，因为那个刚那个网关库实际上它不是不是面包，然后因为你需要去定义一些自己的业务流，它是整个设计是工作流内容去设计的。然后它的各种环节都是要通过一个叫fat is这样一个结构体去去设置。这个的话我们是一个默认的，因为它里面提供的默认的啊这个是最简单的。我们先看一下它境内的一个一个用法。我先把这个文件编译了，肯定只是就是模拟的客户端，然后server是内部服务。然后嗯这个是模拟的浏览器，还有这个嗯你能看到我打开这个，喂我刚刚是意识到啊这里头，这这这个你看它会打印一些东西是吧？这是他跟为自己做的一些请求，因为KTV本身是一个分布式，就是你这个月可以有，N个啊不管有几个，你请求谁都一样，它中间是自动做负载均衡的。嗯然后像像这个它是呃相互之间，它要更新一下他的一个嗯KTV的一个列表，就是嗯因为要做长两句的话，你要告诉他我的地址是是多少，对吧？所以它会有一个定时不定期，就是它它会定时不断的去相互之间去更新一下他的一个一个列表状态。可以吗？就是就是太到位。多，而且味道它们是不是通过自身的这种网络连接。橡胶不是不是直接通过网络链接，它是通过et CDEC基金是有配置中心，然后每个每个网关他都会把自己的信息放在EDCD然后通过ETCT它有一个事件监控，当有这个值发生变化的时候会通知他。比如说裤子或者是DS他会他会收到这个事件通知，收到之后会更新本地的列表，然后呢它不仅仅只是说一个列表，他会嗯做一个简单的一个呃测速，把速度较快的放前边，然后在短链接这里只有一个简单测速，但是在长链接那里的话还有一项权重都是当前的链接数，啊链接数较少的放在前面。你你的每一个请求就是给了网关之后，他会转发到其他网吧，不会转发其他网站，嗯就是好几个网吧，那那你是怎么在他们之间做个负载的是前面再放一个，就是实际上它就是你使用这个网关的话，它就不会帮你转到前往和。他是因为这要跟客户端去配合，你客户端，只要定期轮巡的到我这里去去拿列表，前几项优先，第一项，啊第一第一个如果木没联系成功，你就使用第二个，但基本上你每每隔一段时间更新下列表，使用前面就没有问题。那客户端自己去选择，对吧？客户端下载这个列表让他选择，对。他会控制在嗯是十个吧啊就是最大不超过十个，但是一般情况下，你只要拿第一个就对了。除非就是特殊情况，第一个没连上，那就拿第二个。那你这里那个ETETCT室打了一个。啊对。啊像这个他就是打印出来的，嘛就是这个框架开发的，也是使用配套的开发，就是所有的微服务也好，还是往观也好，都是开炮。它的写法日志，啊所有的都是他们一块。像像这个就是他支持打赢了他一个呃日志，就是这是APP的一个网络地址列表。然后这个是长链接的一个网络地址列表，现在我只开了一个，所以他就只有这一个。然后像这些的话都是S级别的，就是他他就是一T的试验中心，啊这个是保国，每隔五秒钟，宝宝一次，然后嗯把这个服务内部服务开起来。我们在使用客户端请求，把这个这条日志就代表他接收到了一个一个请求。这是这个日志它的含义，云英日韩一就是它代表是使用了一个嗯啦的方法，然后这个箭头指向这个铺是代表说他是进来的，他是写进来的一个请求。然后如果是发出去的，它就是反方向的意见。这个就跟那个购得很有钱。是一样的。嗯这个就是它的ip地址。然后这次喜剧的耗时，如果他很耗时多于某多余你设置的一个法制的话，它会使人忘记点，然后后面会会加一个思路一个标记，这是其中的那个APA然后最后这一个是你快速的ID啊实际上这个快速AD的实现就是呃开炮的通信包里边有一个circle，这是一个序列号，因为他是读写双工的一部分，嗯他所以说他需要一个对应机制，保证它并发读写的这个并发获取到的一个响应是自己想要的一条。然后这个的话它是使使用的死讯，所以说你可以就可以把它作为ss了，你自己去定义这个格式，只要保证唯一就可以。然后嗯配置里边我选择的是可以要打印包的，所以说他会把这个包的这些东西写到这里来。像这个是接收到的那个包长度多少，然后包的也是是什么样子的？这个是发出去的，那个吧然后嗯看一下这边对应的。这边是服务吗？对吧？服务队的这个请求。看他这里就变了是吧？不仅仅只是一了，刚刚看到的那个是一。是吧，有还有13是吧？这些啊他是把这个嗯这个东西是客户端客户端给的一个东西，就是嗯相当于一个session ID它这个筛选AB就是当你建立了长远D之后，呃你可以告诉对方我我的这个ID是多少，然后这里的话它会把它的鳃呈AB加上一个分隔符为A的服务，然后再加上他这个赛事里面，因为一次对话里面都是唯一的这个序号是唯一的，嘛唉加上那个就作为内部的一个SAT如果说没有设置那个赛城，A3是A地的那这个地方就是它的ip地址。那这边像这边的话，就就是那个客户端的一些一些返回的结果，在这里展示。然后像刚刚那个浏览器啊我们使用，只是做了两个两特市，啊这个就是测试成功返回的结果是啊因为短链低，嘛它就没有三婶，AB这个说法，所以他使用的就是他的ip地址。然后后面就是嗯我指定给他的一个一个一个excel，这个实物拍摄参数，可以给他的。然后你说客户端不是，他有一个嗯我要知道网关列表，嘛然后选择使用水的，像这个就是请了他一个接口，通过网站可以拿到。这个可能小，但是它不能放大。就是就是看到的那个解释，跟我们刚在里面看到的只是一样的。知道。这网官就就了解到这里。然后大概就介绍一下他这个这个框架是大概是个什么样子的？有哪些功能？找到重点。特性都列到这里了。一个是服务的自动发现，然后是定义服务的连接器。就是服务链接选择器，就是我们用et，CD其实它就是一个选择性。嗯默认的也有一个叫就是一个呃CAT就是静态。你可以指定静态，反正都是一个接口，这个选择性就是一个接口，你实现了那个方法之后，可以任意的去去设计自己的一个选择器，然后就是负载均衡，这个负载均衡就体现在客户端客户端上。嗯就是使用刚那个ks点够那个嗯这个单不先先不细讲，因为展开比较多。上次是给你介绍过我我我少。然后他是多付用的L还有连接池，可以自定义协议。这个协议就是说，我们的包协议这个数据包它是使用的一个什么格式？去去分包的这样的东西，它其实是一个接口，你可以自定义的。然后就是自定义包的。也就是嗯相当于ATPP协议里面的那个包被，或者说rpc调用的时候那个参数，他是有一个编码类型，这个编码类型也是可以自己定义的。嗯现在就提供了几个呃现成的一个一个是节省，一个是泡吧和，还有一个嗯就是原始就是那个普遍case。就跟那个http协议里面那个量子态就是原始数据。然后还有一个嗯UL copy那种编码格式，这个就是嗯提供这个就是为了兼容http。因为有时候你你需要它它的客户端，可能你没办法控制的时候，就是浏览器电话控制的话，就需要这样一个编码类型，然后就是一个插件的扩展这个插件也是有有很多的，也也提供了很独罩成的，像这里面你看这几个就差一点像像刚刚那个绑定，判标签就是他然后心跳包，还有忽略大小写，就是UA路径，忽略大小写，然后这个是加密，这是你的传输数据。可以做加密。啊这心跳说了。然后日志刚刚我们也看到了，漫山林阀值这个还没看，但是知道有这个就好了。就是在配置里面拷贝个配，配置文件就可以。然后嗯支持自定义的日志，就是说这个日志是一个接口，你可以自己传传上自己的，比如说你自己要加一个一个日志上报的功能，那你就可以自己定义，或者说我不希望输出到控制台，我只希望输出到某个啊队列呀或者是文件，啊对吧？反正自己实现还是然后平滑关闭和更新。这个就是说嗯服务都是支持平滑关闭以及嗯频繁重启的，就是平滑升级，不影响你的任何一次请求的。然后是支持推送，这个这个刚刚也也看到了。然后它支持的网络类型，基本上都是pp类的。就这几个。不支持，那个UTP啊嗯客户端是支持断线重连的。也就是你只需要一般我们写写项目，你看这个SDK里面的话，它其实就只只帮你生成了一个可怜者，就搞定了，因为断线重连那些东西它是内部框架支持的，你不用担心他会呃你你断信了会怎么样。然后再一个这里的客户端它也是有一个嗯客户端的链接迟的，不是一条链接，它是可以配置有多条。至至于有多少条的话，就是一个配置文件，选一下那个池子大小都可以。然后最后一个是过载保护。啊这个就是当嗯服务器状态，就是就是当前这个节点如果不太好的话，他就会嗯暂时屏蔽掉。哪一个？这个其实也是客户端的。像这些这些功能的话，嗯基本上像比如说嗯这个多路复用L然后自定义协议，然后剥一边密码，那个然后插件，然后慢享应还有日志，然后平滑关闭。推送网络类型，然后断线重连，这些功能其实都是开炮。在这这一块，其实嗯这个包封的非常的兴。整个代码我统计了一下，应该是不超过900行代码。他只做了一个啊这个是断路器的，然后增加了一个单子，像核电特稍微多一点，他就是这是一个配置文件，就是做一些自定义的配置。然后像实际上这个念头就是封了一下开part的一个P然后给他默认添加了添加了细胞。然后如果是服务端默认添加的心跳包和那个班的，然后他还有一个插件，就是Nike耐克其实是一个插件，但是实际上是这个插件。嗯啊就是这个这个包里面其实很简单，就是刚刚点开的这几个文件，就是基本上就是所有的然后大部分功能其实都在开在pop里面去。这个这个的话它是一个骚体的框架，然后像像刚看到的一些嗯APA的写法，那些东西其实都是他的，包括路由注册这些。这个的话因为比较多，我先大概说一下它。这个其实介绍框架基本上就介绍这个东西，吧然后嗯这个都是客户端或者是服务端，其实都是他一个东西。他的API是一样的。然后嗯这一块是插件，它是贯穿始终的，整个整个P的生命周期里边，每一个环节基本上都都有一个插件可以让你去定义的。啊这个是一个模特，然后对应了一个汉字，然后是C婶，她室友say声管理，然后塞上，你也可以设置它的生命周期，你要求一个赛程，比如说你在配置里面设置的，它只有一分钟，那么一分钟之后，不管垂帘上他他都会把这个删掉，它断掉。你不设置的话，它就是无限极的。然后嗯再讲下这个这个是上下文。上下文其实是属于塞车，再塞车里边建立链接了吗一条链接是一个cs，然后赛事里面每一次通信在接收方会创建一个上下的去做处理。然后这一部分是一个嗯其实就相当于一个呃骚体的高真正的一个商品。它是封装的那个嗯net点CON那个接口，然后嗯实现了一些功能。首先呢就是它是支持自定义协议的，这是一个协议接口，提供了几个默认的协议。比如说这里面默认的有一个是嗯嗯发就是发色协议，就是我我自己认为最快的一种方式，然后也提供了比较通用的，比如说嗯嗯阶层的。还有Top8克。这两个。嗯至于还有一种其实就是那种分割的啊分隔符分割的这个的话，我们一起但是这个也是很简单可以。做分割是最简单的。然后这个是那个call C就是那个包里的编解码，他也是一个借口。你这个接口就是你实现了之后，要注册上去，其实它内部就是一个mic，注册给他之后，然后整个整个框架都就可以使用它。这个就类似于那个标准高的一个给他ps。一包，它里面不是就是注册引擎，嘛注册引擎是可以用用对应的某一个数据库，嘛其实跟那个是类似的。然后这个是嗯传输的一个管道。其实就是他会对你已经封盘包了，或者说你封封包当中一部分，比如说包的一部分，或者说黑自家包的东西，它会生成一个字，节流，嘛把这个字节流，在这个管道里面做一下处理。比如说做md5的一个校验，或者是做TGAP的那个压缩，甚至是你给他加个密之类的都是可以的。这个也是。嗯跟跟这个是一样的。就是注册上来之后你就可以使用。使用的时候就是指定他的，ID好，这是一个内容。然后其实还剩下一个X拍摄的是一个抽象，他他是抽象了。一个数据包里面应该有哪些信息。然后因为有这个抽象，之后你才能够去嗯把这个协议做活，就是你可以制定协议，因为你百变不离其宗，总之你这包里面至少要有这个PAD里面的东西，嘛这里边比如说像刚刚说的一个序列号，一次请求的一个序列号，然后有包的还有开着，还有他这里边，就是比如说那个原信息吗还有一些错误，这些东西都是在这里面。其实这个协议实现就是把这个txt从资金流去嗯就是解析成txt，或者是从拍片子去编码成自己留。他的操作其实就是协协议的操作就是就是她嗯这个我们这整个的这个图有没有疑问？没有的话我们就去看。仔细看一下。这个后面的就是可以大家看一下它的一个测试数据。这个就是这个整个框架的测试数据，嗯测试环境。在这里是在内地一边侧的内存是16题，这个16和2.5克合资的，然后嗯他的测试结果，这是并发数。我感觉是不是我们应该看重，你看可能大家还得转换一下，还不太习惯。嗯这个是一个并发并发一百的时候，然后变化500是吧？然后这个是一个平平均值。然后嗯中位数就是取得那个就是那个最大最小的一个空间的。啊就是那个ts吞吐量。这是75000多。大概大概了解一下这个这个数据。因为这一块它是有三盛管理还有上下文的，所以说它的性能相比下面纯这个骚皮包。如果单独只是使用那个骚包的话，22万。就是那个368是这个其实外部的一些东西，都是基于他这个这是一个核心，基于它做的架构，让他更加用比如三盛管理啊插件啊全部是全部是基于他去做，他他就是一个东西。分包解包，然后这是它的火焰图。CPU的样子，然后内存的回来，基本上它是很平的嘛是吧？没有没有太多的那种非常明显的那种那种那种梯度是吧？这其实就是说明那个它的内部耗时是很小的，基本上都等于它的IO因为这这面这一层系统交易，这个这个其实就是IO了，那从这一层到最下面的一层，其实他差得很小。一小点。所以它的性能损耗是很小。啊这是内存。内存这一块你看到基本上都是刨土挖出来。这里看到的是吧？我测测的时候跑到八分，所以就是他的嗯就是那个解码的时候，它要战略筹码，其他地方也没有没有没有太明显的消耗。啊这一块是常规的一些一些数据，这是它的一些特特点。大概大概了解一下，吧刚刚其实跟那个收费服务那一块都差不多。啊这里有一个特别的就是可以对文件链链接文件的描述，进行操作，做一些性能优化。然后那这个也是做优化的。可以是他还通过这个呀这个他就有一个这个环湖的一个工具，就是结合那个go的一个够处死。你的ui pps，看这个图。啊你优化技术。嗯对。基本上一般我不会看他，因为这个感觉有时候也没必要那么那么复杂。就是简单一点的话，就是使用GPOF那个我基本上把他Top一列，我就可以定位问题在哪里了。然后如果那个不太好找问题，想直观一点的话，就可以那个好像是1.0，吧说是嗯计划要把它加进来，但是看到发布版里面还没有，但他计划里面是有的。就是说啊直接支持，这个下面这个都是一些示例代码。其实其实我不太会讲，不知道怎么去去技术。啊这些名名词解释刚刚其实在那个图上也都有。都讲过了。你们你们想了解想想了解哪一部分，可以说。其实要说的东西，如果我自己去说的话，可能会说很多，但是也有可能不是你想了解的。应用瓶颈啊效率，啊其实性能的话一般不会有问题。对。基本上你你在这个数据上，你可以大概可以可以看到它的数量就是在这里。然后他又是可以做多节点。分布式。所以这一块是不嗯可能在用的时候，有人提过的，其实就是说他希望能够加一点其他语言的客户端，然后使得客户的开发。唉对。嗯现在其实就有一个网友做了一个GS那个是GS的他是使用的max的一个包，因为我们也也提供了一个X的方，就是他支持那个高点，然后他就他就写了一个对应的客户端，嘛像其他语言的，我还不是不是很清楚别人有没有错，因为我我之所以没写，最主要原因自己能力有限，写别的语言也写不好，然后另外一个呢它不是非常必须的，因为嗯它是支持自定义协议的，嘛你的数据包协议可以自定义。所以说你可以在你的服务端就跟客户端协商好，你的心是什么，如果他不改那自己就改善型，其实也不是实现实现一个结合。所以这一块的话虽然不是很方便，但是也不会成为一个瓶颈的问题。我想问一下，记得那个tp的两个节点之间，如果这个通讯通信的话，我需要断掉其中一个，说要升级成一个东西，这个时候可能嗯其实这个问题，啊就是如果你只是使用tp纯TP这样子，用的话就两个两个节点，其实它不存在一个就是他没有分布式的这个这个概念了吗？或者说你就是你在客户端直接连了两个节点，那一个节点挂掉之后，你这个客户端一定是法律错误的。这两个节点之间，两个节点之间他不会丢数据，但是他一定会报错，如果一个节点挂掉，这个时间如果发还失败了，直接告诉了。对，啊报错是一定的，但是不会数据，因为它是平滑关闭。这一块怎么处理？嗯苹果关闭。它是它是利用了那个零六是那个紫禁城去接负极的那个围巾，那个对对对。那如果利多数据的话是没有断掉，他们那个就是这两个竞争，我现在仔细听起了，进入那个起个新的。旧的竞争会有的嘛不会啊不会啊不会，啊他不应该把那个没有处理完的他会处理完了。那那个东西如果我特别好奇的，这个他他有一个超时，就是如果你你是治他他给你设置超时时间，你也可以说我设置几个小时，这个是随你。啊反正你超时了，他会父亲他们会关掉。对，你你或者是处理完它会自然地关掉。又有一些数据的一些事情话的话，这框架支持，数据持久化，要写数据库。啊他是不管这事。噢就是从一个清纯一个恢复好像就就不管，但是我写数据库的话为什么不写？啊写数据库我可以推荐一下。我们现在现在用的是在这里边有一个。首先有一个专业知道，这个包的话是封装的一个write，但是他嗯把那个集群和单击点两个是疯疯到一起的，就是可以通过一个接口，没有差异的去使用，只需要配置文件不一样就行。然后呃我们其实还有一个就是我们内部用的就是基于这个外力是还有一个嗯那个说px那个那个吧分了一个带有VS缓存的一个一个方案，然后也有工具去生产它，这个可能我们将来会开元出来，就是把它集成到岸上，就可以，比如通过暗纯毛的去把毛泽东所有代码生成，其实我们内部有，但是我们现在还没有把它整合起来。没错。因为我觉得这些东西其实要做的话，就是我在暗室里面就在这个这个里面去做的，它不属于开炮开炮的，它就是一个纯消费的框架，啊给你便捷的一个使使用这个这个传感器通信的一个一个游戏。然后向微服务这一块的话，他就是给你提供你的分布式负载均衡这些问题。他不解决你数据库问题，然后解决数据问题的话，可以在这里去做，这也是我们的计划。这个跟单位是独立出来的，呢还是说放在一起？前面我们开通的。并列的事，他是一个包这个包是一个工作流，它会它就是抽象出来了，你的网关正常会有哪些环节去做，然后哪一个环节唉有一些必要的东西，他会要求你去去用，吧比如说嗯长链接一般都会要做授权吗？对吧？然后也也要去写一下他的那个呃又到了根子。像这些这些东西他会抽象出一个结果来，通过接口已经把这个包整个流程已经走好了。然后还有一些自定义的一些一些地方，都已经留好了，然后你只需要去实现里面的环节就可以了。比如说你的授权，你需要简单一点，你就是需要一个SO那你就可以实现这个接口的时候，通过采购呢去内部校验一下，然后交流完了之后，你返回一个错误，那他就失败了。返回没有那就是成功。就这样一个问题去写的。就它相当于是在那个tp或者说就是我们分布式的节点到外面的一层。南极，然后就是验证呢就是在网上做拦截，做校验，嘛这个的话其实可以大概给你看一下。内部用的一个写了一个简单的，这个就是我们内部中的根据我们的需求定制，像就是那个密码命当中，主要是这个这是配置。对吧？就是这个方法就是那个包里面的软方法，给它喂那个包里面就只有这个这个软方法启动它就可以了，然后他接收的参数就是一个配置，配置这样的一些东西。然后再一个就是变脸，变得呢就是你的业务。业务的话，你看我们实现了在讲这个参这个参数是协议，本地网关我我可以跟客户端去协商要哪个协议，然后这个就是实现这个协议。这个就是我们实现了一个业务，业务它是一个结构体，这是一个结构体，然后结合体里面有一个字段，我们这里都是。其余部分全部都是用的。默认的。然后只把那个授权自定义时间来的。这个授权是一个函数，嗯看一下我们资金实现的函数，模块，内部代码。不是。返回一个，那个这是这也是他那个get里面给的一个类型叫三通的。这个的话就是看一下它的定义，就是在这看着。是这个跟这个也跳过来了，啊搁在里面，这是刚刚我要实现这个这个函数就行了。那这个函数它反复这个类型，吗这个接口这个接口要有两个方法，一个是右ID，一个是嗯就是一个字符串这个事故快，其实就是一个头疼，嘛然后嗯像我这里的话就是做了一些处理啊是吧？做一些处理之后，我这是实现了一个这是我这是我们内部的实现了一个这样一个采购的一个东西。然后这里面就有一些字段，这个我定义的，反正我们内部要用，吗然后我主要是向这两个就可以了。这两个就是实现的接口。这样就实现的结果。然后嗯这这这个东西的话，这一块就是把那个函数写写写好了吗？对吧？然后我还其实定义了一下一个嗯短链接的时候，那当然请出来了之后，我要做做一些处理工作，这个就是自定义的完全自定义，默认里面也是空的。然后这里呢我就做了一些授权啊校验，啊签名啊什么，追加一些什么信息，到到UA啊就这我们简单看一下就好。的url是怎么？类API。我我想要增加一个一个API是怎么视频？网网关的话，其实它是利用了利用了一个我们看它的代码，如果是长链接的话，它是使用了一个代理他建的。这是对，这是在那个用一个solo，嘛对吧？这个思路实际上就是网关里面的对外的一个接口的在这个dota24号对外的这个服务。这个服务的话它就定义了几个插件，一个是校验查询，就是授权校验台面，然后一个是嗯就是你看到的就是我们前面说那个列表，就是我所有的那个网关列表都能列出来吗？那个插件。然后这个就是一个代理插件。然后最后这是一个嗯啊这个是做啥用来的？这个还这个可能是那个做事放。这个试运行的一个一个工整。数字是这个就是一个公式忘了，到现在我一下子想不起来做什么用是有用的。然后讲这个这个就是在tp杠EXT杆包里面。一个通用通用的一个一个插件，这个插件的实现。可以大概。嗯插件它首先是有一个监听地址，因为他要做代理，是监听地址，然后漫想应的一个阀值。然后是不是要统计时间，一般情况下都会同一时间，但要求性能的时候可能不统一时，统一时间是有系统调用，然后这个插件里面就是加了一个心跳包，然后他会把把代理的一个，因为它要代理的话，就需要有一个那个一个接口，嘛他就会把一个代理接口注册到你的路由上。这个这个ISI这个是它流出来的一个东西。然后来讲，然后呃重点就看一下他，这个还是一个初始化的一个就是当建立练习之后，做的一些事情。这里就是这个其实就是刷新了一下筛选，然后嗯把他的ID设置一下。这个是接收。比如说他就是有两个，这两个方法应该是。用跳错了。这个不是那个看了有点问题。直接打开了。这个还有两个袋里面，它跳到跳到那边去。那这个代理文件是做做那个网站的。嗯这个就是两个两个方法，就是说你这个代理是希望希望是做一个付的代理，还是一个护士的代理。然后这个的话就是一个护士和护都有个代理，就是全部的代理，然后它出现了一个接口，就是这个是为了兼容链接池，就是带电劫持的客户端和不带电电池的客户端，它都会有这两个方法不可忽视。然后就是这也是抽象的，重点看这个在铺和护士这两个东西就是嗯当代理的时候，就是他会这是一个an中是吧？他认为是代表为之。就是意思就是说当我找不到路由的时候，我就会到这个里面来。找不到路由的，他就是相当于是代理了。然后这一块的话，像我们刚刚看到网站不是会有一个touch ID吗就是在这里设置，它把三乘AB加上ICQ设置上，然后它是一个sad，sun就是一个管道函数，管道函数就是呃pet它是不对外公开接口的，你只能通过这个管道函数去给他做设置。然后所以说做之前会有会有一个管道函数的一个切片做准备，向这个就是说给他类似请求代理请求，给他设置一个sq sq传递传递那个收据，就传传递开cad吗？传递下去的话，每一集都会有，它就可以做跟踪了。然后这个的话就是便利它所有的源源信息，奇缘信息，你就理解成就是拍的是GDP里面的黑的信息，就是原信息它的编码方式试试UL考点。啊这里就把那些便利了之后，就把所有元气集全部copy一次，然后设置上。然后这是一个6IP就是有时候我们会需要你嗯知道客户端真实客户端是谁吗？因为有多层代理或者多层转发，这就是一个UIP的一个设置。内部提供了一个固定的一个一个mac P涉及到这里边，然后框架就可以很方便地获取到了。然后这个的话，就是坐井桥的铺放就是你传进来了一个客户端，然后它是涉及到这里边来了吗？其实就是外部定义的，刚看到这里。啊这个靠着定义过来的。其实就是就是一个客户端。一个P请求完了之后，他会把请求也有一些元数据吗？把那些原数据在散步回来，现在过来，就是因为它是一个交替的就是请求请求和响应，它是一个转发的机制，嘛所以它有一个复制的过程，会把原数据再复制给当前的这一个请求，然后如果有错误的话，会对对错误做的一些一些处理。像这一块就是因为你是做代理，所以说有一些错误，就就要把它处理成是网关错误。啊最后是返回了，这个结果这个结果的话是一个资金，就是嗯你你你的就是接收接收的这个流出来，如果是一个资金流切片的话，他就不会做任何的解码，就原封不动的把资金流就转发出去。所以这里边做的做的处理仅仅只是那个原数据，护士跟他是是一样的一样的逻辑。这就是那个网上做代理的一个核心代码。现在的话那个还还没有做爱。其他的其实很很多都是我们还是一直在在讲这个广告这一块。啊网络这一块他有一些定义的一些一些规范的东西。像这个P网关的话，如果带着这个拍摄参数，那我就会把它认为是快速AD然后内部的请求的icq，就会就会就是加上她，然后再加上那个ip，然后http状态码的映射关系，这个这块嗯，其实嗯如果是返回错误的话，这个错误是跟状态码是相关的，在APP这一块有映射。这一块。也了解一下。这是http网关的。嗯还是http的，它的服务端，对外服务端用的是发回tt，然后他做了一些一些转板，啊包括像这个site，其实他就是说支持支持这个编码协议的编码协商的，你希望要什么编码，那么这个框架会给你提供的一个对应的对应的编码类型，如果你你不要求的话，你用的什么编码给我，我就用什么编码给你。这就是黑的，嘛在黑客里设置了，这个他就会按照这个来。然后向向这个类型的话content，这个它也是有心事的，你要是这个你还的是这个的话，它就使用超过八分的。这就是ps的。然后6IP就是gm http协议的，然后那个状态码刚刚说的在这里，错误的时候，如果返回的，那个这是那个我们统一的内部错误，嘛如果他的cold小于200，因为在内部嗯一百多的状态码，它都是客户端错误，然后嗯400多的还有500个，它都是属于请求啊服务端的错误。所以这里如果小于200的话，我就会给他返回500，就证明是内部肯定是有内部某一个环节请求失败的。客户端请求失败的，所以它也是属于内部服务错误。就改成给它改成一个状态，码量就是500。如果它小于600的，对吧？如果他这个就是说先判断不是小于200，如果不小于200就200多。那么它又是小于600的，那它就是我们正常的http状态码，那我就把它直接就作为状态码出现。如果是大于600的，那我就用299。299就是说实际上它是业务错误，就是你返回的状态码，所以这就是一个约定，嘛就是你如果说希望它是一个业务错误的状态码，而不是而不是说通信级别的状态，码的话，那你就不要去设置的，它小于600。其实你一千以上的就是最好的。自己去订那些都是属于内部错误，然后客户端去处理的时候，或者浏览器在处理的时候，吗就是你发现是个两二九九，那就证明他是有错误的，但是是属于业务错误，没有通信错误。那这个时候你就包在里面，就是那个错误就就是这个结构体，body就是它的一个结构体，就可以做解析，如果是200，那它就是对的。那那玻璃里面的东西就是你想要的那个结果。我也不知道讲啥。对。现在点。9:20。那还有什么问题没有？今天我感觉也不太适合深入，然后我们先大概先整体的可能都了解了一下，然后我们可能要下次再分享，就具体可以讲一些代码级别的，就是说设计级别的一些东西。啊现在我们可能大概知道唉我这个孕妇是个什么样子的东西，然后用是大概是怎么去用的。可以说一下，你当时是想要写这样。嗯就应该还要很懂很多，STP原理吧看，就是从你试用商品那个库去拓展那些是什么？呀嗯对，就是其实它的核心最核心的就是那个骚P图。扫K包它封装的就是标准包里面的net点。connet点C接口让那个接口。就是你那个接口做嗯嗯其实它这个包实现的其实实现了功能。最大的问题就是把那个协议层抽离出来，可以做定义了，再不投资定义的，这是它最最大的功能。就是你的数据包怎么去组织这一块，就是我支持定协议制定协议就是那个商务包去做的，然后我嗯发消息收消息都是通过这个消费者去做。然后她就靠这其实就是在他的基础上去扩展我扩展插件，然后会话管理上下文，然后嗯还有什么日志，或者还有其他的一些一些东西，其实都是拓展东西。然后嗯其实做这个一开始，我我一开始其实写的是115年的时候嗯写了一个1.1个版本，那个时候他就是一个点对点通信的一个一个set，然后用在我写的这个爬虫路上，嗯那个幽灵蛛分布式的时候，然后嗯然后去年的时候，因为公司也要做为服务，那个时候就先把公司用公司为服务，当时是用的。嗯啊PC。那个标准包去其实是改的，我把它代码全部copy copy出来，基于它的代码去改，但是实际上其实是留有遗憾的，他那个架构后面我是不认可的，因为我觉得他那个架构不适合做大项目。然后后面我就想因为积累的一些想法一些一些一些感想，然后就就想着要重写一个东西，然后后面就结合我当时写的那个开放的1.0的一个思路，去去写的，现在这个现在这个已经是3.0版本。嗯然后他他的最主要的思路就是什么？嗯我希望它的客户端和嗯服务端是完全一致的。点对点。对的通信。不管你是推还是拉，都是完全一样的。就是基于这个思路去做的，首先是疯了骚气的包，然后再基于他去分了很多的一些一些东西。其实我就是建立链接之后，对于TPP来讲，先练习之后，其实它没有区别。是吧？所以说刚刚刚那个质量为服务里面是有思路和可信的概念，那个概念仅仅只是对P2的封装，封装就是给了他不同的插件，插件插件的不同，它的角色就不一样，实际上本质它都是相同的。所以像你你说我可可以用客户端去作为服务端，就是我我我也注册一个路由，然后让服务端请求我。是可以。怎么去用的话，其实就在于业务去设计。嗯像其他的一些这里边用到最多的东西，其实就是接口一个项目，不管是开炮者，还是嗯那个mic一起装MAC，然后还是网关，其实都是基于接口去写的，然后所有的东西都是可以自定义，自己去实现的。可以举一些例子。举例子的话，比如说嗯这个协议是不是可以自定义这个接口？其实没有一个很好看的东西，就是说你可以下能够看到他的一些一些定义的一些东西。嗯像这个呢是一个接口，这个也是一个接口，这是借口的欺骗。嗯啊这是这是一个借口。他就是就就是他们只是多个多个这个set组成的这个管道，然后插件肯定是借口。say是虽然赛事它不它不是一个接口，但是他分了很多的借口。因为插件在不同的位置，你你需要去可以去控制的东西是不一样的，所以说有些地方你需要用到这个塞车的某个方法，有些不需要用，所以它就分了很多的接口去对应你在当前这个位置能够用的那些方法列表，给你列出来就一个接口。其实这就是涉及到接口，它是有一个作用，它可以限制一个结构体的。呃方法及你希望给谁用哪些方法，那么你就定义这样一个接口给她。康泰斯其实也是一样的，跟赛程是一样的，它底层其实这个结构体，但是我给他分了很多得很很多的这个空txt，其实就是对应不同的场景，使用不同的方法，然后这个猪者视频都不是借口。就这个工程不是理解，这个都是一个借口。骗也是一个接口，然后向着里面微服务里边的话X是一个接口，因为这里面只有一个单子，对吧？可见这个思路他都是封的P只有两可，他还是一个接口。就是这样。所以嗯每个环节都是可以自定义的。像刚刚说的那个杯子例子，就是在网关着里的那个那个就是你要自定义网关，其实就是实现一下这个结构体，它这个结构体这是一个类型函数，嘛这是一个阶段，这是一个介绍，这是一个借口。都是借口。所以他就是方法就是一个工作由所有的东西都是跑空的，我给给了一套默认的，你可以把它覆盖掉，用自己然后写这一套项目。感觉用的最最拿手的一个东西其实就是借口。唉这个东西确实确实挺好用。写的这个这个最麻烦。写的时候觉得最麻烦。最麻烦的是哪一块？是吗？就马上的实际上是。嗯30。33。那一块的逻辑其实超复杂。最最复杂的是什么？呢断线重连，啊然后清华关闭，啊因为你要做一些就是那些测试。对，测试，然后。其实是关键是他的场景很多，比如说它断了线了，那你这个三婶实际上他是对的，他没有觉得区分的，但是你内部处理的时候，他肯定是不一样的，因为一个链接总有一个发起者，是吧？然后断的时候是谁先断的？那这些这些他报的错误都是不一样的，然后你就要去接你那些。然后你要让他能够平滑的对外表现完全一样。其实这一块是很复杂的，然后包括一个链接，你是不是得不能说一个请求卡死到那里不动，吧所以说你要有一个超时，所以就做了30的生命中心。然后还有一个康txt的生命周期，像这些它它也是需要需要很很就是很很很细致的一些一些设计。其实总的来讲的话，其实就是一些状态，关啊那个错误那个场景上。你怎么知道？是测试的情况下，就是就是自己自己可以把侧面遇到的。基本上是侧靠次就是就是自己就知道有这种场景，你去对想那个场景，然后看一下会不会有问题。这样这样去测。还是要经验。这个肯定离不开过，你要是立场，你要是这个至少应该把他所有的一些一些细节的东西肯定是知道的，就是我们验证的仅仅是你的逻辑，你的逻辑是不是能够符合？处理那些事情没有问题。有没有bug？嗯可以我们可以大概的看一下这里面的一个代码，我们再再搞半个小时最多不超过十点，不然的话可能大家喝下一碗，像这个就是刚说的那个接口很好，诠释方法进行。这些还有相互相互包涵，做定义基础的呀什么之类。像这种方法就是验证这个我这个cs就是一个结构体。这里就是有一个原则，我不对外公开的东西，我一定不会大声。嗯就是你在我这个项目里面，凡是看到你能够外部调用的东西，一定是可以给你用用的。然后你给你的接口里面有这些方法，你在这个特定位置一定是可以用的，不会有问题。不会有看着。我就是验证了他实现了。实现的这个接口没有问题。嗯像这个就是三婶她的一些资料，嗯项复杂的一些地方，那这个就比较复杂。铺的话因为它涉及到了两端封信，沪市A点的初始你发过去，成功不成功，就不管了是吧？但是库你要两边都要坚固。就是像这一块的话，比如说失败了，也失败了，它是有错误的，啊这是错误的，你空了啊啊内部的话也是re啊re，啊我这里边就是简写就是那个结构体错误这个问题，所有的错误基本上都是这个内部和外部都是统一。然后他就会有一个从严，啊这都是座重檐的。这个方法是做出来的，虫源这一块，那个绕了很多圈子在这一块。套了套了几层，然后这个就是说嗯他要是断断开的错误，啊我这里有个判断，这个错误，如果是链接断开的错误，那么并且我这个重联是成功的。我就从这个沟通我就重新去写一下，否则的话，就是他就把这个这个嗯CMD这个就是那个酷的结果它是一个控制，其实就是说它上面盖的一个方法，返回的返回的东西，不是说就是只有一个结果，其实他是带着一些方法的，就给他标记为完成。这里面封的是一个是两个管道，石油管道的。因为她要支持一步的，就是说这个库你可以支持一部，七条也可以支持。同步请求。那不管是徒步一步，其实他内部都是一步的。同步就是为了就是在某个位置阻塞给他，让他投入，然后就是那个推送，然后还有一个他这个那个是断开了。先看。啊这个这就是一个毒的携程。每建立一个链接，不管客户端还是服务端，反正两端都会有一个独字写成。这个写成里边的话，就在这里做了一些处理。啊这些都是这这里边是分的是一个是一个一个一个数字标记，他是一个原子操作，就是标记他状态，看它是不是能够继续继续。其实能不能继续读，就是看他是不是断开链接啊什么之类的一些东西。然后这一块，这一块就是独，嘛然后如果有一些问题，啊然后它会返回。像这个这是技术。这个技术这是个这是一个微波炉。唉都是苦的。他是为了实现频发关闭，因为你要去统计内部的状态，才能够知道是不是把事故处理完了。然后我的并发内部的并发全部都是封的。协同迟。没有直接用go，因为你要做大象大象的话，你的量大了，他有可能为什么封掉？但是你内存疯了，绝对会有大量的速度，那那后面的事情就处理起来很麻烦了，所以说我们要控制内存。在你建项目就是你这个呃启动项目之前，你就已经就想好你的服务器内存是多大的，然后你在这个形成时大概一个携程是不超过8K对吧？然后你就大概计算一下，你这个服务器到底能够承担多少并发量，都可以计算出来，然后你这个go的携程设置不大，所以这里使用的都是携程迟。这个就是在携程里面运行的一个函数。嗯这个函数的话像这个就是处理函数的。就是一个你读过来一个包，你怎样去处理它，不管是接收的响应，还是接收的请求，接接收的推送，它都是需要去做处理的。都这些处理都叫hello。在内部都是很low。就在这里面做的处理，这就属于上下文的。这是上下文的。先生就到这一部分就是结束了。然后像有一些错误啊断开链接的那些东西，这个东西会退出吗？这个东西推出来之后，推出之前李凤会掉，这个这就是毒发生了断开链接的问题。在这里面它会尝试做重联，然后包括一些嗯如果是客户端的话，它会有它会有一些等待响应，嘛你链接都断了，Sarah都不是那个财产了。所以说这些东西这些你等待想要的结果，一定要给他返回错误的，要给它关掉。飚这边已经处理完了，但是有问题。所以就是在这一块做个处理，然后把这个筛选资源释放掉。如果他是支持重连的，对吧？你退了，可以让他出面，那他就在这里做充电，充电了之后，然后嗯这里有一个就是就是说你看他初恋失败，就是它它会长成一个cool，如果是处的话就成功了就就不用管了，如果失败的话，他会调一个接口，内部的这个插件，这是一个插件的容器，它就是一个插件管理。这一块就调了一个接口，就是当你的掉线了，嘛对吧？你又没春联，这个时候如果你比如说是在网端掉线了，我就要去去更新他的呃OK的信息，嘛这个时候你就可以在插件里面去做，就可以释放掉它的这条这个客户端的信息。像这些的话都是因为这一块重连的比较复杂，它会涉及到一些状态，像这里都是一些状态，状态标记他是哪些状态？怎么去处理？因为有可能，因为这里是支持并发操作的。就是你你正在观也正在段，那在你关的时候他也断了两个逻辑同时跑。就会有问题，所以说这里就会有状态状态管理，去保证并发正常。这个就其实我觉得大概大概的说一下，因为那个讲代码，估计大家也根本看不进去的。或者因为我我在这里讲，然后大家也没看，嘛你看我肯定是跟跟不了这个思路，只能说我讲的只是一个大概思路，你可能知道我的实现思路就够了。啊代码逻辑有兴趣的可以读一读。这个塞塞车后果。就是所有的赛事都存存储在这里。嗯赛事通过IP进行，所以赛事ip默认的是远程的，就是对端的那个地址。ip地址。但是你如果做长链接，你肯定要把它重新塞提一下赛程，你你希望设置的右ID啊之类的。然后你像做推送，我就可以通过这个赛事后果，我去可以拿到我想要的我给谁？推动型。通过UIDR就是那个带上ID，拿到C婶就可以给他推。也可以。广播直接用RAM赛事，每一个look做。其他。其实这一块讲得也可能差不多。但是有上下文，上下文也比较复杂，但比赛是要简单一些，这里面提供的都是用户可以用的一个对外的事，就是呃给客户的一些接口，然后向里边主要有两个方法，一个是班里，一个是hello。这两个方法就是对接的稍稍品，单点就是商品的内部要调一个因为你读到了包之后，你要怎么样才能够知道包得用哪个结构去做解码？对吧？这个映射关系是用班里。就是嗯在在那个协议里面读了UAUA之后，不到UI之后，就可以通过这个UI去找到你那个路由里面去定义的，当时你定义的那个路由hello是是是谁，然后通过反射去new一个接收体去解码。他那个就是做处理，当你当你把整个包完整的已经解码完成的以后就做hello处理。这个的话也是分了分了三类，包有三类，一类是响应，一类是推送，一类是请求，就是三类。三一般有三类的处理方式。后面呢就是一些具体的某一每一类的实现，每一类的视线其实都都是拆开的。这些这些东西。然后后面这个一个小东西，就是铺的一个一个接收体积，就是掉了客户端调的那个护方法之后，它会返回这个这个接口。那这个接口的话，它会有一些实实现了一些一些方法，你可以拿到拿到它列出来的这些东西，比如说你掉了之后，我直接就我不需要，因为我们正常如果做性能测试，我想知道我调这个接口用了多长时间，你还得用那个炭包去搞，其实没有必要的。这个都已经内部做了统计了。这个就是统计，你只要拿到结果，直接把它打印出来，就这就是一次请求的耗时。然后这是input，其实这里边有两个概念，因为他没有请求响应的概念，这里面全部都是铺铺是input凹透镜，就是输入输出啦推这些东西。输入就是说相对我这一端，把我这一段写东西就叫输入，然后我这一段写出去就叫输出。它端的概念这里边也没有没有别的。没有客户端服务端的概念，就是说我在这一端，我的输入就是在这里，这个音库的其实就是响应了。响应的元数据就是说它的那个黑色的部分，我可以拿到看看都有什么东西。然后它返回给我的包，这部分的编码类型是什么？反而给我的结果是什么？这个站当你做一部请求的时候，并发请求做这里边有一个方法就是嗯一步的一个库，那个时候你就可以调这个，但就是在携程里边教，这个但等待他结束。结束了你就可以拿到苹果了。如果是阻塞的直接调用库的，就不需要管这个蛋。这个蛋在内部已经掉了，这就是错误。所以我们正常用的时候都会直接，你看我们用的都很这里。我们正常用的时候都是这样的，我直接就那个除了cm地调查，我只需要看这个结果。这个错误是不是内容可以。都是这样的，因为你其他信息一般情况下也不用，就用这个信息最关键的，然后美菲克拉当你不做一步的时候，实际上啊那个美造成那个伪造的方法实际上是没有用的。你你不会去掉了，你造之后再去断言它是什么类型。因为这里的话是做这样船坞作船坞指针绑定的，你直接拿它就是结果，但是你做义工的时候就行。衣服的时候，你你这些结果你不可能去一开始就就知道的，或者说你你就知道什么时候它就结束了，也值了。这个东西你要靠主色的，嘛所以说就不太方便，就可以用道去去直接去用的。然后别的。还有就是它支持上下文，它这个对抗态势是不是上吊的？你可以规定你这个是请求。那个嗯他的一个一个一个条件。上下的那个包，你们了解过？看到过。他可以控制时间，是吧？也可以。主动取消，这个的话就便于你一次请求去怎么去控制它，它可以穿过空txt，它这个传入这种方式，这里再开炮的也是一些势力，也是在配置的生命周期这一块，啊生命周期这一块，首先我这里再配置的呀我都推了。服务端这边我可以的，啊作为服务端这边K的超时时间，过了这个时间断开链接了，然后呃客户端这边的话，应该是能到这。这是一个康泰克剥吗是吧？标准班。然后设定了一下三秒时间，然后我用pp VC炕txt，因为这些它是管道管道函数，嘛他是嗯这样定义的。就是这样的。后面这个你就可以配你这个包，各种设置，比如说我去指定他的icq，然后嗯指定是不是要嗯比如说那个管道，那个那个管道过滤，那个我可以设置它，GJIP压缩。其实有有很多一些方法都已经都都是这种TP可以直接掉到PPVC开头的就是这里边的一些管道函数，这里边这是其中一个。和case这样设置之后，你看我下面，如果这个康X超时，啊就是这样完成了就会说他是已经超时了，嘛对吧？如果没有的话，这是正常返回的，吧我就把这个取消掉，这个把它取消掉。那这里我也是用到了一个义务，这就是义务教育。这一块我看这个是专门的用户调用，就专门写的一段的。他一步调用的时候，这里是批量。啊批量的。批量的时候我会先给他一个券，然后他会把结果写到颤动，就在提案当中去接收，接收每一个都是这个然后伪造的，啊这就是一硬物的时候，基本上会这样。再说点啥，呀还有十分钟就要！就不要那么计较不计较。这个我觉得这次已经很多支持了。啊对，很多知识点。那就可以闲聊一下，然后嗯有些技术对技术。对。就可以抛开这些。可以随便聊一些东西。一些业务啊也有嗯业务上的话，实际上如果你是纯A市GDP的，嗯其实不太好的。因为他在做网页处理的时候，html的时候，方便呈现那一块，呢教给大家一个做一篇是没有问题的。然后嗯目前我我实现了一套方案就是为服务，但实际上我们还可以做一些嗯比如说其实微服务，其实也包含这个就是说推送推送服务，因为它事关就是那个那个对的通信的。然后嗯也可以做去考量。金钱比较火的。漂亮那个研究一下端对端。基本上其实他怎么讲，呢就是说基于tcp去就是tp这个框架，你做KTV出现的一些一些服务其实都可以用的。cs。线。啊就是这些。嗯它是它是对等的。嗯就是你怎么用？其实看这个业务吗？其实你看接口是相同的，他就是一个P浏览一下他的API的一个这个主要就是建立一个长连接，这是它的一些方法。他们都是一样的。就是只有一个只有一个。PMP它只是一个牛P这这个角色那你说他是服务端客户端看不出来的，对吧？然后它的方法，这个P它有一个戴尔，对吧？这样方法，还有一个cs。这两个方法是唯一区别，它是客户端服务端的概念。但实际上当你掉了这个方案以后，他没有任何区别。这个的话，就是你给他个链接，他不管你是客户端还是服务端，得给他个链接，它就能使用这套框架。在我我们这边首先要要主动开一个单子，客户在那边的话，嗯网关的话就是微服务。微服务微服务那是是开炮的一个使用方向，应用方向。就是你如果用微服务那一套的话，你只需要在你的鸡群对外开放一个开放两个端口，一个是http的，一个是tcp的，两个对外端口，其余的都是内部。然后所有的都是可以任任意多个节点，网关内部服务都是可以任意一个节点，但是这个就涉及到你们那服务设计原则，你不能够在微服里去做状态，做了状态之后，因为他每次请求都是做的负载平衡的。那你就状态就有问题，啊我们用的时候，凡是简单一点就推荐你用vs。对吧？最简单的。共享内存就共享它就好。然后接着说那个他用到哪些地方，其实也可以用游戏。看你如果你如果觉得够可以做游戏的话，那他就可以做游戏。很多优秀公司。对。但是还有一些极客，他就就就抓了C加加一起放，觉得不想用这些带着积极的东西。但其实现在用的很多，其实游戏要求不是很高的，都够都都是可以做的。嗯因为他可以，它它是带财政管理，就是做游戏的话，有30，然后就基本上是没有问题的，但是你像标准包里面带的啊PC啊或者是嗯啊PCXIPS它也是作作为服务，这个嗯不要只知道嗯但是他那些就没有开始没有猜中的话，你去做游戏方面，这个的话他可以控制到链接，就是够能够拿到的底层的东西，他都可以给你。比如说描述符的操作，在互联网，啊互联网可以啊就是有一个事例，啊这个实际是物联网。算算。是的。他是做做那个KTV的做KTV的，然后我还见到一个做做那个什么汽车上的每个东西啊导航，对汽车导航，两个水，但是但是好像我这里只写了一个这个这是一个空间的。他们用的用的那个北京的公司的方式，做KTV那种就是你嗯通过它的APP或者什么微信啊可以控制控制你那个呃放在房间的点拨那些东西，这种事跟那个GRC呃对。是艺术嗯跟他GABC其实跟他不一样，他是只是专注于它，它等于什么？呢顶多他是等于3，那个我这个手提包。是吧？你用G2PC能够轻松时间没服务嘛时限和服务吗？他还是比较底层的。它只是一个通讯组件，稍微的。对吧？你你你你说像这种刚刚这种铺啊故事，啊然后然后定义路由啊这些东西它有嘛对不对？所以它不是一个东西。你如果想用他那套功能，可以直接用消费者，召开本身就是看到有些现在介绍就是说客户端写的东西跟我就在桌上。写的标准差不多。就是这样写他的介绍。他介绍什么？其实就是说客户端跟服务端之间，直接啊是啊那那肯定是客户端服务端通信。他那个就是怎么说，呢他他是应该是嗯首先它支持支持那个http2，对吧？然后这个就有一个优势，你可以不同语言之间都遵循http协议，就可以方便通信了。这是他其实他我觉得他最大的优优势是这一点，你看网上对他的信誉，对比评价，跟其他语言的他是最低的最慢的，为什么？因为它它是用ftp协议，嘛但是据说啊可能是我了解的信息有点故事。啊听别人说你也可以定一别的协议，也可以自己定一别的协议。但总归来讲，它只是一个烧饼吧通信组件，它不能算过一个框架，你不能轻唤去实现你的业务。就最后一点时间我们就聊一下。那个以后这些分享怎么搞，然后我们今天搞了一场，然后总结一下，吧然后看看下一次怎么样怎么样搞会更好一些。我就标准把我的腿啊因为可能不同的人就一定不一样的，你这个东西可能你是研究这个让我们就是全部做数据库那一块。但是标准吧我现在用到这个的话，我就不用性就更强。其实我们我们去年公司内部就组织过，够阅读就是也是这个样子，但是我们学的是标准包。也看了一些，但是其实我已经看完，我个人已经看了，只把常用的都看。其实看标准包的话也可以，但是我的一个我我们的一个经验就是看标准包可能会看好久，大家必须都得每个人拿电脑，因为他因为里面的东西，啊我们现在讲的这些框架要什么东西，说实话，没有多少技术，都是一个逻辑的东西。没有算法。是吧？很简单。但是标准高，很多东西，全是算法模型，数据模型的东西。那些东西你可能连这个模型都没了解过的话，看着东西都看不懂，他为什么要这样子，做一下加减乘除唉出来一个结果，这个结果就是想要。为什么？像这些东西我们看的时候是什么？好开心。如果说有谁看过这个标准包，这个东西都很溜。可以在这里主角。然后给大家讲，我觉得这样解释一下，对，如果没有一个人带的话，就是大家谁都没看过这东西，上来一看，我觉得卡特的概率非常高。因为需要时间去查资料的。给我讲讲。到涉及到代码，尽量在之前。要不让大家看一下，像比如有的时候代码没有提前看过，然后讲的时候会议事阁的表演，然后看到时候看不清楚，然后具体内容能没有提前了解过，会有这样的感觉。对，其实今天咱们讲这个变故，并并不是让大家能够理解代码，因为这个节奏这个代码量也不可能去毕业。对吧？就是嗯其实这个东西今天的目的就是嗯可以可以说就是分享一个思路，分享一个项目，这样一个思路。我们学习源码的话，可能我们要提前抽出时间，我们提前会说我们要学一下这个这个源码，然后哪一部分确定好之后，可能我们提前看一看，有个了解，然后至少要有一个人，绝对至少要有一个人。完全通的。带着大家去看。有没有我们以后还是这样的吗？就是一个人主讲这样子吗？这两个小时就这个还好。这样对刚才说的。我一个人读一个人做主角，呢要有一些讨论。我自己的身份。要不然啊愿意就是带着大家跟导游要带大家走访沟通，啊对，这个这个确实确实是，对，要要要有讨论，今天是是是跟我个人有关系，那我我每次讲你知道吗？都形成不了讨论，我也不知道为啥，可能我不会讲。讲到最后一个，看大家对这个不熟，说实话我也不清楚。但是因为我我没去过过。是谁的？啊所有的可能你可以跟我有有有空给我们讲一些标准包的东西，其实你要是你你你不是要是你懂google语法的话，应该也差不多相底曾那些东西可能我们不太清楚，我觉得我。没有，我我主要是以以诚为主的，嘛我是做嵌入式的。因为我们做互联网，对接互联网，了解。啊所以我我觉得都不能在互联网上可以做一些那个那我我不太熟悉，所以我不不懂。她也爱你们怎么玩的。我们。对，通过，这个然后在这里偷偷在学校的时候，下次再可能会涨停一点，cc申购其实很像的。也是最接近的。你们都是做互联网，我我这一块基本上也是钻研服务端这一块的东西，然后向我感觉比较差的就是这种那个图形这一块。有时候觉得做图形处理的那些东西很有意思，但是是。你没学过。如果通过水桶的话，你可以介绍一下。嗯那我们就其实我觉得一个人讲也是可以的，然后就是可能要抛出点多问题来。在之前确定的范围，它在布置几道题目，然后然后比如说我们讲一个小时或者讲一个半小时，然后剩余的时间我们就去讨论，啊啊对这个可能会比较好，如果如果最好能提前先那个这样的话可以准备准备。对你的议题，比如说你甚至可以提前一个月把这个抛出来。然后有有兴趣的人可能会先去看一下，然后再到时候再再深入一点的，他们聊得更久更有意思。那么大家都在上面听，你在上面讲都是做完了，对，啊其实这种状态是不好的。所以我觉得他这个项目可以在自己或者去去去实践一下，拿来用，然后再交流一下，再更好一点。嗯反正这个它的生态会越来越完善。现在插件向那个扩展包里面写了好多东西，这里边的东西都是扩展班的，就是插件这个协议类的。然后这个是md5校验的那个管道过滤，然后模块的模块类的，这是一个。这是一个客户端筛选，其实它就是一个链接池，客户端的一个是这个就是应用到的那个微服务的客户端的，因为服务的客户端，因为他不需要逆向的去做推送吗，它要求的是多多条链接保证这个通信量。所以有这个池子可以保证这个这个这个通信的吞吐量，这是max。有些做http的推送啊之类的。可以用这个，吧然后后面其实也会慢慢加一个东西，然后遇到的，然后我想到的可能都会加到这里面来，然后嗯也有可能有其他方向，前两天尝试用这个写了一个嗯P to P的还是没成功。P to P的对环境要求也比较苛刻一些，我想做P to P直联嗯要能做能做出来的话，那座聊天其实挺爽。其实东西都有了，但是就是那个他最后那个拨号不成功，他会拒绝，也不知道是为啥？我也没时间再去深究了，因为我当时搞这个东西搞了，搞了一整天嗯搞了一整天，然后写的什么就最后一步为啥不成功，我也不知道。有空再再去研究一下，或者有谁帮忙。看一看。唉嗯，下一次。我们定义题吗？然后还是说那个在区里面在讲，因为有的人今天比较倾向于然后在群里面说吧今天今天到这儿可以。谢谢他，这个这样好吧，希望下次大家还有时间过来。会有。我在抄都抄出来。呀</description>
+    </item>
+    
+  </channel>
+</rss>

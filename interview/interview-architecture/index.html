@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>架构 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/interview/interview-architecture/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/interview/interview-architecture/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                架构
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>架构 </h1>
+            <aside >
+                
+            </aside>
+
+            <p><em>1.Etcd满足了CAP原理中哪两个特性？</em></p>
+
+<blockquote>
+<p>etcd是高可用的键值存储系统。满足CP原理</p>
+</blockquote>
+
+<p><em>2.Etcd V2和V3版本的区别？</em></p>
+
+<blockquote>
+<p><strong>V2和V3接口不一致，存储不一样，数据互相隔离</strong></p>
+
+<blockquote>
+<dl>
+<dt>A.V2是纯内存实现，并未实时将数据写入到磁盘；V3是内存索引(kvindex</dt>
+<dd>btree) + 后端数据库存储(boltdb: 单机的支持事务的kv存储)<br />
+B.V2过期时间只能设置到每个key上，如果多个key要保证生命周期一致则比
+较困难；V3过期时间通过lease，可以给每个key设置相同的过期id<br />
+C.V2 Watch只能watch某一个key以及子节点(通过参数recursive)，不能
+进行多个watch；V3 watch机制支持watch某个固定的key，也支持watch一个范围<br />
+D.V2提供http接口；V3通过grpc提供rpc接口<br /></dd>
+</dl>
+
+<p><a href="http://jolestar.com/etcd-architecture/">查看资料</a></p>
+</blockquote>
+</blockquote>
+
+<p><em>3.当时选型etcd的考量是啥？和ZK有哪些区别？</em></p>
+
+<blockquote>
+<p><strong>相同点</strong></p>
+
+<blockquote>
+<p>1.应用场景类似: 配置管理，服务注册发现，选主，应用调度，分布式队列，分布式锁。</p>
+</blockquote>
+
+<p><strong>不同点</strong></p>
+
+<blockquote>
+<p>1.Etcd使用raft协议;Zk使用paxos协议，前者易于理解，方便工程实现。<br />
+2.Etcd相对来说部署方便；Zk的部署、维护、使用比较复杂，需要安装客户端。<br />
+3.Etcd提供http+json，grpc接口，跨平台语言; Zk则需要使用其客户端。<br />
+4.Etcd支持https访问; Zk在这方面缺失。</p>
+</blockquote>
+</blockquote>
+
+<p><em>4.服务治理包含哪些？</em></p>
+
+<blockquote>
+<p><code>服务注册和发现</code><br />
+<code>服务监控</code><br />
+<code>集群容错</code>
+<code>负载均衡</code></p>
+</blockquote>
+
+<p><em>5.负载均衡分类？</em></p>
+
+<blockquote>
+<p>1.DNS负载均衡(地理负载均衡)<br />
+2.硬件负载均衡(F5和A10,能支撑200万-800万/秒并发，价格昂贵)<br />
+3.软件负载均衡(Nginx和Lvs,nginx支撑5万/秒，LVS支撑80万/秒，价格便宜，
+扩展方便)</p>
+
+<p>并发访问量大于1000万时可以考虑配合使用</p>
+</blockquote>
+
+<p><img src="https://bytemode.github.io/images/load_balance.jpeg" alt="" /></p>
+
+<p><em>6.Nginx和Lvs的区别？</em></p>
+
+<blockquote>
+<p>1.Nginx 大多工作在第7层，网络的依赖比较小，可以对HTTP应用实施分流策略，比如域名、结构等（也可以工作在第4层网络层，例如对mysql做反向代理，做授权和负载均衡等）；Lvs工作在第4层，比较依赖网络环境，可以对几乎所有应用进行负载均衡，包括Web、数据库等<br />
+2.Nginx负载能力强，因为其工作方式逻辑非常简单，仅进行请求分发，没有流量；Lvs负载能力较差，受限于机器的I/O配置(处理流量)<br />
+3.Nginx安装，配置及测试相对简单；Lvs的安装、配置及测试所花的时间比较长</p>
+
+<p><a href="https://blog.csdn.net/barnetthe/article/details/48784233">参考资料</a></p>
+</blockquote>
+
+<p><em>7. 你们是怎么解决微服务之间调用优化与问题排查的?</em></p>
+
+<blockquote>
+<p>关键词: 链路监控, Google Dapper 论文</p>
+
+<p>搭建以链路追踪技术为核心的监控系统，通过收集、存储、分析、分布式系统中的调用事件数据，协助开发运营人员进行故障诊断、容量预估、性能瓶颈定位, 调用链路梳理以及优化服务依赖</p>
+
+<p>实施时需要注意埋点导致的性能问题, 使用异步队列的方式和调整采样率来减少对服务本身造成的性能影响</p>
+
+<p>常用开源方案: zipkin, jaeger, cat,Skywalking&hellip;..</p>
+
+<p>Jaeger 是 Uber 开源的分布式追踪方案, 已加入 CNCF, 基于 Golang 开发, 部署方便, 支持 Docker, 唯一不足是只支持 Cassandra 和 Elasticsearch&hellip;
+<img src="https://camo.githubusercontent.com/afa87494e0753b4b1f5719a2f35aa5263859dffb/687474703a2f2f6a61656765722e72656164746865646f63732e696f2f656e2f6c61746573742f696d616765732f6a61656765722d766563746f722e737667" alt="jaeger" /></p>
+
+<p>更多可自行搜索, 可参考:<br />
+1. <a href="https://myslide.cn/slides/8297">https://myslide.cn/slides/8297</a>
+2. <a href="https://opentalk-blog.b0.upaiyun.com/prod/2017-10-31/9ef338ba14ccca39ce45709b59d70c64.pdf">https://opentalk-blog.b0.upaiyun.com/prod/2017-10-31/9ef338ba14ccca39ce45709b59d70c64.pdf</a>
+3. <a href="https://github.com/jaegertracing/jaeger">https://github.com/jaegertracing/jaeger</a>
+4. Dapper中文版: <a href="https://bigbully.github.io/Dapper-translation/">https://bigbully.github.io/Dapper-translation/</a></p>
+</blockquote>
+
+<p><em>8. 介绍下 API 网关的作用和应用架构?</em></p>
+
+<blockquote>
+<p>API网关，它负责在上层抽象出各业务系统需要的通用功能，例如：鉴权、限流、ACL、降级等。<br />
+随着微服务的流行，API网关已经成为一个微服务架构中的标配组件。</p>
+
+<p>查看资料:<br />
+1. <a href="http://www.cnblogs.com/savorboard/p/api-gateway.html">http://www.cnblogs.com/savorboard/p/api-gateway.html</a>
+2. <a href="https://tech.youzan.com/api-gateway-in-practice/">https://tech.youzan.com/api-gateway-in-practice/</a></p>
+</blockquote>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/interview/interview-pen/" title="笔试题">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              笔试题
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/interview/interview-data-structure/" title="数据结构">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              数据结构
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>Sony gobreaker熔断器源码分析 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/articles/sony-gobreaker/readme/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/articles/sony-gobreaker/readme/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                Sony gobreaker熔断器源码分析
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>Sony gobreaker熔断器源码分析 </h1>
+            <aside >
+                 作者: HuangChuanTonG@WPS.cn 
+            </aside>
+
+            
+
+<p>最近看了一下go-kit，发现这个微服务框架的熔断器，也是使用sony开源的作为基础。
+<a href="https://github.com/sony/gobreaker">sony开源在 github 的熔断器</a>
+在源代头注释中发现，原来sony实现的是微软2015时公布的CircuitBreaker标准，果然微软才开源界的大神。</p>
+
+<h2 id="1-微软定义的-circuit-breaker">1）微软定义的 Circuit breaker</h2>
+
+<p>微软的原文件在此：<a href="https://msdn.microsoft.com/en-us/library/dn589784.aspx">https://msdn.microsoft.com/en-us/library/dn589784.aspx</a>
+名不知道怎么正确翻译，直观翻译，可能叫：环形熔断器（或叫：循环状态自动切换中断器）。
+因为它是在下面3个状态循环切换  ：</p>
+
+<pre><code>         Closed 
+         /    \
+ Half-Open &lt;--&gt; Open
+
+初始状态是：Closed，指熔断器放行所有请求。
+达到一定数量的错误计数，进入Open 状态，指熔断发生，下游出现错误，不能再放行请求。
+经过一段Interval时间后，自动进入Half-Open状态，然后开始尝试对成功请求计数。
+进入Half-Open后，根据成功/失败计数情况，会自动进入Closed或Open。
+
+</code></pre>
+
+<h2 id="2-sony开源的go实现">2）sony开源的go实现</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// 从定义的错误来看，sony的应该增加了对连接数进行了限制 。
+</span><span style="color:#8f5902;font-style:italic"></span> <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#8f5902;font-style:italic">// ErrTooManyRequests is returned when the CB state is half open and the requests count is over the cb maxRequests
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">ErrTooManyRequests</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;too many requests&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#8f5902;font-style:italic">// ErrOpenState is returned when the CB state is open
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">ErrOpenState</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">errors</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">New</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;circuit breaker is open&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">)</span></code></pre></div>
+<h3 id="2-1-通过settings的实现-了解可配置功能">2.1） 通过Settings的实现，了解可配置功能：</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Settings</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">Name</span>          <span style="color:#204a87;font-weight:bold">string</span>
+	<span style="color:#000">MaxRequests</span>   <span style="color:#204a87;font-weight:bold">uint32</span>        <span style="color:#8f5902;font-style:italic">// 半开状态期最大允许放行请求：即进入Half-Open状态时，一个时间周期内允许最大同时请求数（如果还达不到切回closed状态条件，则不能再放行请求）。
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Interval</span>      <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Duration</span> <span style="color:#8f5902;font-style:italic">// closed状态时，重置计数的时间周期；如果配为0，切入Open后永不切回Closed--有点暴力。
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">Timeout</span>       <span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Duration</span> <span style="color:#8f5902;font-style:italic">// 进入Open状态后，多长时间会自动切成 Half-open，默认60s，不能配为0。
+</span><span style="color:#8f5902;font-style:italic"></span>
+    <span style="color:#8f5902;font-style:italic">// ReadyToTrip回调函数：进入Open状态的条件，比如默认是连接5次出错，即进入Open状态，即可对熔断条件进行配置。在fail计数发生后，回调一次。
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">ReadyToTrip</span>   <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">counts</span> <span style="color:#000">Counts</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">bool</span> 
+
+	<span style="color:#8f5902;font-style:italic">// 状态切换时的熔断器
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">OnStateChange</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">from</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">to</span> <span style="color:#000">State</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="2-2-核心的-执行函数-实现">2.2）核心的*执行函数*实现</h3>
+
+<p>要把熔断器使用到工程中，只需要，实例化一个gobreaker，再使用这个Execute包一下原来的请求函数。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">cb</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">CircuitBreaker</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Execute</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">req</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{},</span> <span style="color:#204a87;font-weight:bold">error</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">generation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">cb</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">beforeRequest</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#8f5902;font-style:italic">// 
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">e</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">recover</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">e</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">cb</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">afterRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">generation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#204a87">panic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">e</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// 如果代码发生了panic，继续panic给上层调用者去recover。
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}()</span>
+
+	<span style="color:#000">result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">cb</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">afterRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">generation</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">result</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="2-2-关键-func-beforerequest">2.2 关键  func beforeRequest()</h3>
+
+<p>函数做了几件事：</p>
+
+<ol>
+<li>函数的核心功能：判断是否放行请求，计数或达到切换新条件刚切换。</li>
+<li>判断是否Closed，如是，放行所有请求。
+
+<ul>
+<li>并且判断时间是否达到Interval周期，从而清空计数，进入新周期，调用toNewGeneration()<br /></li>
+</ul></li>
+<li>如果是Open状态，返回ErrOpenState，&mdash;不放行所有请求。
+
+<ul>
+<li>同样判断周期时间，到达则 同样调用 toNewGeneration(){清空计数}</li>
+</ul></li>
+<li>如果是half-open状态，则判断是否已放行MaxRequests个请求，如未达到刚放行；否则返回:ErrTooManyRequests。</li>
+<li>此函数一旦放行请求，就会对请求计数加1（conut.onRequest())，请求后到另一个关键函数 : afterRequest()。</li>
+</ol>
+
+<h3 id="2-3-关键-func-afterrequest">2.3 关键  func afterRequest()</h3>
+
+<ol>
+<li>函数核心内容很简单，就对成功/失败进行计数，达到条件则切换状态。</li>
+<li>与beforeRequest一样，会调用公共函数 currentState(now)
+
+<ul>
+<li>currentState(now) 先判断是否进入一个先的计数时间周期(Interval), 是则重置计数，改变熔断器状态，并返回新一代。</li>
+<li>如果request耗时大于Interval, 几本每次都会进入新的计数周期，熔断器就没什么意义了。</li>
+</ul></li>
+</ol>
+
+<h2 id="代码的核心内容">代码的核心内容</h2>
+
+<ol>
+<li>使用了一个generation的概念，每一个时间周期(Interval)的计数(count)状态称为一个generation。</li>
+<li>在before/after的两个函数中，实现了两个状态自动切换的机制：
+
+<ul>
+<li>在同一个generation(即时间）周期内，计数满足状态切换条件，即自动切换；</li>
+<li>超过一个generation时间周期的也会自动切换；</li>
+</ul></li>
+<li>没有使用定时器，只在请求调用时，去检测当时状态与时间间隔。</li>
+</ol>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/interview/interview-os/" title="操作系统">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              操作系统
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/interview/articles/interview_analysis_4/" title="Golang面试题解析（四）">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Golang面试题解析（四）
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

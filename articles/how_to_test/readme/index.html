@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>how to testing - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/articles/how_to_test/readme/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/articles/how_to_test/readme/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                how to testing
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>how to testing </h1>
+            <aside >
+                 作者: xpzouying@gmail.com 
+            </aside>
+
+            
+
+<h1 id="how-to-testing">HOW TO TESTING</h1>
+
+<p>原文/源码参考：</p>
+
+<ul>
+<li><a href="https://github.com/xpzouying/learning_golang/tree/master/how_to_test">how_to_test</a></li>
+</ul>
+
+<p>作者：xpzouying@gmail.com</p>
+
+<hr />
+
+<p>测试的作用：</p>
+
+<ul>
+<li>验证代码是否符合预期</li>
+<li>资源竞争检查：race detect</li>
+<li>调优：profiling：memory/cpu</li>
+</ul>
+
+<h2 id="原始代码">原始代码</h2>
+
+<p>代码功能：访客记次数。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;log&#34;</span>
+	<span style="color:#4e9a06">&#34;net/http&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">counter</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">w</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ResponseWriter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FormValue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">++</span>
+
+	<span style="color:#000">w</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Set</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Content-Type&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;text/html; charset=utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">w</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Write</span><span style="color:#000;font-weight:bold">([]</span><span style="color:#204a87">byte</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;&lt;h1 style=&#39;color: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FormValue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;color&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">+</span>
+		<span style="color:#4e9a06">&#34;&#39;&gt;Welcome!&lt;/h1&gt; &lt;p&gt;Name: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;&lt;/p&gt; &lt;p&gt;Count: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprint</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;&lt;/p&gt;&#34;</span><span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/hello&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">log</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ListenAndServe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;:8080&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>运行：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">go run main.go</code></pre></div>
+<p>浏览器访问：</p>
+
+<p><img src="https://bytemode.github.io/static/images/image-20181222170909680-5469749.png" alt="image-20181222170909680" /></p>
+
+<p>本地日志记录：</p>
+
+<p><img src="https://bytemode.github.io/static/images/image-20181222171507017.jpg" alt="image-20181222171507017" /></p>
+
+<h3 id="测试规范">测试规范</h3>
+
+<ol>
+<li><p>运行测试：</p>
+
+<ol>
+<li>测试：<code>go test</code></li>
+<li>压力测试：<code>go test -bench</code></li>
+<li>测试覆盖：<code>go test -cover</code></li>
+</ol></li>
+
+<li><p>测试规范：</p>
+
+<ol>
+<li><p>测试函数示例</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8f5902;font-style:italic">// go test or go test -v
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestXxx</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span>
+      
+<span style="color:#8f5902;font-style:italic">// go test -bench
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">BenchmarkXxx</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">B</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></li>
+</ol>
+
+<p>Xxx不能以小写字母开头。</p>
+
+<ol>
+<li><p>测试文件规范：文件名以<code>_test.go</code>结尾。</p></li>
+
+<li><p>在测试函数里面使用：Error，Fail或者相关的函数标示相关错误。</p></li>
+</ol></li>
+
+<li><p>例子：</p>
+
+<ol>
+<li><p>单元测试：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestTimeConsuming</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Short</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Skip</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;skipping test in short mode.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+  <span style="color:#ce5c00;font-weight:bold">...</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+
+<li><p>压力测试：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">BenchmarkHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">b</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">B</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#000">b</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">N</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;hello&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+
+<li><p>Examples：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">ExampleHello</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;hello&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#8f5902;font-style:italic">// Output: hello
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span>
+      
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">ExampleSalutations</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;hello, and&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;goodbye&#34;</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#8f5902;font-style:italic">// Output:
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// hello, and
+</span><span style="color:#8f5902;font-style:italic"></span>  <span style="color:#8f5902;font-style:italic">// goodbye
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div></li>
+</ol></li>
+</ol>
+
+<h3 id="测试用例">测试用例</h3>
+
+<p><strong>运行测试</strong></p>
+
+<p>使用<code>go test</code>运行测试。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>how_to_test<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span>
+?       _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#ce5c00;font-weight:bold">[</span>no <span style="color:#204a87">test</span> files<span style="color:#ce5c00;font-weight:bold">]</span></code></pre></div>
+<blockquote>
+<p>也可以使用Golang的TDD小工具：<code>goconvey</code></p>
+
+<p>安装：<code>go get github.com/smartystreets/goconvey</code></p>
+
+<p>介绍: <a href="https://github.com/smartystreets/goconvey">GoConvey is awesome Go testing</a></p>
+
+<p>运行：<code>goconvey</code></p>
+
+<p>效果截图：</p>
+
+<p><img src="https://bytemode.github.io/images/image-20181222173117732-5471077.png" alt="image-20181222173117732" /></p>
+</blockquote>
+
+<p><strong>测试用例</strong></p>
+
+<p>创建<code>main_test.go</code>，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">touch main_test.go</code></pre></div>
+<p>编写第一个测试用例：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHelloHandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">rw</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRecorder</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#4e9a06">&#34;zouying&#34;</span>
+	<span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/hello?name=&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;status code not ok, status code is %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">counter</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;counter len not correct&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;counter value is error: visitor=%s count=%v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>运行测试：<code>go test -v</code>：</p>
+
+<blockquote>
+<p>➜  how_to_test git:(how_to_test) ✗ go test -v
+=== RUN   TestHelloHandleFunc
+INFO[0000] visited                                       count=1 module=main name=zouying
+&mdash; PASS: TestHelloHandleFunc (0.00s)
+PASS
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      0.015s</p>
+</blockquote>
+
+<p>运行测试覆盖：<code>go test -cover</code></p>
+
+<blockquote>
+<p>➜  how_to_test git:(how_to_test) ✗ go test -cover
+INFO[0000] visited                                       count=1 module=main name=zouying
+PASS
+coverage: 62.5% of statements
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      0.021s</p>
+</blockquote>
+
+<p>查看覆盖的代码：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#8f5902;font-style:italic">#!/bin/bash
+</span><span style="color:#8f5902;font-style:italic"></span>go <span style="color:#204a87">test</span> -coverprofile<span style="color:#ce5c00;font-weight:bold">=</span>coverage.out
+go tool cover -html<span style="color:#ce5c00;font-weight:bold">=</span>coverage.out</code></pre></div>
+<blockquote>
+<p>➜  how_to_test git:(how_to_test) ✗ go test -coverprofile=/tmp/coverage.out
+INFO[0000] visited                                       count=1 module=main name=zouying
+PASS
+coverage: 62.5% of statements
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      0.015s
+➜  how_to_test git:(how_to_test) ✗ go tool cover -html=/tmp/coverage.out</p>
+</blockquote>
+
+<p>效果图为：</p>
+
+<p><img src="https://bytemode.github.io/static/images/image-20181222180733266-5473253.png" alt="image-20181222180733266" /></p>
+
+<p>绿色的表示测试代码覆盖住的，红色的表示没有覆盖。</p>
+
+<p>第一个测试用例是直接测试http处理函数，我们使用了<code>httptest.NewRecorder()</code>创建<code>ResponseRecorder</code>对象，其中实现了 <code>ResponseWriter interface</code>。该对象在内存中记录了http response的状态。</p>
+
+<p>还有一种测试方法是运行一个HTTP Server，使用HTTP Client请求该Server对应的接口。</p>
+
+<p>httptest package中提供了<code>NewServer</code>方法，监听HandlerFunc处理函数，启动Server，启动Server的地址通过<code>URL</code>成员获得，例如：<code>http://127.0.0.1:52412</code>。需要注意的是，使用完毕后记得调用关闭：<code>Close()</code>。</p>
+
+<p>代码如下，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHTTPServer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">ts</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewServer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandlerFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">ts</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Close</span><span style="color:#000;font-weight:bold">()</span>
+
+	<span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Infof</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;server url: %s&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ts</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">URL</span><span style="color:#000;font-weight:bold">)</span>
+
+	<span style="color:#000">testURL</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ts</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">URL</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;/hello?name=zouying&#34;</span>
+	<span style="color:#000">resp</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">testURL</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Error</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">err</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">return</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">w</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">resp</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusCode</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">g</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">w</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;status code = %q; want %q&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">w</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#204a87;font-weight:bold">return</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>运行测试，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>master<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span> -v -run<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">TestHTTPServer</span>
+<span style="color:#ce5c00;font-weight:bold">===</span> RUN   TestHTTPServer
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> server url: http://127.0.0.1:52506
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> visited                                       <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+--- PASS: TestHTTPServer <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span>.00s<span style="color:#ce5c00;font-weight:bold">)</span>
+PASS
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#0000cf;font-weight:bold">0</span>.015s</code></pre></div>
+<p><strong>测试技巧：表格测试 (Table Based Tests)</strong></p>
+
+<p>代码如下，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHelloHandlerMultiple</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">tests</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span>
+		<span style="color:#000">wCnt</span> <span style="color:#204a87;font-weight:bold">int</span>
+	<span style="color:#000;font-weight:bold">}{</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user3&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">tests</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">rw</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRecorder</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/hello?name=&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;status code not ok, status code is %v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000;font-weight:bold">}</span>
+
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">wCnt</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Errorf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;counter value is error: visitor=%s count=%v&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>运行测试，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>how_to_test<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span> -run<span style="color:#ce5c00;font-weight:bold">=</span>TestHelloHandlerMultiple
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> visited                                       <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> visited                                       <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> visited                                       <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user2
+INFO<span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0000</span><span style="color:#ce5c00;font-weight:bold">]</span> visited                                       <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user3
+PASS
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#0000cf;font-weight:bold">0</span>.016s</code></pre></div>
+<p><strong>测试工具：<a href="github.com/stretchr/testify/assert">testify</a></strong></p>
+
+<p>使用工具介绍各种 <code>if {}</code>判断，产生大量的冗余代码。</p>
+
+<p>代码，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHelloHandlerMultipleWithAssert</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+	<span style="color:#000">tests</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span>
+		<span style="color:#000">wCnt</span> <span style="color:#204a87;font-weight:bold">int</span>
+	<span style="color:#000;font-weight:bold">}{</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user3&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">tests</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">rw</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRecorder</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/hello?name=&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+		<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p><strong>Sub Test</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+	<span style="color:#000">tests</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span>
+		<span style="color:#000">wCnt</span> <span style="color:#204a87;font-weight:bold">int</span>
+	<span style="color:#000;font-weight:bold">}{</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user3&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">tests</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;test-&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">rw</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRecorder</span><span style="color:#000;font-weight:bold">()</span>
+			<span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/hello?name=&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+			<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span>
+		<span style="color:#000;font-weight:bold">})</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>运行测试，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a40000">➜</span>  <span style="color:#000">how_to_test</span> <span style="color:#000">git</span><span style="color:#000;font-weight:bold">:(</span><span style="color:#000">how_to_test</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#a40000">✗</span> <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#000">test</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">v</span> <span style="color:#000;font-weight:bold">.</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">run</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">TestHelloHandlerInSubtest</span>
+<span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000">RUN</span>   <span style="color:#000">TestHelloHandlerInSubtest</span>
+<span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000">RUN</span>   <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">zouying</span>
+<span style="color:#000">time</span><span style="color:#000;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:07:19+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">info</span> <span style="color:#000">msg</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">visited</span> <span style="color:#000">count</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">main</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">zouying</span>
+<span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000">RUN</span>   <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">user2</span>
+<span style="color:#000">time</span><span style="color:#000;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:07:19+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">info</span> <span style="color:#000">msg</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">visited</span> <span style="color:#000">count</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">main</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">user2</span>
+<span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000">RUN</span>   <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">user3</span>
+<span style="color:#000">time</span><span style="color:#000;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:07:19+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">info</span> <span style="color:#000">msg</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">visited</span> <span style="color:#000">count</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">main</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000">user3</span>
+<span style="color:#ce5c00;font-weight:bold">---</span> <span style="color:#000">PASS</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">TestHelloHandlerInSubtest</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0.00</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#ce5c00;font-weight:bold">---</span> <span style="color:#000">PASS</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">zouying</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0.00</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#ce5c00;font-weight:bold">---</span> <span style="color:#000">PASS</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">user2</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0.00</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#ce5c00;font-weight:bold">---</span> <span style="color:#000">PASS</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">TestHelloHandlerInSubtest</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">user3</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0.00</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">PASS</span>
+<span style="color:#000">ok</span>      <span style="color:#000">_</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">Users</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">zouying</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">src</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">Github</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">com</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">ZOUYING</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">learning_golang</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000">how_to_test</span>      <span style="color:#0000cf;font-weight:bold">0.016</span><span style="color:#000">s</span></code></pre></div>
+<h3 id="data-race-detect">Data Race Detect</h3>
+
+<p>多个goroutine同时访问共享数据时，如果数据不是线程安全的，那么有可能会产生data race。</p>
+
+<p><strong>HOW TO</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">go <span style="color:#204a87">test</span> -race</code></pre></div>
+<p><strong>测试代码</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">func TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">(</span>t *testing.T<span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+	tests :<span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">[]</span>struct <span style="color:#ce5c00;font-weight:bold">{</span>
+		name string
+		wCnt int
+	<span style="color:#ce5c00;font-weight:bold">}{</span>
+		<span style="color:#ce5c00;font-weight:bold">{</span>name: <span style="color:#4e9a06">&#34;zouying&#34;</span>, wCnt: <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">}</span>,
+		<span style="color:#ce5c00;font-weight:bold">{</span>name: <span style="color:#4e9a06">&#34;zouying&#34;</span>, wCnt: <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#ce5c00;font-weight:bold">}</span>,
+		<span style="color:#ce5c00;font-weight:bold">{</span>name: <span style="color:#4e9a06">&#34;user2&#34;</span>, wCnt: <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">}</span>,
+		<span style="color:#ce5c00;font-weight:bold">{</span>name: <span style="color:#4e9a06">&#34;user3&#34;</span>, wCnt: <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">}</span>,
+	<span style="color:#ce5c00;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">for</span> _, tc :<span style="color:#ce5c00;font-weight:bold">=</span> range tests <span style="color:#ce5c00;font-weight:bold">{</span>
+		rw :<span style="color:#ce5c00;font-weight:bold">=</span> httptest.NewRecorder<span style="color:#ce5c00;font-weight:bold">()</span>
+		req :<span style="color:#ce5c00;font-weight:bold">=</span> httptest.NewRequest<span style="color:#ce5c00;font-weight:bold">(</span>http.MethodPost, <span style="color:#4e9a06">&#34;/hello?name=&#34;</span>+tc.name, nil<span style="color:#ce5c00;font-weight:bold">)</span>
+		handleHello<span style="color:#ce5c00;font-weight:bold">(</span>rw, req<span style="color:#ce5c00;font-weight:bold">)</span>
+
+		assert.Equal<span style="color:#ce5c00;font-weight:bold">(</span>t, http.StatusOK, rw.Code<span style="color:#ce5c00;font-weight:bold">)</span>
+		assert.Equal<span style="color:#ce5c00;font-weight:bold">(</span>t, tc.wCnt, counter<span style="color:#ce5c00;font-weight:bold">[</span>tc.name<span style="color:#ce5c00;font-weight:bold">])</span>
+	<span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span></code></pre></div>
+<p><strong>运行测试</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>how_to_test<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span> -race -v . -run<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">TestHelloHandlerDetectDataRace</span>
+<span style="color:#ce5c00;font-weight:bold">===</span> RUN   TestHelloHandlerDetectDataRace
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T22:58:22+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T22:58:22+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T22:58:22+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user2
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T22:58:22+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user3
+--- PASS: TestHelloHandlerDetectDataRace <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span>.00s<span style="color:#ce5c00;font-weight:bold">)</span>
+PASS
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#0000cf;font-weight:bold">1</span>.029s</code></pre></div>
+<p>测试通过，是否证明了我们的代码是没有问题的呢？</p>
+
+<p>其实并非如此，只是没有检测出来。为什么没有检测出来？</p>
+
+<p>是因为没有多个goroutine同时运行，访问共同的数据。</p>
+
+<p><strong>修改代码</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">TestHelloHandlerDetectDataRace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">testing</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+	<span style="color:#000">tests</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span>
+		<span style="color:#000">wCnt</span> <span style="color:#204a87;font-weight:bold">int</span>
+	<span style="color:#000;font-weight:bold">}{</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zouying&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+		<span style="color:#000;font-weight:bold">{</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;user3&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">wCnt</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">},</span>
+	<span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">wg</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitGroup</span>
+	<span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">tests</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">tc</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">tests</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">name</span>
+		<span style="color:#000">want</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">tc</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">wCnt</span>
+
+		<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Done</span><span style="color:#000;font-weight:bold">()</span>
+
+			<span style="color:#000">rw</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRecorder</span><span style="color:#000;font-weight:bold">()</span>
+			<span style="color:#000">req</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">httptest</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MethodPost</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;/hello?name=&#34;</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rw</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">req</span><span style="color:#000;font-weight:bold">)</span>
+
+			<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">StatusOK</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">rw</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Code</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#000">assert</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Equal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">want</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">])</span>
+		<span style="color:#000;font-weight:bold">}()</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Wait</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p><strong>运行测试</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>how_to_test<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span> -race . -run<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">TestHelloHandlerDetectDataRace</span>
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+WARNING: DATA RACE
+Write at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">8</span>:
+  runtime.mapassign_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:190 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0x11c
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Previous <span style="color:#204a87">read</span> at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">7</span>:
+  runtime.mapaccess1_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:12 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0xbc
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Goroutine <span style="color:#0000cf;font-weight:bold">8</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+
+Goroutine <span style="color:#0000cf;font-weight:bold">7</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+WARNING: DATA RACE
+Read at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">9</span>:
+  runtime.mapaccess1_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:12 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0xbc
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Previous write at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">8</span>:
+  runtime.mapassign_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:190 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0x11c
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Goroutine <span style="color:#0000cf;font-weight:bold">9</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+
+Goroutine <span style="color:#0000cf;font-weight:bold">8</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+WARNING: DATA RACE
+Write at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">7</span>:
+  runtime.mapassign_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:190 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0x11c
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Previous write at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">8</span>:
+  runtime.mapassign_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:190 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0x11c
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Goroutine <span style="color:#0000cf;font-weight:bold">7</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+
+Goroutine <span style="color:#0000cf;font-weight:bold">8</span> <span style="color:#ce5c00;font-weight:bold">(</span>running<span style="color:#ce5c00;font-weight:bold">)</span> created at:
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:139 +0x154
+  testing.tRunner<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/testing/testing.go:827 +0x162
+<span style="color:#ce5c00;font-weight:bold">==================</span>
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:13:06+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user2
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:13:06+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user3
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-23T23:13:06+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+--- FAIL: TestHelloHandlerDetectDataRace <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span>.00s<span style="color:#ce5c00;font-weight:bold">)</span>
+    testing.go:771: race detected during execution of <span style="color:#204a87">test</span>
+FAIL
+FAIL    _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#0000cf;font-weight:bold">0</span>.030s</code></pre></div>
+<p><strong>分析报错</strong></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ce5c00;font-weight:bold">==================</span>
+WARNING: DATA RACE
+Write at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">8</span>:
+  runtime.mapassign_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:190 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0x11c
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211
+
+Previous <span style="color:#204a87">read</span> at 0x00c0000a8f90 by goroutine <span style="color:#0000cf;font-weight:bold">7</span>:
+  runtime.mapaccess1_faststr<span style="color:#ce5c00;font-weight:bold">()</span>
+      /usr/local/go/src/runtime/map_faststr.go:12 +0x0
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.handleHello<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main.go:14 +0xbc
+  _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test.TestHelloHandlerDetectDataRace.func1<span style="color:#ce5c00;font-weight:bold">()</span>
+      /Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test/main_test.go:144 +0x211</code></pre></div>
+<ul>
+<li>goroutine 8, goroutine 7, &hellip;</li>
+<li>DATA RACE</li>
+<li><code>how_to_test/main.go:14</code>：<code>counter[name]++</code></li>
+<li><code>runtime/map_faststr.go:190</code></li>
+</ul>
+
+<p>原因是因为在多个goroutine中，对map同时进行了++操作，而在go中，map又不是线程安全的（线程安全的map参考sync包中的map），需要进行保护。</p>
+
+<p><strong>修复race</strong></p>
+
+<p>如果咱们的代码中有data race，那么一般使用下面方式可以避免，</p>
+
+<ul>
+<li><p>使用channel。</p>
+
+<ul>
+<li><p><a href="https://blog.golang.org/share-memory-by-communicating">Share Memory By Communicating</a></p></li>
+
+<li><p><a href="https://gobyexample.com/channels">Go by Example: Channels</a></p></li>
+
+<li><blockquote>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#4e9a06">&#34;buffered&#34;</span>
+<span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#4e9a06">&#34;channel&#34;</span></code></pre></div></blockquote></li>
+</ul></li>
+
+<li><p>使用mutex。</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/sync/">Package sync</a></li>
+<li><a href="https://tour.golang.org/concurrency/9">sync.Mutex - Tour of Go</a></li>
+<li><a href="https://gobyexample.com/mutexes">Go by Example: Mutexes</a></li>
+</ul></li>
+
+<li><p>使用atomic。</p>
+
+<ul>
+<li><a href="https://gobyexample.com/atomic-counters">Go by Example: Atomic Counters</a></li>
+</ul>
+
+<blockquote>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;sync/atomic&#34;</span>
+
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">ops</span> <span style="color:#204a87;font-weight:bold">uint64</span>
+
+<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">50</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">AddUint64</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">ops</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}()</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000">opsFinal</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">atomic</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">LoadUint64</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">ops</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></blockquote>
+
+<ul>
+<li><a href="https://golang.org/pkg/sync/atomic/">sync/atomic package</a></li>
+</ul></li>
+</ul>
+
+<p><strong>引入mutex解决问题</strong></p>
+
+<ol>
+<li>增加<code>var mu sync.Mutex</code>对<code>counter map</code>进行保护。</li>
+<li>在对counter访问前进行<code>Lock</code>操作，访问结束后，进行<code>Unlock</code>操作。</li>
+</ol>
+
+<p>修改代码为，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;net/http&#34;</span>
+	<span style="color:#4e9a06">&#34;sync&#34;</span>
+
+	<span style="color:#4e9a06">&#34;github.com/sirupsen/logrus&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">counter</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">mu</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Mutex</span> <span style="color:#8f5902;font-style:italic">// mutex for counter
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">w</span> <span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ResponseWriter</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">r</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Request</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FormValue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">++</span>
+	<span style="color:#000">cnt</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">counter</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span>
+	<span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span>
+
+	<span style="color:#000">w</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Header</span><span style="color:#000;font-weight:bold">().</span><span style="color:#000">Set</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Content-Type&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;text/html; charset=utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">w</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Write</span><span style="color:#000;font-weight:bold">([]</span><span style="color:#204a87">byte</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;&lt;h1 style=&#39;color: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">r</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">FormValue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;color&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">+</span>
+		<span style="color:#4e9a06">&#34;&#39;&gt;Welcome!&lt;/h1&gt; &lt;p&gt;Name: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">name</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;&lt;/p&gt; &lt;p&gt;Count: &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprint</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">cnt</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;&lt;/p&gt;&#34;</span><span style="color:#000;font-weight:bold">))</span>
+
+	<span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WithFields</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fields</span><span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#4e9a06">&#34;module&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;main&#34;</span><span style="color:#000;font-weight:bold">,</span>
+		<span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#000;font-weight:bold">:</span>   <span style="color:#000">name</span><span style="color:#000;font-weight:bold">,</span>
+		<span style="color:#4e9a06">&#34;count&#34;</span><span style="color:#000;font-weight:bold">:</span>  <span style="color:#000">cnt</span><span style="color:#000;font-weight:bold">,</span>
+	<span style="color:#000;font-weight:bold">}).</span><span style="color:#000">Infof</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;visited&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">SetFormatter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">JSONFormatter</span><span style="color:#000;font-weight:bold">{})</span>
+
+	<span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">HandleFunc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/hello&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">handleHello</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">logrus</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Fatal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">http</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ListenAndServe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;:8080&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>测试代码，</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">➜  how_to_test git:<span style="color:#ce5c00;font-weight:bold">(</span>how_to_test<span style="color:#ce5c00;font-weight:bold">)</span> ✗ go <span style="color:#204a87">test</span> -v -race . -run<span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">TestHelloHandlerDetectDataRace</span>
+<span style="color:#ce5c00;font-weight:bold">===</span> RUN   TestHelloHandlerDetectDataRace
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-24T10:11:23+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user3
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-24T10:11:23+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>zouying
+<span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;2018-12-24T10:11:23+08:00&#34;</span> <span style="color:#000">level</span><span style="color:#ce5c00;font-weight:bold">=</span>info <span style="color:#000">msg</span><span style="color:#ce5c00;font-weight:bold">=</span>visited <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#000">module</span><span style="color:#ce5c00;font-weight:bold">=</span>main <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">=</span>user2
+--- PASS: TestHelloHandlerDetectDataRace <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span>.00s<span style="color:#ce5c00;font-weight:bold">)</span>
+PASS
+ok      _/Users/zouying/src/Github.com/ZOUYING/learning_golang/how_to_test      <span style="color:#0000cf;font-weight:bold">1</span>.025s</code></pre></div>
+<p>具体参考：</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/testing/">https://golang.org/pkg/testing/</a></li>
+</ul>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/24-2018-12-23-go-mod-part-1/" title="第 24 期 go mod 源码阅读 part 1">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 24 期 go mod 源码阅读 part 1
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/reading/25-2018-12-27-tsdb/" title="第 25 期 TSDB 引擎介绍，对比及存储细节">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              第 25 期 TSDB 引擎介绍，对比及存储细节
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

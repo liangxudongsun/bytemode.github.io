@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>Golang面试题解析（四） - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/interview/articles/interview_analysis_4/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/interview/articles/interview_analysis_4/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                Golang面试题解析（四）
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>Golang面试题解析（四） </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<h2 id="31-算法">31. 算法</h2>
+
+<p>在utf8字符串判断是否包含指定字符串，并返回下标。
+&ldquo;北京天安门最美丽&rdquo; , &ldquo;天安门&rdquo;
+结果：2</p>
+
+<p>解答：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;strings&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">(){</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Utf8Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;北京天安门最美丽&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;天安门&#34;</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;北京天安门最美丽&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;男&#34;</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;男&#34;</span><span style="color:#000;font-weight:bold">))</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Utf8Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;12ws北京天安门最美丽&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;天安门&#34;</span><span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">Utf8Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">substr</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">asciiPos</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">substr</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">asciiPos</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#000">asciiPos</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">asciiPos</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">pos</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+	<span style="color:#000">totalSize</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+	<span style="color:#000">reader</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">strings</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">NewReader</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">str</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">size</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">reader</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadRune</span><span style="color:#000;font-weight:bold">();</span> <span style="color:#000">err</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">size</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">err</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">reader</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ReadRune</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">totalSize</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#000">size</span>
+		<span style="color:#000">pos</span><span style="color:#ce5c00;font-weight:bold">++</span>
+		<span style="color:#8f5902;font-style:italic">// 匹配到
+</span><span style="color:#8f5902;font-style:italic"></span>		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">totalSize</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">asciiPos</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">pos</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">pos</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h2 id="32-编程">32，编程</h2>
+
+<p>实现一个单例</p>
+
+<p>解答：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#4e9a06">&#34;sync&#34;</span>
+
+<span style="color:#8f5902;font-style:italic">// 实现一个单例
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">singleton</span> <span style="color:#204a87;font-weight:bold">struct</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">ins</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">singleton</span>
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">mu</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Mutex</span>
+
+<span style="color:#8f5902;font-style:italic">//懒汉加锁:虽然解决并发的问题，但每次加锁是要付出代价的
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">GetIns</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">singleton</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span>
+
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ins</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">ins</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">singleton</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ins</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">//双重锁:避免了每次加锁，提高代码效率
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">GetIns1</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">singleton</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ins</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">mu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">ins</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">ins</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">singleton</span><span style="color:#000;font-weight:bold">{}</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ins</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#8f5902;font-style:italic">//sync.Once实现
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">once</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Once</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">GetIns2</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">singleton</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">once</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Do</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">ins</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">singleton</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000;font-weight:bold">})</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ins</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h2 id="33-执行下面的代码发生什么">33,执行下面的代码发生什么？</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+	<span style="color:#4e9a06">&#34;time&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1000</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">10</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#000">i</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}()</span>
+	<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ok</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#000">ch</span>
+			<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000">ok</span> <span style="color:#000;font-weight:bold">{</span>
+				<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;close&#34;</span><span style="color:#000;font-weight:bold">)</span>
+				<span style="color:#204a87;font-weight:bold">return</span>
+			<span style="color:#000;font-weight:bold">}</span>
+			<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;a: &#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">}()</span>
+	<span style="color:#204a87">close</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ch</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;ok&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sleep</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">time</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Second</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#0000cf;font-weight:bold">100</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="考点-channel">考点:<strong>channel</strong></h3>
+
+<p>往已经关闭的channel写入数据会panic的。
+结果：</p>
+
+<pre><code>panic: send on closed channel
+</code></pre>
+
+<h2 id="34-执行下面的代码发生什么">34,执行下面的代码发生什么？</h2>
+
+<pre><code>import &quot;fmt&quot;
+
+type ConfigOne struct {
+	Daemon string
+}
+
+func (c *ConfigOne) String() string {
+	return fmt.Sprintf(&quot;print: %v&quot;, p)
+}
+
+func main() {
+	c := &amp;ConfigOne{}
+	c.String()
+}
+</code></pre>
+
+<h3 id="考点-fmt-sprintf">考点:<strong>fmt.Sprintf</strong></h3>
+
+<p>如果类型实现String()，％v和％v格式将使用String()的值。因此，对该类型的String()函数内的类型使用％v会导致无限递归。
+编译报错：</p>
+
+<pre><code>runtime: goroutine stack exceeds 1000000000-byte limit
+fatal error: stack overflow
+</code></pre>
+
+<h2 id="35-编程题">35，编程题</h2>
+
+<p>反转整数
+反转一个整数，例如：</p>
+
+<p>例子1: x = 123, return 321<br />
+例子2: x = -123, return -321</p>
+
+<p>输入的整数要求是一个 32bit 有符号数，如果反转后溢出，则输出 0</p>
+
+<pre><code>func reverse(x int) (num int) {
+	for x != 0 {
+		num = num*10 + x%10
+		x = x / 10
+	}
+	// 使用 math 包中定义好的最大最小值
+	if num &gt; math.MaxInt32 || num &lt; math.MinInt32 {
+		return 0
+	}
+	return
+}
+
+</code></pre>
+
+<h2 id="36-编程题">36，编程题</h2>
+
+<p>合并重叠区间
+给定一组 区间，合并所有重叠的 区间。</p>
+
+<p>例如：
+给定：[1,3],[2,6],[8,10],[15,18]
+返回：[1,6],[8,10],[15,18]</p>
+
+<pre><code>type Interval struct {
+	Start int
+	End   int
+}
+
+func merge(intervals []Interval) []Interval {
+	if len(intervals) &lt;= 1 {
+		return intervals
+	}
+
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i].Start &lt; intervals[j].Start
+	})
+
+	res := make([]Interval, 0)
+	swap := Interval{}
+	for k, v := range intervals {
+		if k == 0 {
+			swap = v
+			continue
+		}
+		if v.Start &lt;= swap.End {
+			swap.End = v.End
+		} else {
+			res = append(res, swap)
+			swap = v
+		}
+	}
+	res = append(res, swap)
+	return res
+}
+</code></pre>
+
+<h2 id="37-输出什么">37.输出什么？</h2>
+
+<pre><code>package main
+
+import (
+	&quot;fmt&quot;
+)
+
+func main() {
+	fmt.Println(len(&quot;你好bj!&quot;))
+}
+</code></pre>
+
+<h3 id="考点-编码长度">考点:<strong>编码长度</strong></h3>
+
+<p>输出9</p>
+
+<h2 id="38-编译并运行如下代码会发生什么">38.编译并运行如下代码会发生什么？</h2>
+
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+type Test struct {
+	Name string
+}
+
+var list map[string]Test
+
+func main() {
+
+	list = make(map[string]Test)
+	name := Test{&quot;xiaoming&quot;}
+	list[&quot;name&quot;] = name
+	list[&quot;name&quot;].Name = &quot;Hello&quot;
+	fmt.Println(list[&quot;name&quot;])
+}
+</code></pre>
+
+<h3 id="考点-map">考点:<strong>map</strong></h3>
+
+<p>编程报错<code>cannot assign to struct field list[&quot;name&quot;].Name in map</code>。
+因为list[&ldquo;name&rdquo;]不是一个普通的指针值，map的value本身是不可寻址的，因为map中的值会在内存中移动，并且旧的指针地址在map改变时会变得无效。
+定义的是var list map[string]Test，注意哦Test不是指针，而且map我们都知道是可以自动扩容的，那么原来的存储name的Test可能在地址A，但是如果map扩容了地址A就不是原来的Test了，所以go就不允许我们写数据。你改为var list map[string]*Test试试看。</p>
+
+<h2 id="39-abcd中哪一行存在错误">39.ABCD中哪一行存在错误？</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">S</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">f</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{})</span> <span style="color:#000;font-weight:bold">{</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">g</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{})</span> <span style="color:#000;font-weight:bold">{</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">S</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">s</span>
+	<span style="color:#000">f</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">//A
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">g</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">//B
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">f</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">//C
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#000">g</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">//D
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="考点-interface">考点:<strong>interface</strong></h3>
+
+<p>看到这道题需要第一时间想到的是Golang是强类型语言，interface是所有golang类型的父类，类似Java的Object。
+函数中<code>func f(x interface{})</code>的<code>interface{}</code>可以支持传入golang的任何类型，包括指针，但是函数<code>func g(x *interface{})</code>只能接受<code>*interface{}</code>.</p>
+
+<h2 id="40-编译并运行如下代码会发生什么">40.编译并运行如下代码会发生什么？</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;sync&#34;</span>
+	<span style="color:#8f5902;font-style:italic">//&#34;time&#34;
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">const</span> <span style="color:#000">N</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">10</span>
+
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">wg</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitGroup</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+
+	<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#000">N</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+			<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Done</span><span style="color:#000;font-weight:bold">()</span>
+		<span style="color:#000;font-weight:bold">}(</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Wait</span><span style="color:#000;font-weight:bold">()</span>
+
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="考点-waitgroup">考点:<strong>WaitGroup</strong></h3>
+
+<p>这是使用WaitGroup经常犯下的错误！请各位同学多次运行就会发现输出都会不同甚至又出现报错的问题。
+这是因为<code>go</code>执行太快了，导致<code>wg.Add(1)</code>还没有执行main函数就执行完毕了。
+改为如下试试</p>
+
+<pre><code>for i := 0; i &lt; N; i++ {
+        wg.Add(1)
+		go func(i int) {
+			println(i)
+			defer wg.Done()
+		}(i)
+	}
+	wg.Wait()
+</code></pre>
+
+<h2 id="附录">附录</h2>
+
+<p><a href="https://zhuanlan.zhihu.com/p/35058068?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io">https://zhuanlan.zhihu.com/p/35058068?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io</a></p>
+
+<p><a href="https://stackoverflow.com/questions/42600920/runtime-goroutine-stack-exceeds-1000000000-byte-limit-fatal-error-stack-overf">https://stackoverflow.com/questions/42600920/runtime-goroutine-stack-exceeds-1000000000-byte-limit-fatal-error-stack-overf</a></p>
+
+<p><a href="https://studygolang.com/topics/3853">https://studygolang.com/topics/3853</a></p>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/articles/sony-gobreaker/readme/" title="Sony gobreaker熔断器源码分析">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Sony gobreaker熔断器源码分析
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/interview/articles/interview_analysis_2/" title="Golang面试题解析（二）">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Golang面试题解析（二）
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

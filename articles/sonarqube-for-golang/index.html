@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>Golang 代码质量持续检测 - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/articles/sonarqube-for-golang/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/articles/sonarqube-for-golang/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                Golang 代码质量持续检测
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>Golang 代码质量持续检测 </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<blockquote>
+<p>Author: Kenny Allen</p>
+
+<p>Email:    kennyallen0520@gmail.com</p>
+</blockquote>
+
+<h2 id="前言">前言</h2>
+
+<p>在软件开发过程中，人工检查项目代码中的漏洞和潜在的 BUG 是一件让人十分费神费力的事情，为了解决这一痛点，SonarQube诞生了，它实现了一系列代码自动检测过程，包括命名规范，代码漏洞，代码重复量等。</p>
+
+<p>但是光有 SonarQube 还不能发挥出应有的高效率，一个完整的代码质量持续检测应配合代码仓库(如 gitlab) 和 Jenkins 来共同构建一个自动化过程。</p>
+
+<h2 id="环境">环境</h2>
+
+<ul>
+<li><p>Gitlab、Jenkins、SonarQube 服务都在一台物理机上的Docker中运行</p></li>
+
+<li><p>网络 (局域网IP：192.168.1.100)</p></li>
+</ul>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/01.png" alt="7.48.39" /></p>
+
+<ul>
+<li>主机科学上网代理</li>
+</ul>
+
+<p>192.168.1.100:1087</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/44.png" alt="10.03.05" /></p>
+
+<ul>
+<li><p>模拟外网访问</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># 修改 hosts 文件，模拟外网访问</span>
+sudo sh -c <span style="color:#4e9a06">&#34;echo &#39;192.168.1.100 jenkins.kenny.com\n192.168.1.100 gitlab.kenny.com\n192.168.1.100 sonarqube.kenny.com&#39; &gt;&gt; /etc/hosts&#34;</span></code></pre></div></li>
+</ul>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/45.png" alt="10.04.09" /></p>
+
+<ul>
+<li>工具集</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">版本</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">golang</td>
+<td align="center">go1.10.3</td>
+</tr>
+
+<tr>
+<td align="center">docker</td>
+<td align="center">18.03.1-ce</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="搭建">搭建</h2>
+
+<p>接下来，我以一个完整的案例来介绍搭建过程。</p>
+
+<h3 id="jenkins">Jenkins</h3>
+
+<h5 id="启动服务">启动服务</h5>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># $jenkins_home 宿主机目录，挂载容器 /var/jenkins_home</span>
+<span style="color:#8f5902;font-style:italic"># 我的数据卷目录是 ~/.jenkins</span>
+<span style="color:#204a87">export</span> <span style="color:#000">JENKINS_HOME</span><span style="color:#ce5c00;font-weight:bold">=</span>~/.jenkins
+docker run -d --restart<span style="color:#ce5c00;font-weight:bold">=</span>always -p <span style="color:#0000cf;font-weight:bold">8080</span>:8080 -p <span style="color:#0000cf;font-weight:bold">50000</span>:50000 -v <span style="color:#000">$JENKINS_HOME</span>:/var/jenkins_home --name jenkins jenkins:2.60.3
+
+<span style="color:#8f5902;font-style:italic"># 查看 jenkins 日志</span>
+docker logs -f jenkins</code></pre></div>
+<h5 id="初始化">初始化</h5>
+
+<ol>
+<li>打开浏览器，访问 <a href="http://jenkins.kenny.com:8080">http://jenkins.kenny.com:8080</a></li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/02.png" alt="9.11.34" /></p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">   <span style="color:#8f5902;font-style:italic"># 在日志中找到管理员密码</span>
+   docker logs -f jenkins 
+   
+   <span style="color:#8f5902;font-style:italic"># 或者在 $JENKINS_HOME/secrets/initialAdminPassword 文件中找到管理员密码</span>
+   cat <span style="color:#000">$JENKINS_HOME</span>/secrets/initialAdminPassword</code></pre></div>
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/03.png" alt="9.09.27" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/04.png" alt="9.11.06" /></p>
+
+<ol>
+<li>安装推荐插件 (如果你想自定义安装插件，点击 Select plugins to Install)</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/05.png" alt="9.13.59" /></p>
+
+<ol>
+<li>创建管理员账号</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/06.png" alt="9.19.17" /></p>
+
+<ol>
+<li>初始化完成</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/07.png" alt="9.19.55" /></p>
+
+<h3 id="gitlab">Gitlab</h3>
+
+<h5 id="启动服务-gitlab-集成的服务比较多-因此需要占用较大的内存-官方推荐4gb以上">启动服务 (gitlab 集成的服务比较多，因此需要占用较大的内存，官方推荐4GB以上)</h5>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># $gitlab_home 宿主机目录</span>
+<span style="color:#8f5902;font-style:italic"># 我的数据卷目录是 ~/.gitlab</span>
+<span style="color:#204a87">export</span> <span style="color:#000">GITLAB_HOME</span><span style="color:#ce5c00;font-weight:bold">=</span>~/.gitlab
+docker run -d --restart<span style="color:#ce5c00;font-weight:bold">=</span>always -e <span style="color:#4e9a06">&#39;GITLAB_HOST=gitlab.kenny.com&#39;</span> -p <span style="color:#0000cf;font-weight:bold">443</span>:443 -p <span style="color:#0000cf;font-weight:bold">80</span>:80 -p <span style="color:#0000cf;font-weight:bold">22</span>:22 -v <span style="color:#000">$GITLAB_HOME</span>/conf:/etc/gitlab -v <span style="color:#000">$GITLAB_HOME</span>:/var/opt/gitlab -v <span style="color:#000">$GITLAB_HOME</span>/log:/var/log/gitlab --name gitlab gitlab/gitlab-ce:11.1.0-ce.0
+
+<span style="color:#8f5902;font-style:italic"># 查看 gitlab 日志</span>
+docker logs -f gitlab</code></pre></div>
+<h5 id="初始化-1">初始化</h5>
+
+<ol>
+<li>打开浏览器，访问 <a href="http://gitlab.kenny.com">http://gitlab.kenny.com</a></li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/08.png" alt="9.26.59" /></p>
+
+<ol>
+<li>设置新密码后，使用 root 用户登录</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/09.png" alt="9.27.29" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/10.png" alt="9.27.42" /></p>
+
+<ol>
+<li>新建 sonarqube 项目组</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/11.png" alt="9.29.45" /></p>
+
+<ol>
+<li>在 sonarqube 项目组下新建 demo 项目</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/12.png" alt="9.31.26" />
+   <img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/13.png" alt="9.32.38" /></p>
+
+<ol>
+<li><p>添加主机公钥到 Gitlab</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># 生成 rsa 公钥和密钥</span>
+ssh-keygen -t rsa
+   
+<span style="color:#8f5902;font-style:italic"># 查看并复制公钥</span>
+cat ~/.ssh/id_rsa.pub</code></pre></div></li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/14.png" alt="9.36.12" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/15.png" alt="9.37.39" /></p>
+
+<p>访问 <a href="http://gitlab.kenny.com/profile/keys">http://gitlab.kenny.com/profile/keys</a>  ，将公钥添加至 Gitlab</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/16.png" alt="9.38.15" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/17.png" alt="9.38.18" /></p>
+
+<ol>
+<li><p>将 sonarqube/demo 项目拉至主机的 $GOPATH 下</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># 在 $GOPATH 下创建 gitlab.kenny.com 文件夹</span>
+mkdir -p <span style="color:#000">$GOPATH</span>/src/gitlab.kenny.com <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">cd</span> <span style="color:#000">$GOPATH</span>/src/gitlab.kenny.com
+   
+<span style="color:#8f5902;font-style:italic"># clone code</span>
+git clone git@gitlab.kenny.com:sonarqube/demo.git</code></pre></div></li>
+</ol>
+
+<h3 id="sonarqube">SonarQube</h3>
+
+<h5 id="启动服务-1">启动服务</h5>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># 由于目前 sonarqube 官方的 Docker images 只有 7.1 版本，不满足 SonarGO 所需 7.2+ 版本，所以我参考7.1 的 Dockerfile 制作了一个 sonarqube 7.2.1 的镜像</span>
+<span style="color:#8f5902;font-style:italic"># $sonarqube_home 宿主机目录</span>
+<span style="color:#8f5902;font-style:italic"># 我的数据卷目录是 ~/.sonarqube</span>
+<span style="color:#204a87">export</span> <span style="color:#000">SONARQUBE_HOME</span><span style="color:#ce5c00;font-weight:bold">=</span>~/.sonarqube
+<span style="color:#8f5902;font-style:italic"># 正式环境中应启用外部数据库服务来存储必要数据，在启动容器时设置如下JDBC相关参数:</span>
+<span style="color:#8f5902;font-style:italic"># -e SONARQUBE_JDBC_USERNAME=sonar</span> 
+<span style="color:#8f5902;font-style:italic"># -e SONARQUBE_JDBC_PASSWORD=sonar</span> 
+<span style="color:#8f5902;font-style:italic"># -e SONARQUBE_JDBC_URL=jdbc:postgresql://localhost/sonar</span>
+docker run -d --restart<span style="color:#ce5c00;font-weight:bold">=</span>always -p <span style="color:#0000cf;font-weight:bold">9000</span>:9000 -v <span style="color:#000">$SONARQUBE_HOME</span>:/opt/sonarqube/data --name sonarqube kennyallen/sonarqube:7.2.1
+
+<span style="color:#8f5902;font-style:italic"># 查看 sonarqube 日志</span>
+docker logs -f sonarqube</code></pre></div>
+<p>文件：<a href="./Dockerfile">Dockerfile</a>、<a href="./run.sh">run.sh</a></p>
+
+<h5 id="初始化-2">初始化</h5>
+
+<ol>
+<li>打开浏览器，访问 <a href="http://sonarqube.kenny.com:9000">http://sonarqube.kenny.com:9000</a></li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/18.png" alt="8.58.40" /></p>
+
+<ol>
+<li><p>使用管理员账号登录</p>
+
+<ul>
+<li>账号 admin</li>
+<li>密码 admin</li>
+</ul></li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/19.png" alt="8.59.06" /></p>
+
+<ol>
+<li>生成 token (作为远程连接 SonarQube 的标识，只生成一次，记得备份哦)</li>
+</ol>
+
+<p>admin_token: <strong>74439d5bc557dcc206fa8b1f2f5516e65680bdc8</strong></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/20.png" alt="8.59.41" /></p>
+
+<ol>
+<li>安装插件 (进入 Administration -&gt; Marketplace)</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/21.png" alt="9.01.25" /></p>
+
+<p>安装完成后点击重启 SonarQube 服务就OK了</p>
+
+<h2 id="集成">集成</h2>
+
+<ul>
+<li>将 Jenkins、Gitlab 和 SonarQube 有机整合</li>
+</ul>
+
+<h3 id="jenkins-安装插件">Jenkins 安装插件</h3>
+
+<ol>
+<li>点击进入 系统管理 -&gt; 插件管理 -&gt; 可选插件</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/22.png" alt="9.43.39" /></p>
+
+<ol>
+<li>过滤选中 Gitlab、SonarQube Scanner，点击下载待重启后安装</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/23.png" alt="9.45.12" />
+   <img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/24.png" alt="9.45.35" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/46.png" alt="10.19.06" /></p>
+
+<h3 id="jenkins-配置">Jenkins 配置</h3>
+
+<ol>
+<li>安装 SonarQube &amp; JDK</li>
+</ol>
+
+<p>进入 系统管理 -&gt; Global Tool Configuration</p>
+
+<p>JDK 安装</p>
+
+<p>​    勾选我同意 Java SE Development Kit 的许可协议</p>
+
+<p>​    点击 Please enter your username/password</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/25.png" alt="11.31.38" /></p>
+
+<p>输入你的 oracle 账号密码</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/47.png" alt="10.20.43" /></p>
+
+<p>SonarQube Scanner 安装<img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/26.png" alt="11.32.15" /></p>
+
+<p>点击保存。</p>
+
+<ol>
+<li>SonarQube Server</li>
+</ol>
+
+<p>进入 系统管理 -&gt; 系统设置</p>
+
+<p>Add SonarQube servers</p>
+
+<p>Name 随便填写</p>
+
+<p>Server URL: <a href="http://sonarqube.kenny.com:9000">http://sonarqube.kenny.com:9000</a></p>
+
+<p>Server version: 5.3 or higher</p>
+
+<p>Server authentication token: 填 SonarQube 初始化时生成的 token</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/27.png" alt="9.53.05" /></p>
+
+<ol>
+<li>取消 Gitlab 授权</li>
+</ol>
+
+<p>取消选中 Enable authentication for &lsquo;/project&rsquo; end-point，保存</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/28.png" alt="11.20.17" /></p>
+
+<ol>
+<li><p>在 jenkins 容器中安装 golang 环境及工具</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># 在 Jenkins 容器中执行命令</span>
+docker <span style="color:#204a87">exec</span> -it jenkins /bin/bash
+<span style="color:#8f5902;font-style:italic"># 临时设置环境变量</span>
+<span style="color:#204a87">export</span> <span style="color:#000">GOROOT</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$JENKINS_HOME</span>/go
+<span style="color:#204a87">export</span> <span style="color:#000">GOPATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$JENKINS_HOME</span>/workspace/go
+<span style="color:#204a87">export</span> <span style="color:#000">PATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$PATH</span>:<span style="color:#000">$GOROOT</span>/bin:<span style="color:#000">$GOPATH</span>/bin
+<span style="color:#204a87">export</span> <span style="color:#000">http_proxy</span><span style="color:#ce5c00;font-weight:bold">=</span>http://192.168.1.100:1087<span style="color:#000;font-weight:bold">;</span><span style="color:#204a87">export</span> <span style="color:#000">https_proxy</span><span style="color:#ce5c00;font-weight:bold">=</span>http://192.168.1.100:1087<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#8f5902;font-style:italic"># 进入 jenkins 主目录</span>
+<span style="color:#204a87">cd</span> <span style="color:#000">$JENKINS_HOME</span>
+<span style="color:#8f5902;font-style:italic"># 下载 golang</span>
+wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+<span style="color:#8f5902;font-style:italic"># 解压 golang 包</span>
+tar -xvf  go1.10.3.linux-amd64.tar.gz
+<span style="color:#8f5902;font-style:italic"># 删除 golang 包</span>
+rm go1.10.3.linux-amd64.tar.gz
+<span style="color:#8f5902;font-style:italic"># 安装必要工具</span>
+<span style="color:#8f5902;font-style:italic"># vgo</span>
+go get -u -v golang.org/x/vgo
+<span style="color:#8f5902;font-style:italic"># gometalinter</span>
+go get -u -v github.com/alecthomas/gometalinter
+gometalinter --install</code></pre></div></li>
+
+<li><p>配置邮件通知</p></li>
+</ol>
+
+<p>进入 系统管理 -&gt; 系统设置</p>
+
+<p>Jenkins Location</p>
+
+<p>系统管理员邮件地址修改为你自己的邮箱地址，如 wyh3265@163.com</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/29.png" alt="11.29.11" /></p>
+
+<p>Extend E-mail Notification</p>
+
+<p>SMTP Server 填写对应的SMTP服务地址，如 smtp.163.com</p>
+
+<p>点击高级，勾选使用SMTP认证</p>
+
+<p>用户名 注意不需要加 @xxx.xxx</p>
+
+<p>密码     填写自己的邮箱密码或授权码</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/48.png" alt="10.26.50" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/30.png" alt="11.50.08" /></p>
+
+<p>Default Triggers 选中 Always</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/31.png" alt="11.50.26" /></p>
+
+<h3 id="新建-jenkins-构建任务">新建 Jenkins 构建任务</h3>
+
+<ol>
+<li>新构建一个自由风格的软件项目</li>
+</ol>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/32.png" alt="10.35.38" /></p>
+
+<ol>
+<li>使用自定义的工作空间</li>
+</ol>
+
+<p>点击高级，勾选使用自定义的工作空间</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/49.png" alt="10.28.20" /></p>
+
+<p>目录：$JENKINS_HOME/workspace/go/src/gitlab.kenny.com/demo</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/33.png" alt="10.51.25" /></p>
+
+<ol>
+<li>源码管理</li>
+</ol>
+
+<p>Repository URL：<a href="http://gitlab.kenny.com/sonarqube/demo">http://gitlab.kenny.com/sonarqube/demo</a></p>
+
+<p>Credentials：点击Add ，添加凭据 (Gitlab 用户名密码或 SSH登录等方式都可以)<img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/34.png" alt="10.37.19" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/50.png" alt="10.29.32" /></p>
+
+<ol>
+<li>构建触发器，选中</li>
+</ol>
+
+<p>Build when a change is pushed to GitLab. GitLab webhook URL: <a href="http://jenkins.kenny.com:8080/project/demo">http://jenkins.kenny.com:8080/project/demo</a></p>
+
+<p>Enabled GitLab triggers 选中 Push Events 和 Accepted Merge Request Events ，表示当 Gitlab 有 push 或 merge 操作发生时触发构建。</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/35.png" alt="10.39.03" /></p>
+
+<ol>
+<li>新建 webhook</li>
+</ol>
+
+<p>在浏览器中打开 <a href="http://gitlab.kenny.com/admin/application_settings">http://gitlab.kenny.com/admin/application_settings</a> (请使用 root 登录)，找到 Outbound requests ，点击 Expand 后，选中  Allow requests to the local network from hooks and services 并保存更改。 (允许本地网络的 githook)</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/36.png" alt="10.43.37" /></p>
+
+<p>进入 <a href="http://gitlab.kenny.com/sonarqube/demo/settings/integrations">http://gitlab.kenny.com/sonarqube/demo/settings/integrations</a></p>
+
+<p>URL: <a href="http://jenkins.kenny.com:8080/project/demo">http://jenkins.kenny.com:8080/project/demo</a></p>
+
+<p>SecretToken: 不填</p>
+
+<p>选中 <strong>Push events</strong>、<strong>Merge request events</strong></p>
+
+<p>取消选中 <strong>Enable SSL verification</strong></p>
+
+<p>点击 Add web hook</p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/37.png" alt="10.46.50" /></p>
+
+<ol>
+<li><p>增加构建步骤，选中 Execute Shell</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic">#!/bin/bash
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#8f5902;font-style:italic"># 环境变量</span>
+<span style="color:#204a87">export</span> <span style="color:#000">GOROOT</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$JENKINS_HOME</span>/go
+<span style="color:#204a87">export</span> <span style="color:#000">GOPATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$JENKINS_HOME</span>/workspace/go
+<span style="color:#204a87">export</span> <span style="color:#000">PATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$PATH</span>:<span style="color:#000">$GOROOT</span>/bin:<span style="color:#000">$GOPATH</span>/bin
+<span style="color:#204a87">export</span> <span style="color:#000">http_proxy</span><span style="color:#ce5c00;font-weight:bold">=</span>http://192.168.1.100:1087<span style="color:#000;font-weight:bold">;</span><span style="color:#204a87">export</span> <span style="color:#000">https_proxy</span><span style="color:#ce5c00;font-weight:bold">=</span>http://192.168.1.100:1087<span style="color:#000;font-weight:bold">;</span>
+   
+<span style="color:#8f5902;font-style:italic"># 安装依赖</span>
+vgo mod -vendor
+   
+<span style="color:#8f5902;font-style:italic"># coverage</span>
+go <span style="color:#204a87">test</span> ./... -coverprofile<span style="color:#ce5c00;font-weight:bold">=</span>coverage.out
+   
+<span style="color:#8f5902;font-style:italic"># test</span>
+go <span style="color:#204a87">test</span> ./... -json &gt; report.json
+   
+<span style="color:#8f5902;font-style:italic"># vet</span>
+go vet ./... <span style="color:#0000cf;font-weight:bold">2</span>&gt; govet-report.out
+   
+<span style="color:#8f5902;font-style:italic"># golint</span>
+golint ./... &gt; golint-report.out
+   
+<span style="color:#8f5902;font-style:italic"># gometalinter</span> 
+<span style="color:#8f5902;font-style:italic"># 执行 gometalinter 会失败,因此加了 || true</span>
+gometalinter ./... &gt; gometalinter-report.out <span style="color:#ce5c00;font-weight:bold">||</span> true</code></pre></div></li>
+
+<li><p>增加构建步骤，选中 Execute SonarQube Scanner</p></li>
+</ol>
+
+<p>Analysis properties</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-properties" data-lang="properties">   sonar.projectKey=gitlab.kenny.com
+   sonar.projectName=demo
+   sonar.sources=.
+   sonar.exclusions=**/*_test.go,**/vendor/**
+   sonar.tests=.
+   sonar.test.inclusions=**/*_test.go
+   sonar.test.exclusions=**/vendor/**
+   sonar.go.coverage.reportPaths=coverage.out
+   sonar.go.tests.reportPaths=report.json
+   sonar.go.govet.reportPaths=govet-report.out
+   sonar.go.golint.reportPaths=golint-report.out
+   sonar.go.gometalinter.reportPaths=gometalinter-report.out</code></pre></div>
+<ol>
+<li>增加构建后操作，选中 Editable Email Notification</li>
+</ol>
+
+<p>Project Recipient List  填写接收邮件的Email地址，或使用默认配置</p>
+
+<p>Default Content  加上 SonarQube URL: <a href="http://sonarqube.kenny.com:9000">http://sonarqube.kenny.com:9000</a></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/38.png" alt="11.51.18" /></p>
+
+<h2 id="测试">测试</h2>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8f5902;font-style:italic"># clone demo 代码</span>
+<span style="color:#204a87">cd</span> <span style="color:#000">$GOPATH</span>/src/gitlab.kenny.com <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> git clone git@github.com:yuhao5/sonarqube-golang.git <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> rm -rf demo <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> mv sonarqube-golang demo <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">cd</span> demo
+<span style="color:#8f5902;font-style:italic"># push 代码，触发 Jenkins 任务进行自动构建</span>
+git remote add gitlab git@gitlab.kenny.com:sonarqube/demo.git
+git push -u gitlab master
+
+<span style="color:#8f5902;font-style:italic"># 若 gitlab 仓库地址不是 git@gitlab.kenny.com:sonarqube/demo.git ，请根据以下步骤修改：</span>
+docker <span style="color:#204a87">exec</span> -it gitlab /bin/bash
+vim /etc/gitlab/gitlab.rb
+<span style="color:#8f5902;font-style:italic"># 找到 external_url，修改为 external_url &#39;http://gitlab.kenny.com&#39;</span>
+<span style="color:#8f5902;font-style:italic"># 然后执行</span>
+gitlab-ctl reconfigure</code></pre></div>
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/39.png" alt="11.53.59" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/40.png" alt="11.35.27" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/41.png" alt="11.09.34" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/42.png" alt="11.10.01" /></p>
+
+<p><img src="https://bytemode.github.io/images/articles/sonarqube-for-golang/43.png" alt="11.10.42" /></p>
+
+<h2 id="todo">TODO</h2>
+
+<ol>
+<li>解决执行 gometalinter 失败问题</li>
+<li>Golang 质量标准，规则自定义</li>
+<li>&hellip;</li>
+</ol>
+
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/reading/10-2018-06-28-net-http-part4/" title="第 10 期 2018-06-28 线下活动">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              第 10 期 2018-06-28 线下活动
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/interview/interview-design/" title="设计题">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              设计题
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   
+  <html class="no-js" lang="en-us"> 
+  
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>Golang面试题解析（一） - Go Learn</title>
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    
+    <meta name="description" content="Go Learn Blog">
+    
+    <link rel="canonical" href="https://bytemode.github.io/interview/articles/interview_analysis_1/">
+    
+    <meta name="author" content="bytemode">
+    
+
+    <meta property="og:url" content="https://bytemode.github.io/interview/articles/interview_analysis_1/">
+    <meta property="og:title" content="Go Learn">
+    <meta property="og:image" content="https://bytemode.github.io/images/logo.png">
+    <meta name="apple-mobile-web-app-title" content="Go Learn">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://bytemode.github.io/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://bytemode.github.io/fonts/icon.eot');
+        src: url('https://bytemode.github.io/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://bytemode.github.io/fonts/icon.woff')
+               format('woff'),
+             url('https://bytemode.github.io/fonts/icon.ttf')
+               format('truetype'),
+             url('https://bytemode.github.io/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/application.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://bytemode.github.io/icons/style.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <script src="https://bytemode.github.io/javascripts/modernizr.js"></script>
+    <script src="https://bytemode.github.io/javascripts/growingio.js"></script>
+
+    
+  </head>
+  <body class="palette-primary-indigo palette-accent-deep-purple">
+    
+
+<div class="backdrop">
+    <div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+    <nav aria-label="Header">
+    <div class="bar default zindex11">
+        <div class="button button-menu" role="button" aria-label="Menu">
+            <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+        </div>
+        <div class="stretch">
+            <div class="title">
+                Golang面试题解析（一）
+            </div>
+        </div>
+        
+        <div class="button button-home" role="button" aria-label="Home">
+            <a href="https://bytemode.github.io/" title="Home" target="_blank"  class="toggle-button icon icons-home3"></a>
+        </div>
+          
+        <div class="button button-github" role="button" aria-label="GitHub">
+            <a href="https://github.com/bytemode" title="@bytemode on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+        </div>
+        
+
+        <div class="button button-search" role="button" aria-label="Search">
+            <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+        </div>
+    </div>
+    <div class="bar search">
+        <div class="button button-close" role="button" aria-label="Close">
+            <label class="toggle-button icon icon-back" for="toggle-search"></label>
+        </div>
+        <div class="stretch">
+            <div class="field">
+                <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+            </div>
+        </div>
+        <div class="button button-reset" role="button" aria-label="Search">
+            <button class="toggle-button icon icon-close" id="reset-search"></button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main class="main">
+    <div class="drawer">
+        <nav aria-label="Navigation">
+    <a href="https://bytemode.github.io/" class="project">
+        <div class="banner">
+            
+            <div class="logo">
+                <img src="https://bytemode.github.io/images/logo.png">
+            </div>
+            
+            <div class="name">
+                <strong>Go Learn <span class="version">1.0.0</span></strong> 
+                <br> bytemode/bytemodesrc 
+            </div>
+        </div>
+    </a>
+
+    <div class="scrollable">
+        <div class="wrapper">
+            
+            <ul class="repo">
+                <li class="repo-download">
+                    <a href="https://github.com/bytemode/bytemodesrc/archive/master.zip" target="_blank" title="Download" data-action="download">
+                        <i class="icon icon-download"></i> Download
+                    </a>
+                </li>
+                <li class="repo-stars">
+                    <a href="https://github.com/bytemode/bytemodesrc/stargazers" target="_blank" title="Stargazers" data-action="star">
+                        <i class="icon icon-star"></i> Stars
+                        <span class="count">&ndash;</span>
+                    </a>
+                </li>
+            </ul>
+            <hr> 
+
+            <div class="toc">
+                
+                <ul>
+                    
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Go源码阅读" href="https://bytemode.github.io/reading/">
+	
+	Go源码阅读
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="服务器开发" href="https://bytemode.github.io/server/">
+	
+	服务器开发
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="我的项目" href="https://bytemode.github.io/projects/">
+	
+	我的项目
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="面试专题" href="https://bytemode.github.io/interview/">
+	
+	面试专题
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="分享文章" href="https://bytemode.github.io/articles/">
+	
+	分享文章
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="其他" href="https://bytemode.github.io/other/">
+	
+	其他
+</a>
+
+
+
+  
+</li>
+
+
+                </ul>
+                 
+                <hr>
+                <span class="section">关于作者</span>
+
+                <ul>
+                     
+                    <li>
+                        <a href="https://github.com/bytemode" target="_blank" title="@bytemode on GitHub">
+              @bytemode on GitHub
+            </a>
+                    </li>
+                     
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    </div>
+
+    <article class="article">
+        <div class="wrapper">
+            <h1>Golang面试题解析（一） </h1>
+            <aside >
+                
+            </aside>
+
+            
+
+<p>最近在很多地方看到了<a href="https://zhuanlan.zhihu.com/p/26972862">golang的面试题</a>，看到了很多人对Golang的面试题心存恐惧，也是为了复习基础，我把解题的过程总结下来。</p>
+
+<h2 id="面试题">面试题</h2>
+
+<h3 id="1-写出下面代码输出内容">1. 写出下面代码输出内容。</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;fmt&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">defer_call</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">defer_call</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;打印前&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">}()</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;打印中&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">}()</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;打印后&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">}()</span>
+
+    <span style="color:#204a87">panic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;触发异常&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>defer执行顺序</strong>
+解答：
+defer 是<strong>后进先出</strong>。
+协程遇到panic时，遍历本协程的defer链表，并执行defer。在执行defer过程中，遇到recover则停止panic，返回recover处继续往下执行。如果没有遇到recover，遍历完本协程的defer链表后，向stderr抛出panic信息。从执行顺序上来看，实际上是按照先进后出的顺序执行defer</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">打印后</span>
+<span style="color:#000">打印中</span>
+<span style="color:#000">打印前</span>
+<span style="color:#000">panic</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">触发异常</span></code></pre></div>
+<p><strong>注意：请用独立终端运行，排查某些IDE对stderr和stdout处理问题导致输出顺序不一致。</strong></p>
+
+<h3 id="2-以下代码有什么问题-说明原因">2. 以下代码有什么问题，说明原因。</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">student</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">Name</span> <span style="color:#204a87;font-weight:bold">string</span>
+    <span style="color:#000">Age</span>  <span style="color:#204a87;font-weight:bold">int</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">pase_student</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">m</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">student</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">stus</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#000">student</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;zhou&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">24</span><span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;li&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">23</span><span style="color:#000;font-weight:bold">},</span>
+        <span style="color:#000;font-weight:bold">{</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#34;wang&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">22</span><span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stu</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">stus</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">m</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">stu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Name</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span><span style="color:#000">stu</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>foreach</strong>
+解答：
+这样的写法初学者经常会遇到的，很危险！
+与Java的foreach一样，都是使用副本的方式。所以m[stu.Name]=&amp;stu实际上一致指向同一个指针，
+最终该指针的值为遍历的最后一个struct的值拷贝。
+就像想修改切片元素的属性：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">stu</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">stus</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">stu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Age</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">stu</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Age</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">10</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>也是不可行的。
+大家可以试试打印出来：</p>
+
+<pre><code>func pase_student() {
+    m := make(map[string]*student)
+    stus := []student{
+        {Name: &quot;zhou&quot;, Age: 24},
+        {Name: &quot;li&quot;, Age: 23},
+        {Name: &quot;wang&quot;, Age: 22},
+    }
+    // 错误写法
+    for _, stu := range stus {
+        m[stu.Name] = &amp;stu
+    }
+
+    for k,v:=range m{
+        println(k,&quot;=&gt;&quot;,v.Name)
+    }
+
+    // 正确
+    for i:=0;i&lt;len(stus);i++  {
+        m[stus[i].Name] = &amp;stus[i]
+    }
+    for k,v:=range m{
+        println(k,&quot;=&gt;&quot;,v.Name)
+    }
+}
+
+</code></pre>
+
+<h3 id="3-下面的代码会输出什么-并说明原因">3. 下面的代码会输出什么，并说明原因</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOMAXPROCS</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">wg</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">WaitGroup</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">20</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">10</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;A: &#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Done</span><span style="color:#000;font-weight:bold">()</span>
+        <span style="color:#000;font-weight:bold">}()</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span> <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">10</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">++</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;B: &#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Done</span><span style="color:#000;font-weight:bold">()</span>
+        <span style="color:#000;font-weight:bold">}(</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">wg</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Wait</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>go执行的随机性和闭包</strong>
+解答：
+谁也不知道执行后打印的顺序是什么样的，所以只能说是随机数字。<br />
+其中<code>A:</code>输出完全随机，取决于goroutine执行时i的值是多少；<br />
+而<code>B:</code>一定输出为0~9，但顺序不定。</p>
+
+<p>第一个go func中i是外部for的一个变量，地址不变化，但是值都在改变。</p>
+
+<p>第二个go func中i是函数参数，与外部for中的i完全是两个变量。<br />
+尾部(i)将发生值拷贝，go func内部指向值拷贝地址。</p>
+
+<p>所以在使用goroutine在处理闭包的时候，避免发生类似第一个go func中的问题。</p>
+
+<h3 id="4-下面代码会输出什么">4. 下面代码会输出什么？</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">People</span> <span style="color:#204a87;font-weight:bold">struct</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">People</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">ShowA</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;showA&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">p</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ShowB</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">p</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">People</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">ShowB</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;showB&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Teacher</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">People</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Teacher</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">ShowB</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;teacher showB&#34;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">t</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">Teacher</span><span style="color:#000;font-weight:bold">{}</span>
+    <span style="color:#000">t</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ShowA</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>go的组合继承</strong>
+解答：
+这是Golang的组合模式，可以实现OOP的继承。
+被组合的类型People所包含的方法虽然升级成了外部类型Teacher这个组合类型的方法（一定要是匿名字段），但它们的方法(ShowA())调用时接受者并没有发生变化。
+此时People类型并不知道自己会被什么类型组合，当然也就无法调用方法时去使用未知的组合者Teacher类型的功能。</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">showA</span>
+<span style="color:#000">showB</span></code></pre></div>
+<h3 id="5-下面代码会触发异常吗-请详细说明">5. 下面代码会触发异常吗？请详细说明</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">runtime</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">GOMAXPROCS</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">int_chan</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">string_chan</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">int_chan</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#0000cf;font-weight:bold">1</span>
+    <span style="color:#000">string_chan</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#4e9a06">&#34;hello&#34;</span>
+    <span style="color:#204a87;font-weight:bold">select</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">value</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#000">int_chan</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">value</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#000">string_chan</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#204a87">panic</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>select随机性</strong>
+解答：
+select会随机选择一个可用通用做收发操作。
+所以代码是有肯触发异常，也有可能不会。
+单个chan如果无缓冲时，将会阻塞。但结合 select可以在多个chan间等待执行。有三点原则：
+* select 中只要有一个case能return，则立刻执行。
+* 当如果同一时间有多个case均能return则伪随机方式抽取任意一个执行。
+* 如果没有一个case能return则可以执行”default”块。</p>
+
+<h3 id="6-下面代码输出什么">6. 下面代码输出什么？</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">calc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">index</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">b</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">ret</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">a</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">b</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">index</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">b</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ret</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ret</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">a</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+    <span style="color:#000">b</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#0000cf;font-weight:bold">2</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">calc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">calc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;10&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">b</span><span style="color:#000;font-weight:bold">))</span>
+    <span style="color:#000">a</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">calc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;2&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">calc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;20&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">a</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">b</span><span style="color:#000;font-weight:bold">))</span>
+    <span style="color:#000">b</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>defer执行顺序</strong>
+解答：
+这道题类似第1题
+需要注意到defer执行顺序和值传递
+index:1肯定是最后执行的，但是index:1的第三个参数是一个函数，所以最先被调用calc(&ldquo;10&rdquo;,1,2)==&gt;10,1,2,3
+执行index:2时,与之前一样，需要先调用calc(&ldquo;20&rdquo;,0,2)==&gt;20,0,2,2
+执行到b=1时候开始调用，index:2==&gt;calc(&ldquo;2&rdquo;,0,2)==&gt;2,0,2,2
+最后执行index:1==&gt;calc(&ldquo;1&rdquo;,1,3)==&gt;1,1,3,4</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#0000cf;font-weight:bold">10</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#0000cf;font-weight:bold">3</span>
+<span style="color:#0000cf;font-weight:bold">20</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#0000cf;font-weight:bold">2</span>
+<span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#0000cf;font-weight:bold">2</span>
+<span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#0000cf;font-weight:bold">3</span> <span style="color:#0000cf;font-weight:bold">4</span></code></pre></div>
+<h3 id="7-请写出以下输入内容">7. 请写出以下输入内容</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">s</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">([]</span><span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">s</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>make默认值和append</strong>
+解答：
+make初始化是由默认值的哦，此处默认值为0</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">0</span> <span style="color:#0000cf;font-weight:bold">1</span> <span style="color:#0000cf;font-weight:bold">2</span> <span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">]</span></code></pre></div>
+<p>大家试试改为:</p>
+
+<pre><code>s := make([]int, 0)
+s = append(s, 1, 2, 3)
+fmt.Println(s)//[1 2 3]
+</code></pre>
+
+<h3 id="8-下面的代码有什么问题">8. 下面的代码有什么问题?</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">UserAges</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">ages</span> <span style="color:#204a87;font-weight:bold">map</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">]</span><span style="color:#204a87;font-weight:bold">int</span>
+	<span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Mutex</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ua</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">UserAges</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Add</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">age</span> <span style="color:#204a87;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span>
+	<span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">age</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ua</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">UserAges</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">age</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ok</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">];</span> <span style="color:#000">ok</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">age</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>map线程安全</strong>
+解答：
+可能会出现<code>fatal error: concurrent map read and map write</code>.
+修改一下看看效果</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ua</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">UserAges</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">name</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Lock</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#204a87;font-weight:bold">defer</span> <span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Unlock</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">age</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ok</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#000">ua</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">ages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">name</span><span style="color:#000;font-weight:bold">];</span> <span style="color:#000">ok</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">age</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="9-下面的迭代会有什么问题">9. 下面的迭代会有什么问题？</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">set</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">threadSafeSet</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Iter</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{}</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{})</span>
+	<span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RLock</span><span style="color:#000;font-weight:bold">()</span>
+
+		<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">elem</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">s</span> <span style="color:#000;font-weight:bold">{</span>
+			<span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#000">elem</span>
+		<span style="color:#000;font-weight:bold">}</span>
+
+		<span style="color:#204a87">close</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ch</span><span style="color:#000;font-weight:bold">)</span>
+		<span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RUnlock</span><span style="color:#000;font-weight:bold">()</span>
+
+	<span style="color:#000;font-weight:bold">}()</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ch</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>chan缓存池</strong>
+解答：
+看到这道题，我也在猜想出题者的意图在哪里。
+chan?sync.RWMutex?go?chan缓存池?迭代?
+所以只能再读一次题目，就从迭代入手看看。
+既然是迭代就会要求set.s全部可以遍历一次。但是chan是为缓存的，那就代表这写入一次就会阻塞。
+我们把代码恢复为可以运行的方式，看看效果</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+    <span style="color:#4e9a06">&#34;sync&#34;</span>
+    <span style="color:#4e9a06">&#34;fmt&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic">//下面的迭代会有什么问题？
+</span><span style="color:#8f5902;font-style:italic"></span>
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">threadSafeSet</span> <span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">sync</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RWMutex</span>
+    <span style="color:#000">s</span> <span style="color:#000;font-weight:bold">[]</span><span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">set</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">threadSafeSet</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Iter</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{}</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// ch := make(chan interface{}) // 解除注释看看！
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87">make</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">chan</span> <span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{},</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">s</span><span style="color:#000;font-weight:bold">))</span>
+    <span style="color:#204a87;font-weight:bold">go</span> <span style="color:#204a87;font-weight:bold">func</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RLock</span><span style="color:#000;font-weight:bold">()</span>
+
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">elem</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">value</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#204a87;font-weight:bold">range</span> <span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">s</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000">ch</span> <span style="color:#ce5c00;font-weight:bold">&lt;-</span> <span style="color:#000">elem</span>
+            <span style="color:#204a87">println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Iter:&#34;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">elem</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#204a87">close</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ch</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">set</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">RUnlock</span><span style="color:#000;font-weight:bold">()</span>
+
+    <span style="color:#000;font-weight:bold">}()</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ch</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span>  <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000">th</span><span style="color:#ce5c00;font-weight:bold">:=</span><span style="color:#000">threadSafeSet</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000">s</span><span style="color:#000;font-weight:bold">:[]</span><span style="color:#204a87;font-weight:bold">interface</span><span style="color:#000;font-weight:bold">{}{</span><span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#34;2&#34;</span><span style="color:#000;font-weight:bold">},</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000">v</span><span style="color:#ce5c00;font-weight:bold">:=&lt;-</span><span style="color:#000">th</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Iter</span><span style="color:#000;font-weight:bold">()</span>
+    <span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Sprintf</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;%s%v&#34;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#34;ch&#34;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#000">v</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<h3 id="10-以下代码能编译过去吗-为什么">10. 以下代码能编译过去吗？为什么？</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">People</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">Speak</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">string</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Stduent</span> <span style="color:#204a87;font-weight:bold">struct</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">stu</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Stduent</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Speak</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">think</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">talk</span> <span style="color:#204a87;font-weight:bold">string</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">think</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;bitch&#34;</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">talk</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;You are a good boy&#34;</span>
+	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">talk</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;hi&#34;</span>
+	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#204a87;font-weight:bold">return</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">peo</span> <span style="color:#000">People</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Stduent</span><span style="color:#000;font-weight:bold">{}</span>
+	<span style="color:#000">think</span> <span style="color:#ce5c00;font-weight:bold">:=</span> <span style="color:#4e9a06">&#34;bitch&#34;</span>
+	<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">peo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Speak</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">think</span><span style="color:#000;font-weight:bold">))</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>golang的方法集</strong>
+解答：
+编译不通过！
+做错了！？说明你对golang的方法集还有一些疑问。
+一句话：golang的方法集仅仅影响接口实现和方法表达式转化，与通过实例或者指针调用方法无关。</p>
+
+<h3 id="11-以下代码打印出来什么内容-说出为什么">11. 以下代码打印出来什么内容，说出为什么。</h3>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#204a87;font-weight:bold">package</span> <span style="color:#000">main</span>
+
+<span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#4e9a06">&#34;fmt&#34;</span>
+<span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">People</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">Show</span><span style="color:#000;font-weight:bold">()</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">type</span> <span style="color:#000">Student</span> <span style="color:#204a87;font-weight:bold">struct</span><span style="color:#000;font-weight:bold">{}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">stu</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Student</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000">Show</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">live</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000">People</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">stu</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">Student</span>
+	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">stu</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">main</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">live</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;AAAAAAA&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+		<span style="color:#000">fmt</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">Println</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;BBBBBBB&#34;</span><span style="color:#000;font-weight:bold">)</span>
+	<span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<p>考点：<strong>interface内部结构</strong>
+解答：
+很经典的题！
+这个考点是很多人忽略的interface内部结构。
+go中的接口分为两种一种是空的接口类似这样：</p>
+
+<pre><code>var in interface{}
+</code></pre>
+
+<p>另一种如题目：</p>
+
+<pre><code>type People interface {
+    Show()
+}
+</code></pre>
+
+<p>他们的底层结构如下：</p>
+
+<pre><code>type eface struct {      //空接口
+    _type *_type         //类型信息
+    data  unsafe.Pointer //指向数据的指针(go语言中特殊的指针类型unsafe.Pointer类似于c语言中的void*)
+}
+type iface struct {      //带有方法的接口
+    tab  *itab           //存储type信息还有结构实现方法的集合
+    data unsafe.Pointer  //指向数据的指针(go语言中特殊的指针类型unsafe.Pointer类似于c语言中的void*)
+}
+type _type struct {
+    size       uintptr  //类型大小
+    ptrdata    uintptr  //前缀持有所有指针的内存大小
+    hash       uint32   //数据hash值
+    tflag      tflag
+    align      uint8    //对齐
+    fieldalign uint8    //嵌入结构体时的对齐
+    kind       uint8    //kind 有些枚举值kind等于0是无效的
+    alg        *typeAlg //函数指针数组，类型实现的所有方法
+    gcdata    *byte
+    str       nameOff
+    ptrToThis typeOff
+}
+type itab struct {
+    inter  *interfacetype  //接口类型
+    _type  *_type          //结构类型
+    link   *itab
+    bad    int32
+    inhash int32
+    fun    [1]uintptr      //可变大小 方法集合
+}
+</code></pre>
+
+<p>可以看出iface比eface 中间多了一层itab结构。
+itab 存储_type信息和[]fun方法集，从上面的结构我们就可得出，因为data指向了nil 并不代表interface 是nil，
+所以返回值并不为空，这里的fun(方法集)定义了接口的接收规则，在编译的过程中需要验证是否实现接口
+结果：</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#000">BBBBBBB</span></code></pre></div>
+
+			
+
+
+            <aside class="copyright" role="note">
+                 &copy; 2019 Released under the MIT license &ndash;  - By Stephen Sun.
+            </aside>
+
+            <footer class="footer">
+                
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://bytemode.github.io/interview/articles/interview_analysis_3/" title="Golang面试题解析（三）">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Golang面试题解析（三）
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://bytemode.github.io/interview/interview-golang-language/" title="Golang语言">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Golang语言
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+            </footer>
+        </div>
+    </article>
+
+    <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+            <div class="wrapper">
+                <div class="meta"></div>
+                <div class="list"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/bytemode.github.io\/';
+      var repo_id  = 'bytemode\/bytemodesrc';
+    
+    </script>
+
+    <script src="https://bytemode.github.io/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = " ";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
